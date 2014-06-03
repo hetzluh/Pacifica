@@ -24,13 +24,20 @@ Hollaaa
 
 class Boat
 	
-	def initialize(kingdomId, currentCrew, locationX, locationY, type)
+	def initialize(kingdomId, currentCrew, locationX, locationY, destinationX, destinationY, type, spawnTime)
 		@kingdomId = kingdomId
 		@currentCrew = currentCrew
 		@locationX = locationX
 		@locationY = locationY
+		@destinationX = destinationX
+		@destinationY = destinationY
 		@type = type
+		@spawnTime = spawnTime
 	end
+
+	def getSpawnTime
+		@spawnTime
+	end	
 
 	def getKingdomId
 		@kingdomId
@@ -40,12 +47,40 @@ class Boat
 		@currentCrew
 	end
 	
+	def getLocationX
+		@locationX
+	end
+
+	def getLocationY
+		@locationY
+	end
+
 	def getType
 		@type
 	end
 	
-	def sail (startX, startY, endX, endY)
-		#defines the boat's sailing movements
+	def move (startX, startY, endX, endY)
+		dx = @locationX - @destinationX
+		dy = @locationy - @destinationY
+		while(dx > 0 || dy > 0)
+		switch = 0
+		if(switch == 0 && dx > 0)
+		@locationX -= 1 
+		dx -= 1
+		switch = 1
+		elsif(switch == 1 && dy > 0)
+		@locationY -= 1
+		dy -= 1
+		else
+		if(dx == 0)
+		@locationX -= 1 
+		dx -= 1
+		elsif(dy == 0)
+		@locationY -= 1
+		dy -= 1
+		end
+		end
+		end
 	end
 
 
