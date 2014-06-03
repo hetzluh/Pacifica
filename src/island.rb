@@ -26,17 +26,16 @@ Hollaaa
 
 class Island
 
-	def initialize(kingdomId, name, startWealth, currentWealth, power, 
-					startPopulation, currentPopulation, 
-					shipGuildSkill, size, locationX, locationY)
+	def initialize(kingdomId, name, size, startWealth, currentWealth, power, population,
+					popcap, shipGuildSkill, locationX, locationY)
 		#initializing all kingdom attributes
 		@kingdomId = kingdomId
 		@name = name
 		@startWealth = startWealth
 		@currentWealth = currentWealth 
 		@power = power
-		@startPopulation = startPopulation
-		@currentPopulation = currentPopulation
+		@population = population
+		@popcap = popcap
 		@shipGuildSkill = shipGuildSkill
 		@size = size
 		@locationX = locationX
@@ -65,12 +64,12 @@ class Island
 		@power
 	end
 	
-	def getStartPopulation
-		@startPopulation
+	def getPopulation
+		@population
 	end
 		
-	def getCurrentPopulation
-		@currentPopulation
+	def getPopCap
+		@popcap
 	end
 
 	def getSize

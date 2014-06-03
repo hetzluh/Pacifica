@@ -17,7 +17,7 @@ currentWealth -> int, current amount, see above
 power -> double, 1.0 - 2.0, Modifier used for various purposes
 startPopulation -> int, starting population (MAX 10,000)
 currentPopulation -> int, current
-size -> int, 0-2, size modifier used for various purposes
+size -> int, 0-2; 0 is small, size modifier used for various purposes
 shipGuildSkill -> int, 1-5, determines boat effectiveness
 
 Hollaaa
@@ -26,17 +26,16 @@ Hollaaa
 
 class Island
 
-	def initialize(kingdomId, name, startWealth, currentWealth, power, 
-					startPopulation, currentPopulation, 
-					shipGuildSkill, size, locationX, locationY)
+	def initialize(kingdomId, name, size, startWealth, currentWealth, power, population
+					popcap, shipGuildSkill, locationX, locationY)
 		#initializing all kingdom attributes
 		@kingdomId = kingdomId
 		@name = name
 		@startWealth = startWealth
 		@currentWealth = currentWealth 
 		@power = power
-		@startPopulation = startPopulation
-		@currentPopulation = currentPopulation
+		@population = population
+		@popcap = popcap
 		@shipGuildSkill = shipGuildSkill
 		@size = size
 		@locationX = locationX
@@ -65,12 +64,12 @@ class Island
 		@power
 	end
 	
-	def getStartPopulation
-		@startPopulation
+	def getPopulation
+		@population
 	end
 		
-	def getCurrentPopulation
-		@currentPopulation
+	def getPopCap
+		@popcap
 	end
 
 	def getSize
