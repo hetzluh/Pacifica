@@ -1,12 +1,15 @@
-Kiribati
-Kwajaleins
-Hawaii
-Samoa
-Tokelau
-Tahiti
-Tuvalu
-Fiji
-Tonga
-Tuamotus
-Rapa Nui
-Aotearoa 
+ID	Name		Size	Wealth (+pow*10 /10 fr)		Power	Pop	Popcap	ShipGuildSkill	(X,Y)
+1	Kiribati   	1		50							1.2		15	70		1	
+2	Kwajaleins	1		50							1.2		15	70		2
+3	Hawaii		2		60							1.6		20	85		2
+4	Samoa		0		40							1.4		10	60		2			
+5	Tokelau		0		30							1.3		10	60		2		
+6	Vanuatu		1		35							1.4		15	70		1
+7	Tahiti		0		40							1.3		25	60		3					
+8	Takutea		0		40							1.3		25	60		3				
+9	Tuvalu		0		35							1.3		10	60		2				
+10	Fiji		1		40							1.3		15	70		1			
+11	Tonga		0		35							1.3		10	60		2	
+12	Tuamotus	1		40							1.3		15	70		3		
+13	Rapa Nui	1		55							1.5		15	75		4	
+14	Aotearoa 	2		55							1.6		20	85		3

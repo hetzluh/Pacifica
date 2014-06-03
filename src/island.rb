@@ -17,7 +17,7 @@ currentWealth -> int, current amount, see above
 power -> double, 1.0 - 2.0, Modifier used for various purposes
 startPopulation -> int, starting population (MAX 10,000)
 currentPopulation -> int, current
-size -> int, 0-2, size modifier used for various purposes
+size -> int, 0-2; 0 is small, size modifier used for various purposes
 shipGuildSkill -> int, 1-5, determines boat effectiveness
 
 Hollaaa

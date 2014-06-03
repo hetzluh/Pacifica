@@ -25,9 +25,10 @@ Hollaaa
 
 
 class Kingdom
+
 	def initialize(kingdomId, name, startWealth, currentWealth, power, 
 					startPopulation, currentPopulation, 
-					shipGuildSkill, size)
+					shipGuildSkill, size, locationX, locationY)
 		#initializing all kingdom attributes
 		@kingdomId = kingdomId
 		@name = name
@@ -36,11 +37,66 @@ class Kingdom
 		@power = power
 		@startPopulation = startPopulation
 		@currentPopulation = currentPopulation
+		@shipGuildSkill = shipGuildSkill
+		@size = size
+		@locationX = locationX
+		@locationY = locationY
+		@activeTradeCanoes = 0
+		@activeWarCanoes = 0
 	end
 
+	def getId
+		@kingdomId
+	end
+	
+	def getName
+		@name
+	end
+	
+	def getStartWealth	
+		@startWealth
+	end
+	
+	def getCurrentWealth
+		@currentWealth
+	end
+	
+	def getPower
+		@power
+	end
+	
+	def getStartPopulation
+		@startPopulation
+	end
+		
+	def getCurrentPopulation
+		@currentPopulation
+	end
 
+	def getSize
+		@size
+	end
 
+	def getShipGuildSkill
+		@shipGuildSkill
+	end
 
+	def getLocationX
+		@locationX
+	end
+	
+	def getLocationY
+		@locationY
+	end
 
+	def getActiveTradeBoats
+		@activeTradeBoats
+	end
 
+	def getActiveWarBoats
+		@activeWarBoats
+	end
+
+	
+end
 #END kingdom.rb
