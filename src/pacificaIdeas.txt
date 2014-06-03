@@ -1,0 +1,14 @@
+1	Kiribati
+2	Kwajaleins
+3	Hawaii
+4	Samoa
+5	Tokelau
+6	Vanuatu
+7	Tahiti
+8	Takutea
+9	Tuvalu
+10	Fiji
+11	Tonga
+12	Tuamotus
+13	Rapa Nui
+14	Aotearoa 

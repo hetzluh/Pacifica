@@ -1,0 +1,73 @@
+#!/usr/local/bin/ruby
+
+
+require 'kingdom.rb'
+
+require "curses"
+include Curses
+
+=begin
+This class is the simulation's main script
+=end
+
+def make_game_window(island, objects)
+  win = Window.new(25, 100, ((lines-25)/2)-2, (cols-100)/2)
+  win.box(?|, ?-)
+	p1 = ((lines - 5) / 2) + 9
+	p2 = ((cols - 10) / 2) + 12
+
+	islands.each do |island|
+
+	end
+=begin
+	boats.each do |boat|
+     win.setpos(p1, p2)
+ 	 win.addstr(boat.spawn)
+	end
+=end
+loop do
+
+
+  win.refresh
+end
+ # win.close
+end
+
+def make_info_window
+  winfo = Window.new(4, 100, 27, (cols-100)/2)
+  winfo.box(?|, ?-)
+  winfo.setpos(2, 3)
+  winfo.refresh
+  winfo.refresh
+end
+
+init_screen
+noecho
+begin
+    crmode
+	dogTest = Dog.new(1, 0)
+	catTest = Cat.new(2, 0)
+	mouseTest = Mouse.new(3, 0)
+	bunnyTest = Bunny.new(4, 0)
+	foxTest = Fox.new(5, 0)
+	squirrelTest = Squirrel.new(6, 0)
+	raccoonTest = Raccoon.new(7, 0)
+	birdTest = Bird.new(8, 0)
+	fishTest = Fish.new(9, 0)
+	snakeTest = Snake.new(10, 0)
+	spiderTest = Spider.new(11, 0)
+	dragonflyTest = Dragonfly.new(12, 0)
+	butterflyTest = Butterfly.new(13, 0)
+	antTest = Ant.new(14, 0)
+	vegTest = Veg.new(1, 0)
+	meatTest = Meat.new(2, 0)
+	animals = Array.new
+    objects = Array.new
+	animals.push(dogTest)
+	make_info_window
+	make_game_window(animals, objects)
+ensure
+  close_screen
+end
+
+
