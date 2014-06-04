@@ -76,20 +76,20 @@ class Pacifica
 		Reminder: (kingdomId, name, size, startWealth, currentWealth, power, population
 					popcap, shipGuildSkill, locationX, locationY)
 =end
-		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 4, 6)
-		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 3, 3)
-		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 28, 2)
-		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 17, 11)
-		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 9)
-		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 2, 12)
-		tahiti 	 = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 ,34, 10)
-		takutea	 = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 26, 11)
-		tuvalu	 = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 8, 8)
-		fiji	 = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  10, 13)
-		tonga    = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 15, 14)
-		tuamotus = Island.new(12, "tuamotus", 1, 40, 40, 1.3, 15, 70, 3, 43, 13)
-		rapanui  = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 55, 15)
-		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 4, 17)
+		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 7, 8)
+		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 4, 5)
+		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3)
+		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 21, 14)
+		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 12)
+		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 4, 14)
+		tahiti 	 = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 , 40, 14)
+		takutea	 = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 33, 15)
+		tuvalu	 = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 10, 10)
+		fiji	 = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  11, 16)
+		tonga    = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 18, 17)
+		tuamotus = Island.new(12, "tuamotus", 1, 40, 40, 1.3, 15, 70, 3, 50, 15)
+		rapanui  = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 58, 17)
+		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 6, 21)
 
 		@islands.push(kiribati, kwajaleins, hawaii, samoa, tokelau,
 						 tuvalu, vanuatu, fiji, tonga, tahiti,
@@ -97,7 +97,7 @@ class Pacifica
 	end
 
 	def make_game_window(islands, objects, month, year, time)
-	  win = Window.new(20, 60, ((lines-25)/2)-2, (cols-100)/2)
+	  win = Window.new(24, 64, ((lines-25)/2)-2, (cols-100)/2)
 	  win.box(?|, ?-)
 		@moon = (time+1)%10
 		if @moon == 0
@@ -218,25 +218,6 @@ class Pacifica
 			if(object.class.name == "Earthquake")
 				win.addstr("E")
 			elsif(object.class.name == "Boat")
-				win.setpos(y+1, x)
-				if(object.getKingdomId == 14)
-					win.setpos(y+1, x+2)
-				end
-				if(object.getKingdomId == 3)
-					win.setpos(y+1, x+2)
-				end
-				if(object.getKingdomId == 1)
-					win.setpos(y-1, x)
-				end
-				if(object.getKingdomId == 2)
-					win.setpos(y-1, x)
-				end
-				if(object.getKingdomId == 5)
-					win.setpos(y-1, x)
-				end
-				if(object.getKingdomId == 6)
-					win.setpos(y-1, x)
-				end
 				if(object.getType == "trade")
 					win.addstr("T")
 				elsif(object.getType == "war")
@@ -367,7 +348,7 @@ class Pacifica
 			if(@moon == 1 && @month == "jan")
 				island.yearlyPopExplosion
 			end
-			island.think
+			island.think(@islands)
 		end
 		@islands.each do |island|
 			island.getActiveTradeBoats.each do |boat|
@@ -404,14 +385,14 @@ class Pacifica
 	end
 	
 	def make_diplomacy_window
-	  winfo = Window.new(8, 60, 22, (cols-100)/2)
+	  winfo = Window.new(4, 64, 26, (cols-100)/2)
 	  winfo.box(?|, ?-)
 	  winfo.setpos(2, 3)
 	  winfo.refresh
 	end
 	
 	def make_kingdom_info_window(islands)
-	  kinfo = Window.new(29, 36, (((lines-25)/2)-2), 64+((cols-100)/2))
+	  kinfo = Window.new(25, 30, (((lines-25)/2)-2), 64+((cols-100)/2))
 	  kinfo.box(?|, ?-)
 			x = 1
 			y = 1
@@ -499,7 +480,7 @@ while TRUE
 	end
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_kingdom_info_window(pacifica.getIslands)
-		sleep(0.5)
+		sleep(1.0)
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)

@@ -53,16 +53,25 @@ class Island
 		@population += 25
 	end
 
-	def think
+	def think(islands)
 		r = rand(10)
-		if(r > 7 && @population > @popcap/3 && @currentWealth > @startWealth)
-			makeTradeBoat("kiribati")
-		elsif(r < 2 && @population > @popcap/3 && @currentWealth > @startWealth )
-			makeWarBoat("kiribati")
+		randomIslandId = rand(13) + 1
+		target = islands.at(randomIslandId).getName
+		if(r > 8 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+			makeTradeBoat(target)
+		elsif(r < 2 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+			makeWarBoat(target)
 		else
-			
+			if(r %2 == 1)
+				babiesBorn
+			end
 		end
 	end
+
+	def babiesBorn
+		r = rand(3)
+		@population += r
+	end	
 
 	def getId
 		@kingdomId
@@ -120,10 +129,49 @@ class Island
 		@currentWealth -= 10
 		@population -= 10
 		if(destinationIslandName == "kiribati")
-		destinationX = 4
-		destinationY = 6
+			destinationX = 7
+			destinationY = 8
+		elsif(destinationIslandName == "kwajaleins")
+			destinationX = 4
+			destinationY = 4
+		elsif(destinationIslandName == "hawaii")
+			destinationX = 32
+			destinationY = 4
+		elsif(destinationIslandName == "samoa")
+			destinationX = 21
+			destinationY = 15
+		elsif(destinationIslandName == "tokelau")
+			destinationX = 15
+			destinationY = 11
+		elsif(destinationIslandName == "vanuatu")
+			destinationX = 4
+			destinationY = 15
+		elsif(destinationIslandName == "tahiti")
+			destinationX = 40
+			destinationY = 15
+		elsif(destinationIslandName == "takutea")
+			destinationX = 33
+			destinationY = 14
+		elsif(destinationIslandName == "tuvalu")
+			destinationX = 10
+			destinationY = 9
+		elsif(destinationIslandName == "fiji")
+			destinationX = 11
+			destinationY = 17
+		elsif(destinationIslandName == "tonga")
+			destinationX = 18
+			destinationY = 18
+		elsif(destinationIslandName == "tuamotus")
+			destinationX = 50
+			destinationY = 16
+		elsif(destinationIslandName == "rapa nui")
+			destinationX = 58
+			destinationY = 18
+		elsif(destinationIslandName == "aotearoa")
+			destinationX = 8
+			destinationY = 20
 		end
-		warBoat = Boat.new(@kingdomId, 5, @locationX, @locationY, destinationX, destinationY, "war", 				0, @shipGuildSkill)
+		warBoat = Boat.new(@kingdomId, 10, @locationX, @locationY, destinationX, destinationY, "war", 				0, @shipGuildSkill)
 		@activeWarBoats.push(warBoat)
 	end
 
@@ -131,10 +179,49 @@ class Island
 		@currentWealth -= 5
 		@population -= 5
 		if(destinationIslandName == "kiribati")
-		destinationX = 4
-		destinationY = 6
+			destinationX = 7
+			destinationY = 8
+		elsif(destinationIslandName == "kwajaleins")
+			destinationX = 4
+			destinationY = 4
+		elsif(destinationIslandName == "hawaii")
+			destinationX = 32
+			destinationY = 4
+		elsif(destinationIslandName == "samoa")
+			destinationX = 21
+			destinationY = 15
+		elsif(destinationIslandName == "tokelau")
+			destinationX = 15
+			destinationY = 11
+		elsif(destinationIslandName == "vanuatu")
+			destinationX = 4
+			destinationY = 15
+		elsif(destinationIslandName == "tahiti")
+			destinationX = 40
+			destinationY = 15
+		elsif(destinationIslandName == "takutea")
+			destinationX = 33
+			destinationY = 14
+		elsif(destinationIslandName == "tuvalu")
+			destinationX = 10
+			destinationY = 9
+		elsif(destinationIslandName == "fiji")
+			destinationX = 11
+			destinationY = 17
+		elsif(destinationIslandName == "tonga")
+			destinationX = 18
+			destinationY = 18
+		elsif(destinationIslandName == "tuamotus")
+			destinationX = 50
+			destinationY = 16
+		elsif(destinationIslandName == "rapa nui")
+			destinationX = 58
+			destinationY = 18
+		elsif(destinationIslandName == "aotearoa")
+			destinationX = 8
+			destinationY = 20
 		end
-		tradeBoat = Boat.new(@kingdomId, 5, @locationX, @locationY, destinationX, destinationY, "trade", 				0, @shipGuildSkill)
+		tradeBoat = Boat.new(@kingdomId, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 				0, @shipGuildSkill)
 		@activeTradeBoats.push(tradeBoat)
 	end
 

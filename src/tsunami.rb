@@ -58,17 +58,17 @@ class Tsunami
 
 	def move
 		if (@direction == "up")
-		@locationY -=1
+			@locationY -=1
 		elsif(@direction == "down")
-		@locationY +=1
+			@locationY +=1
 		end
 		@size -= 1
 		r = rand(10)
 		if(r < 4)
-		@size += 1
+			@size += 1
 		end
 		if(@locationY == 0 || @locationY == 20)
-		@size = 0
+			@size = 0
 		end
 	end
 
