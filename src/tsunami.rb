@@ -63,6 +63,13 @@ class Tsunami
 		@locationY +=1
 		end
 		@size -= 1
+		r = rand(10)
+		if(r < 4)
+		@size += 1
+		end
+		if(@locationY == 0 || @locationY == 20)
+		@size = 0
+		end
 	end
 
 end

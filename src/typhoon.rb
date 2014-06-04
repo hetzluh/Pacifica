@@ -40,13 +40,18 @@ Hollaaa
 class Typhoon
 	
 	def initialize(size, locationX, locationY, destinationX, destinationY, spawnTime)
-		@size = size
+		@size = 1
 		@locationX = locationX
 		@locationY = locationY
 		@destinationX = destinationX
 		@destinationY = destinationY
 		@tsunamisList = Array.new
 		@spawnTime = spawnTime
+		if(size == 1 || size == 2)
+			@bigOne = false
+		elsif(size == 3)
+			@bigOne = true
+		end
 	end
 
 	def getSpawnTime
@@ -69,11 +74,62 @@ class Typhoon
 		@locationY
 	end
 	
+	def growOrShrink
+		r = rand(10)
+
+		#grow
+		if(@bigOne == false && @size != 2)
+		if(r > 3)
+		growthBool = true
+		else
+		growthBool = false
+		end
+			if(growthBool == true)
+				@size += 1
+			end
+		elsif(@bigOne == true && @size != 3)
+		if(r > 2)
+		growthBool = true
+		else
+		growthBool = false
+		end
+			if(@size == 1 && growthBool == true)
+				@size += 1
+			end
+			if(@size == 2 && growthBool == true)
+				@size += 1
+			end
+		end
+		#shrink
+		if(@bigOne == false && @size == 2)
+		if(r > 8)
+		growthBool = true
+		else
+		growthBool = false
+		end
+			if(growthBool == true)
+				@size -= 1
+			end
+		elsif(@bigOne == true && @size == 3)
+		if(r > 8)
+		growthBool = true
+		else
+		growthBool = false
+		end
+			if(@size == 3 && growthBool == true)
+				@size -= 1
+			end
+			if(@size == 2 && growthBool == true)
+				@size -= 1
+			end
+		end
+	end
+
 	def move
 		dx = @locationX - @destinationX
 		dy = @locationY - @destinationY
-		if(dx > 0 || dy > 0)
 		newRand = rand(10)
+		if(dx > 0 || dy > 0)
 			if(newRand % 2 == 0)
 			@locationX -= 1 
 			dx -= 1
@@ -82,8 +138,14 @@ class Typhoon
 			dy -= 1
 			end		
 		end	
-		if(dx == 1 || dy == 1)
-			@size = 0
+		growOrShrink
+		if(dx <= 3 || dy <= 3)
+			if(newRand % 2 == 0)
+			@size -= 1 
+			end
+		end
+		if(dx == 0 || dy == 1)
+		@size = 0 
 		end
 	end
 	

@@ -95,11 +95,14 @@ class Pacifica
 						 takutea, aotearoa, tuamotus, rapanui)
 	end
 
-	def make_game_window(islands, objects, month, year)
+	def make_game_window(islands, objects, month, year, time)
 	  win = Window.new(20, 60, ((lines-25)/2)-2, (cols-100)/2)
 	  win.box(?|, ?-)
-	
-	  win.addstr("Month: #{month}, Year: #{year}")
+		moon = (time+1)%10
+		if moon == 0
+			moon = 10
+		end
+	  win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
 	
 		@islands.each do |island|
 			y = island.getLocationY
@@ -304,8 +307,11 @@ class Pacifica
 	
 	def random_earthquake_generator
 		r = rand(5)
+		epiX = rand(57 - 3) +3
+		epiY = rand(18 - 1) +1
+		sz = rand(5)
 		if(r%5 == 0)
-		earthquake1 = Earthquake.new(5, 40, 12, @currentTime)
+		earthquake1 = Earthquake.new(sz, epiX, epiY, @currentTime)
 		earthquake1.spawnTsunamis
 			earthquake1.getTsunamisList.each do |tsunami|
 				addObject(tsunami)
@@ -316,8 +322,13 @@ class Pacifica
 	
 	def random_typhoon_generator
 		r = rand(5)
+		sz = rand(3)
+		sX = rand(46-12) + 12
+		sY = rand(12-1) + 1
+		dX = rand(8-4) + 4
+		dY = rand(3-1) + 1
 		if(r%5 == 0)
-		typhoon1 = Typhoon.new(2, 30, 12, 18 , 3, @currentTime)
+		typhoon1 = Typhoon.new(sz, sX, sY, dX, dY, @currentTime)
 		addObject(typhoon1)
 		end
 	end
@@ -404,8 +415,8 @@ while TRUE
 		when 110..119
 		pacifica.setMonth("dec")	
 	end
-	pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear)
-	sleep(0.1)
+	pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
+	sleep(0.3)
 	if(pacifica.getCurrentTime < 120)
 	pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)

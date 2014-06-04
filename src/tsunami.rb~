@@ -62,11 +62,10 @@ class Tsunami
 		elsif(@direction == "down")
 		@locationY +=1
 		end
-		r = rand(2)
-		if(@size > 2 && r == 0)
 		@size -= 1
-		elsif(@size <= 2)
-		@size -= 1
+		r = rand(10)
+		if(r < 2)
+		@size += 1
 		end
 	end
 
