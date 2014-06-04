@@ -57,9 +57,9 @@ class Island
 		r = rand(10)
 		randomIslandId = rand(13) + 1
 		target = islands.at(randomIslandId).getName
-		if(r > 8 && @population > @popcap/3 && @currentWealth > @startWealth)
+		if(r > 8 && @population > @popcap/3 && @currentWealth > @startWealth-15)
 			makeTradeBoat(target)
-		elsif(r < 2 && @population > @popcap/3 && @currentWealth > @startWealth )
+		elsif(r < 2 && @population > @popcap/3 && @currentWealth > @startWealth-15)
 			makeWarBoat(target)
 		else
 			if(r %2 == 1)
@@ -224,6 +224,10 @@ class Island
 		tradeBoat = Boat.new(@kingdomId, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 				0, @shipGuildSkill)
 		@activeTradeBoats.push(tradeBoat)
 	end
+
+	def earthquake
+		@population = 7
+	end	
 
 end
 #END kingdom.rb

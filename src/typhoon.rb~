@@ -100,7 +100,6 @@ class Typhoon
 			if(@size == 2 && growthBool == true)
 				@size += 1
 			end
-		end
 		#shrink
 		elsif(@bigOne == false && @size == 2)
 		r = rand(10)

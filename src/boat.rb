@@ -68,32 +68,29 @@ class Boat
 		dx = @locationX - @destinationX
 		dy = @locationY - @destinationY
 		newRand = rand(10)
-		if(dx > 0 || dy > 0 || dx < 0 || dy < 0)
-			if(newRand % 2 == 0)
+		if(newRand % 2 == 0 && (dx > 0 || dy > 0 || dx < 0 || dy < 0))
 				if(dx > 0)
-					@locationX -= 1 
-					dx -= 1
+					@locationX -= 1
 				elsif(dx < 0)
-					@locationX += 1 
-					dx += 1
-				end
-			end
-			if(newRand % 2 == 1)
-				if(dy > 0)
+					@locationX += 1
+				elsif(dy > 0)
 					@locationY -= 1 
-					dy -= 1
 				elsif(dy < 0)
 					@locationY += 1 
-					dy += 1
 				end
-			end			
-		end
+		end	
 		if(dx == 0 && dy == 0)
 			@currentCrew = 0 
 		end
 	end
 
-
+	def damage
+		if(@shipGuildSkill > 3)
+		@currentCrew -= 1
+		else
+		@currentCrew -= 10
+		end
+	end
 
 
 end

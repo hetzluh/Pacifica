@@ -22,6 +22,10 @@ class Pacifica
 		@islands = Array.new
 		@objects = Array.new
 		@currentTsunamis = Array.new
+		@hazardLocationsX = Array.new
+		@hazardLocationsY = Array.new
+		@epicenterLocationsX = Array.new
+		@epicenterLocationsY = Array.new
 		@year = 500
 		@moon = 1
 		@month = "jan"
@@ -71,6 +75,22 @@ class Pacifica
 		@objects
 	end
 
+	def addEpicenterX(loc)
+		@epicenterLocationsX.push(loc)
+	end
+	
+	def addEpicenterY(loc)
+		@epicenterLocationsY.push(loc)
+	end
+
+	def addHazardX(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9, haz10, haz11)
+		@hazardLocationsX.push(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9, haz10, haz11)	
+	end
+
+	def addHazardY(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9)
+		@hazardLocationsY.push(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9)	
+	end
+
 	def addIslands
 =begin
 		Reminder: (kingdomId, name, size, startWealth, currentWealth, power, population
@@ -104,11 +124,31 @@ class Pacifica
 			@moon = 10
 		end
 		moon = @moon
-	  win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
+   	    win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
+		
 	
 		@islands.each do |island|
 			y = island.getLocationY
 			x = island.getLocationX
+			landEqX = false
+			landEqY = false 
+				@epicenterLocationsX.each do |eq|
+					if(island.getLocationX == eq)
+						landEqX = true
+					end
+				end
+				if(landEqX == true)
+					@epicenterLocationsY.each do |eq|
+						if(island.getLocationY == eq)
+							landEqY = true
+						end
+					end
+				end
+				if(landEqY == true)
+					island.earthquake
+					landEqX = false
+					landEqY = false 
+				end
 			win.setpos(y, x)
 
 			#Kingdom-specific graphics start now
@@ -214,6 +254,8 @@ class Pacifica
 		@objects.each do |object|
 			y = object.getLocationY
 			x = object.getLocationX
+			boatHitX = false
+			boatHitY = false
 			win.setpos(y, x)
 			if(object.class.name == "Earthquake")
 				win.addstr("E")
@@ -222,6 +264,21 @@ class Pacifica
 					win.addstr("T")
 				elsif(object.getType == "war")
 					win.addstr("W")
+				end
+				@hazardLocationsX.each do |hazard|
+					if(object.getLocationX == hazard)
+						boatHitX = true
+					end
+				end
+				if(boatHitX == true)
+					@hazardLocationsY.each do |hazard|
+						if(object.getLocationY == hazard)
+							boatHitY = true
+						end
+					end
+				end
+				if(boatHitY == true)
+					object.damage
 				end
 			elsif(object.class.name == "Typhoon")
 			win.addstr("@")
@@ -317,7 +374,7 @@ class Pacifica
 	
 	def random_earthquake_generator
 		prob = rand(100)
-		if(prob%10 == 0)
+		if(prob%25 == 0)
 		epiX = rand(50 - 3) +3
 		epiY = rand(18 - 1) +1
 		sz = rand(4-1) + 1
@@ -327,7 +384,7 @@ class Pacifica
 				addObject(tsunami)
 			end
 		addObject(earthquake1)
-		elsif(prob % 25 == 0)
+		elsif(prob % 49 == 0)
 		epiX = rand(58 - 14) + 14
 		epiY = rand(17 - 3) + 
 		sz = rand(6-3) + 3
@@ -427,11 +484,42 @@ while TRUE
 		if(object.class.name == "Earthquake")
 			if((pacifica.getCurrentTime - object.getSpawnTime) < 4)
 				objTemp.push(object)
+				pacifica.addEpicenterX(object.getLocationX)
+				pacifica.addEpicenterY(object.getLocationY)
 			end		
 		end
 		if(object.class.name == "Tsunami" || object.class.name == "Typhoon")
 			if(object.getSize > 0)
 				objTemp.push(object)
+				if(object.class.name == "Tsunami")
+					if(object.getSize == 1)
+					pacifica.addHazardX(object.getLocationX-1, object.getLocationX, object.getLocationX+1, nil, nil, nil, nil, nil, nil, nil, nil)
+					pacifica.addHazardY(object.getLocationY, nil, nil, nil, nil, nil, nil, nil, nil)
+					elsif(object.getSize == 2)
+					pacifica.addHazardX(object.getLocationX-2, object.getLocationX-1, object.getLocationX, object.getLocationX+1, object.getLocationX+2, nil, nil, nil, nil, nil, nil)
+					pacifica.addHazardY(object.getLocationY, nil, nil, nil, nil, nil, nil, nil, nil)
+					elsif(object.getSize == 3)
+					pacifica.addHazardX(object.getLocationX-3, object.getLocationX-2, object.getLocationX-1, object.getLocationX, object.getLocationX+1, object.getLocationX+2, object.getLocationX+3, nil, nil, nil, nil)
+					pacifica.addHazardY(object.getLocationY, nil, nil, nil, nil, nil, nil, nil, nil)
+					elsif(object.getSize == 4)
+					pacifica.addHazardX(object.getLocationX-4, object.getLocationX-3, object.getLocationX-2, object.getLocationX-1, object.getLocationX, object.getLocationX+1, object.getLocationX+2,object.getLocationX+3, object.getLocationX+4,nil,nil)
+					pacifica.addHazardY(object.getLocationY, nil, nil, nil, nil, nil, nil, nil, nil)
+					elsif(object.getSize == 5)
+					pacifica.addHazardX(object.getLocationX-5, object.getLocationX-4, object.getLocationX-3, object.getLocationX-2, object.getLocationX-1,object.getLocationX, object.getLocationX+1, object.getLocationX+2, object.getLocationX+3, object.getLocationX+4, object.getLocationX+5)
+					pacifica.addHazardY(object.getLocationY, nil, nil, nil, nil, nil, nil, nil, nil)
+					end
+				elsif(object.class.name == "Typhoon")
+					if(object.getSize == 1)
+					pacifica.addHazardX(object.getLocationX-1, object.getLocationX, object.getLocationX+1, nil, nil, nil, nil, nil, nil, nil, nil)
+					pacifica.addHazardY(object.getLocationY, nil, nil, nil, nil, nil, nil, nil, nil)
+					elsif(object.getSize == 2)
+					pacifica.addHazardX(object.getLocationX-2, object.getLocationX-1, object.getLocationX, object.getLocationX+1, object.getLocationX+2, nil, nil, nil, nil, nil, nil)
+					pacifica.addHazardY(object.getLocationY-2, object.getLocationY-1, object.getLocationY, object.getLocationY+1, object.getLocationY+2, nil, nil, nil, nil)
+					elsif(object.getSize == 3)
+					pacifica.addHazardX(object.getLocationX-3, object.getLocationX-2, object.getLocationX-1, object.getLocationX, object.getLocationX+1, object.getLocationX+2, object.getLocationX+3, nil, nil, nil, nil)
+					pacifica.addHazardY(object.getLocationY-3, object.getLocationY-2, object.getLocationY-1, object.getLocationY, object.getLocationY+1, object.getLocationY+2, object.getLocationY+3, nil, nil)
+					end
+				end		
 			end		
 		end
 		if(object.class.name == "Boat")
@@ -480,7 +568,7 @@ while TRUE
 	end
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_kingdom_info_window(pacifica.getIslands)
-		sleep(1.0)
+		sleep(0.5)
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)

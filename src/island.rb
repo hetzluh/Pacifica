@@ -225,5 +225,9 @@ class Island
 		@activeTradeBoats.push(tradeBoat)
 	end
 
+	def earthquake
+		@population = -1
+	end	
+
 end
 #END kingdom.rb
