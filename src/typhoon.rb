@@ -75,34 +75,35 @@ class Typhoon
 	end
 	
 	def growOrShrink
-		r = rand(10)
 
 		#grow
-		if(@bigOne == false && @size != 2)
-		if(r > 3)
-		growthBool = true
-		else
-		growthBool = false
-		end
+		if(@bigOne == false && @size == 1)
+			r = rand(10)
+			if(r > 3)
+				growthBool = true
+			else
+				growthBool = false
+			end
 			if(growthBool == true)
 				@size += 1
 			end
-		elsif(@bigOne == true && @size != 3)
-		if(r > 2)
-		growthBool = true
-		else
-		growthBool = false
-		end
+		elsif(@bigOne == true && @size < 3)
+			r = rand(10)
+			if(r > 2)
+				growthBool = true
+			else
+				growthBool = false
+			end
 			if(@size == 1 && growthBool == true)
 				@size += 1
 			end
 			if(@size == 2 && growthBool == true)
 				@size += 1
 			end
-		end
 		#shrink
-		if(@bigOne == false && @size == 2)
-		if(r > 8)
+		elsif(@bigOne == false && @size == 2)
+		r = rand(10)
+		if(r > 7)
 		growthBool = true
 		else
 		growthBool = false
@@ -111,6 +112,7 @@ class Typhoon
 				@size -= 1
 			end
 		elsif(@bigOne == true && @size == 3)
+		r = rand(10)
 		if(r > 8)
 		growthBool = true
 		else
@@ -144,7 +146,7 @@ class Typhoon
 			@size -= 1 
 			end
 		end
-		if(dx == 0 || dy == 1)
+		if(dx == 0 || dy == 0)
 		@size = 0 
 		end
 	end

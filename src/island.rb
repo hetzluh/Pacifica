@@ -1,6 +1,7 @@
 #!/usr/local/bin/ruby
 
 
+require 'boat.rb'
 require "curses"
 include Curses
 
@@ -40,8 +41,27 @@ class Island
 		@size = size
 		@locationX = locationX
 		@locationY = locationY
-		@activeTradeCanoes = 0
-		@activeWarCanoes = 0
+		@activeTradeBoats = Array.new
+		@activeWarBoats = Array.new
+	end
+
+	def monthlyPay
+		@currentWealth += ((@power*10)+@size)
+	end
+
+	def yearlyPopExplosion
+		@population += 25
+	end
+
+	def think
+		r = rand(10)
+		if(r > 7 && @population > @popcap/3 && @currentWealth > @startWealth)
+			makeTradeBoat("kiribati")
+		elsif(r < 2 && @population > @popcap/3 && @currentWealth > @startWealth )
+			makeWarBoat("kiribati")
+		else
+			
+		end
 	end
 
 	def getId
@@ -96,6 +116,27 @@ class Island
 		@activeWarBoats
 	end
 
-	
+	def makeWarBoat(destinationIslandName)
+		@currentWealth -= 10
+		@population -= 10
+		if(destinationIslandName == "kiribati")
+		destinationX = 4
+		destinationY = 6
+		end
+		warBoat = Boat.new(@kingdomId, 5, @locationX, @locationY, destinationX, destinationY, "war", 				0, @shipGuildSkill)
+		@activeWarBoats.push(warBoat)
+	end
+
+	def makeTradeBoat(destinationIslandName)
+		@currentWealth -= 5
+		@population -= 5
+		if(destinationIslandName == "kiribati")
+		destinationX = 4
+		destinationY = 6
+		end
+		tradeBoat = Boat.new(@kingdomId, 5, @locationX, @locationY, destinationX, destinationY, "trade", 				0, @shipGuildSkill)
+		@activeTradeBoats.push(tradeBoat)
+	end
+
 end
 #END kingdom.rb

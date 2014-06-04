@@ -23,6 +23,7 @@ class Pacifica
 		@objects = Array.new
 		@currentTsunamis = Array.new
 		@year = 500
+		@moon = 1
 		@month = "jan"
 	end
 
@@ -77,17 +78,17 @@ class Pacifica
 =end
 		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 4, 6)
 		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 3, 3)
-		hawaii = Island.new(3, "hawaii", 2, 60, 60, 1.6, 20, 85, 2, 28, 2)
-		samoa = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 17, 11)
-		tokelau = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 9)
-		vanuatu = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 2, 12)
-		tahiti = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 ,34, 10)
-		takutea = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 26, 11)
-		tuvalu = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 8, 8)
-		fiji = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  10, 13)
-		tonga = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 15, 14)
+		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 28, 2)
+		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 17, 11)
+		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 9)
+		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 2, 12)
+		tahiti 	 = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 ,34, 10)
+		takutea	 = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 26, 11)
+		tuvalu	 = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 8, 8)
+		fiji	 = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  10, 13)
+		tonga    = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 15, 14)
 		tuamotus = Island.new(12, "tuamotus", 1, 40, 40, 1.3, 15, 70, 3, 43, 13)
-		rapanui = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 55, 15)
+		rapanui  = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 55, 15)
 		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 4, 17)
 
 		@islands.push(kiribati, kwajaleins, hawaii, samoa, tokelau,
@@ -98,10 +99,11 @@ class Pacifica
 	def make_game_window(islands, objects, month, year, time)
 	  win = Window.new(20, 60, ((lines-25)/2)-2, (cols-100)/2)
 	  win.box(?|, ?-)
-		moon = (time+1)%10
-		if moon == 0
-			moon = 10
+		@moon = (time+1)%10
+		if @moon == 0
+			@moon = 10
 		end
+		moon = @moon
 	  win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
 	
 		@islands.each do |island|
@@ -214,7 +216,32 @@ class Pacifica
 			x = object.getLocationX
 			win.setpos(y, x)
 			if(object.class.name == "Earthquake")
-			win.addstr("E")
+				win.addstr("E")
+			elsif(object.class.name == "Boat")
+				win.setpos(y+1, x)
+				if(object.getKingdomId == 14)
+					win.setpos(y+1, x+2)
+				end
+				if(object.getKingdomId == 3)
+					win.setpos(y+1, x+2)
+				end
+				if(object.getKingdomId == 1)
+					win.setpos(y-1, x)
+				end
+				if(object.getKingdomId == 2)
+					win.setpos(y-1, x)
+				end
+				if(object.getKingdomId == 5)
+					win.setpos(y-1, x)
+				end
+				if(object.getKingdomId == 6)
+					win.setpos(y-1, x)
+				end
+				if(object.getType == "trade")
+					win.addstr("T")
+				elsif(object.getType == "war")
+					win.addstr("W")
+				end
 			elsif(object.class.name == "Typhoon")
 			win.addstr("@")
 				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3)
@@ -293,7 +320,9 @@ class Pacifica
 		
 	
 	  win.refresh
+	  
 	  handle_objects(@objects)
+	  handle_kingdoms(@islands)
 	 win.close
 	end
 	
@@ -306,11 +335,21 @@ class Pacifica
 	end
 	
 	def random_earthquake_generator
-		r = rand(5)
-		epiX = rand(57 - 3) +3
+		prob = rand(100)
+		if(prob%10 == 0)
+		epiX = rand(50 - 3) +3
 		epiY = rand(18 - 1) +1
-		sz = rand(5)
-		if(r%5 == 0)
+		sz = rand(4-1) + 1
+		earthquake1 = Earthquake.new(sz, epiX, epiY, @currentTime)
+		earthquake1.spawnTsunamis
+			earthquake1.getTsunamisList.each do |tsunami|
+				addObject(tsunami)
+			end
+		addObject(earthquake1)
+		elsif(prob % 25 == 0)
+		epiX = rand(58 - 14) + 14
+		epiY = rand(17 - 3) + 
+		sz = rand(6-3) + 3
 		earthquake1 = Earthquake.new(sz, epiX, epiY, @currentTime)
 		earthquake1.spawnTsunamis
 			earthquake1.getTsunamisList.each do |tsunami|
@@ -319,15 +358,46 @@ class Pacifica
 		addObject(earthquake1)
 		end
 	end
-	
+
+	def handle_kingdoms(islands)
+		@islands.each do |island|
+			if(@moon == 1)
+				island.monthlyPay
+			end
+			if(@moon == 1 && @month == "jan")
+				island.yearlyPopExplosion
+			end
+			island.think
+		end
+		@islands.each do |island|
+			island.getActiveTradeBoats.each do |boat|
+				addObject(boat)
+			end
+			island.getActiveWarBoats.each do |boat|
+				addObject(boat)
+			end
+		end
+	end
+
 	def random_typhoon_generator
-		r = rand(5)
+		r = rand(50)
+		#Normal Typhoon
+		if(r%25 == 0)
 		sz = rand(3)
+		sX = rand(40-12) + 12
+		sY = rand(12-1) + 1
+		dX = rand(10-3) + 3
+		dY = rand(2-1) + 1
+		typhoon1 = Typhoon.new(sz, sX, sY, dX, dY, @currentTime)
+		addObject(typhoon1)
+		end
+		#Strong Typhoon
+		if(r%49 == 0)
+		sz = 3
 		sX = rand(46-12) + 12
 		sY = rand(12-1) + 1
-		dX = rand(8-4) + 4
-		dY = rand(3-1) + 1
-		if(r%5 == 0)
+		dX = rand(11-3) + 3
+		dY = rand(2-1) + 1
 		typhoon1 = Typhoon.new(sz, sX, sY, dX, dY, @currentTime)
 		addObject(typhoon1)
 		end
@@ -367,7 +437,6 @@ begin
 crmode
 pacifica = Pacifica.new
 pacifica.addIslands
-pacifica.make_kingdom_info_window(pacifica.getIslands)
 pacifica.make_diplomacy_window
 
 while TRUE
@@ -384,8 +453,21 @@ while TRUE
 				objTemp.push(object)
 			end		
 		end
+		if(object.class.name == "Boat")
+			if(object.getType == "war")
+				if(object.getCurrentCrew > 2)
+					objTemp.push(object)
+				end	
+			end	
+			if(object.getType == "trade")
+				if(object.getCurrentCrew > 1)
+					objTemp.push(object)
+				end	
+			end	
+		end
+		
 	end
-
+		
 	pacifica.setObjects(objTemp)
 	#add all islands to islands
 	#add all earthquakes to objects, then all waves, boats, then typhoons
@@ -415,13 +497,14 @@ while TRUE
 		when 110..119
 		pacifica.setMonth("dec")	
 	end
-	pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
-	sleep(0.3)
+		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
+		pacifica.make_kingdom_info_window(pacifica.getIslands)
+		sleep(0.5)
 	if(pacifica.getCurrentTime < 120)
-	pacifica.setCurrentTime(pacifica.getCurrentTime+1)
+		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)
-	pacifica.setCurrentTime(0)
-	pacifica.setYear((pacifica.getYear+1))
+		pacifica.setCurrentTime(0)
+		pacifica.setYear((pacifica.getYear+1))
 	end
 end
 ensure
