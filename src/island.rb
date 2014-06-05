@@ -56,18 +56,22 @@ class Island
 	end
 
 	def think(islands)
+		#purge non-unique array entries
 		@tradePartners.uniq!
 		@enemies.uniq!
-		r = rand(10)
-		if(@tradePartners.size == 0)
+
+		r = rand(20)
+		if(@tradePartners.size < 2)
 			newTradePartner(islands)
-	    elsif(r > 8 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+	    elsif(@activeWarBoats.size < 2 && @activeTradeBoats.size < 2&& r > 17 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+			if(r%2 ==0)
 			@tradePartners.each do |partner|
 				makeTradeBoat(partner)
 			end
-		elsif(r < 1 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+			elsif(r%2 == 1)
 			@enemies.each do |enemy|
 				makeWarBoat(enemy)
+			end
 			end
 		else
 			if(r % 9 == 0)
@@ -84,7 +88,9 @@ class Island
 	def newTradePartner(islands)
 		randomIslandId = rand(13) + 1
 		newPartner = islands.at(randomIslandId)
-		@tradePartners.push(newPartner.getName)
+		if(@enemies.include?(newPartner.getName) == false)
+			@tradePartners.push(newPartner.getName)
+		end
 	end
 
 	def findRandomTradePartner
@@ -294,7 +300,7 @@ class Island
 	def traded(numberCrew, kingdomTrading)
 		@population += numberCrew
 		@currentWealth += 1
-		if(@tradePartners.length < 4)
+		if(@tradePartners.length < 4 && @enemies.include?(kingdomTrading) == false)
 			@tradePartners.push(kingdomTrading)
 		end
 	end

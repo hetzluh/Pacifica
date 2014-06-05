@@ -255,8 +255,8 @@ class Pacifica
 			#End kingdom graphics
 		end
 
-	random_earthquake_generator
-	random_typhoon_generator	
+#	random_earthquake_generator
+#		random_typhoon_generator	
 
 		@objects.each do |object|
 			y = object.getLocationY
@@ -530,40 +530,64 @@ class Pacifica
 			x = 1
 			y = 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(0).getName.slice(0,1).capitalize+islands.at(0).getName.slice(1..-1)}")
+			kinfo.addstr("#{islands.at(6).getName.slice(0,1).capitalize+islands.at(6).getName.slice(1..-1)}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("$#{islands.at(0).getCurrentWealth}")
+			kinfo.addstr("doe: $#{islands.at(6).getCurrentWealth}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(0).getEnemies}")
+			kinfo.addstr("foe: #{islands.at(6).getEnemies}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(0).getTradePartners}")
-			y += 1
+			kinfo.addstr("trade: #{islands.at(6).getTradePartners}")
+			y += 2
 			kinfo.setpos(y, x)
 			kinfo.addstr("#{islands.at(7).getName.slice(0,1).capitalize+islands.at(7).getName.slice(1..-1)}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("$#{islands.at(7).getCurrentWealth}")
+			kinfo.addstr("doe: $#{islands.at(7).getCurrentWealth}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(7).getEnemies}")
+			kinfo.addstr("foe: #{islands.at(7).getEnemies}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(7).getTradePartners}")
-			y += 1
+			kinfo.addstr("trade:  #{islands.at(7).getTradePartners}")
+			y += 2
 			kinfo.setpos(y, x)
 			kinfo.addstr("#{islands.at(13).getName.slice(0,1).capitalize+islands.at(13).getName.slice(1..-1)}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("$#{islands.at(13).getCurrentWealth}")
+			kinfo.addstr("doe: $#{islands.at(13).getCurrentWealth}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(13).getEnemies}")
+			kinfo.addstr("foe: #{islands.at(13).getEnemies}")
 			y += 1
 			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(13).getTradePartners}")
+			kinfo.addstr("trade: #{islands.at(13).getTradePartners}")
+			y+=2
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(2).getName.slice(0,1).capitalize+islands.at(2).getName.slice(1..-1)}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("doe: $#{islands.at(2).getCurrentWealth}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("foe: #{islands.at(2).getEnemies}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("trade: #{islands.at(2).getTradePartners}")
+			y += 2
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(4).getName.slice(0,1).capitalize+islands.at(4).getName.slice(1..-1)}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("doe: #{islands.at(4).getCurrentWealth}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("foe: #{islands.at(4).getEnemies}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("trade: #{islands.at(4).getTradePartners}")
 #		@islands.each do |island|
 #		
 #	  		kinfo.setpos(y, x)
@@ -588,9 +612,13 @@ pacifica = Pacifica.new
 pacifica.addIslands
 	# adding one enemy to each island's list
 	pacifica.getIslands.each do |island|
-		randomIslandId = rand(13) + 1
-		enemy = pacifica.getIslands.at(randomIslandId).getName
-		island.addEnemy(enemy)
+		while (island.getEnemies.size < 2)
+			randomIslandId = rand(13) + 1
+			enemy = pacifica.getIslands.at(randomIslandId).getName
+			if(island.getTradePartners.include?(enemy) == false)
+				island.addEnemy(enemy)
+			end
+		end
 	end
 pacifica.make_diplomacy_window
 
@@ -686,7 +714,7 @@ while TRUE
 	end
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_kingdom_info_window(pacifica.getIslands)
-		sleep(0.05)
+		sleep(0.1)
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)
