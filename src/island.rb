@@ -118,10 +118,24 @@ class Island
 	end
 
 	def getActiveTradeBoats
+		#first purge dead boats
+		@activeTradeBoats.each do |boat|
+			if(boat.getCurrentCrew == 0)
+				boat = nil
+			end
+		end
+		@activeTradeBoats.compact
 		@activeTradeBoats
 	end
 
 	def getActiveWarBoats
+		#first purge dead boats
+		@activeWarBoats.each do |boat|
+			if(boat.getCurrentCrew == 0)
+				boat = nil
+			end
+		end
+		@activeWarBoats.compact
 		@activeWarBoats
 	end
 
@@ -171,7 +185,7 @@ class Island
 			destinationX = 8
 			destinationY = 20
 		end
-		warBoat = Boat.new(@kingdomId, 10, @locationX, @locationY, destinationX, destinationY, "war", 				0, @shipGuildSkill)
+		warBoat = Boat.new(@kingdomId, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 				0, @shipGuildSkill)
 		@activeWarBoats.push(warBoat)
 	end
 

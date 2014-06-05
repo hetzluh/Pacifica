@@ -31,6 +31,11 @@ class Pacifica
 		@month = "jan"
 	end
 
+	def clearHazards
+		@hazardLocationsX.clear
+		@hazardLocationsY.clear
+	end
+
 	def addObject(object)
 		@objects.push(object)
 	end
@@ -85,10 +90,12 @@ class Pacifica
 
 	def addHazardX(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9, haz10, haz11)
 		@hazardLocationsX.push(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9, haz10, haz11)	
+		@hazardLocationsX.compact
 	end
 
 	def addHazardY(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9)
 		@hazardLocationsY.push(haz1, haz2, haz3, haz4, haz5, haz6, haz7, haz8, haz9)	
+		@hazardLocationsY.compact
 	end
 
 	def addIslands
@@ -409,10 +416,14 @@ class Pacifica
 		end
 		@islands.each do |island|
 			island.getActiveTradeBoats.each do |boat|
-				addObject(boat)
+				if(@objects.include?(boat) == false)
+					addObject(boat)
+				end
 			end
 			island.getActiveWarBoats.each do |boat|
-				addObject(boat)
+				if(@objects.include?(boat) == false)
+					addObject(boat)
+				end
 			end
 		end
 	end
@@ -480,6 +491,7 @@ pacifica.make_diplomacy_window
 while TRUE
 	objTemp = Array.new
 	# size check - tsunamis and storms of size 0 and boats w/ too few crew get removed from list
+	pacifica.clearHazards
 	pacifica.getObjects.each do |object|
 		if(object.class.name == "Earthquake")
 			if((pacifica.getCurrentTime - object.getSpawnTime) < 4)

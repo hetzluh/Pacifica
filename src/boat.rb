@@ -34,6 +34,9 @@ class Boat
 		@type = type
 		@spawnTime = spawnTime
 		@shipGuildSkill = shipGuildSkill
+		@dx = @locationX - @destinationX
+		@dy = @locationY - @destinationY
+		@waitOneMoonToDie = false
 	end
 
 	def getSpawnTime
@@ -65,22 +68,48 @@ class Boat
 	end
 	
 	def move
-		dx = @locationX - @destinationX
-		dy = @locationY - @destinationY
 		newRand = rand(10)
-		if(newRand % 2 == 0 && (dx > 0 || dy > 0 || dx < 0 || dy < 0))
-				if(dx > 0)
+		if(newRand % 2 == 0 && (@dx > 0 || @dx < 0))
+				if(@dx > 0)
 					@locationX -= 1
-				elsif(dx < 0)
+					@dx -=1
+				elsif(@dx < 0)
 					@locationX += 1
-				elsif(dy > 0)
-					@locationY -= 1 
-				elsif(dy < 0)
-					@locationY += 1 
+					@dx += 1
+				end	
+		elsif(newRand % 2 == 1 && (@dy > 0 || @dy < 0))
+				if(@dy > 0)
+					@locationY -= 1
+					@dy -= 1
+				elsif(@dy < 0)
+					@locationY += 1
+					@dy += 1
 				end
+		else
+			if(@dx != 0)
+				if(@dx > 0)
+					@locationX -= 1
+					@dx -=1
+				elsif(@dx < 0)
+					@locationX += 1
+					@dx += 1
+				end	
+			end
+			if(@dy != 0)
+				if(@dy > 0)
+					@locationY -= 1
+					@dy -=1
+				elsif(@dy < 0)
+					@locationY += 1
+					@dy += 1
+				end	
+			end
 		end	
-		if(dx == 0 && dy == 0)
-			@currentCrew = 0 
+		if(@dx == 0 && @dy == 0)
+			if(@waitOneMoonToDie == true)
+				@currentCrew = 0 
+			end
+			@waitOneMoonToDie = true
 		end
 	end
 
