@@ -119,8 +119,8 @@ class Pacifica
 		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 6, 21)
 
 		@islands.push(kiribati, kwajaleins, hawaii, samoa, tokelau,
-						 tuvalu, vanuatu, fiji, tonga, tahiti,
-						 takutea, aotearoa, tuamotus, rapanui)
+						vanuatu, tahiti, takutea, tuvalu, fiji, tonga,
+							tuamotus, rapanui, aotearoa)
 	end
 
 	def make_game_window(islands, objects, month, year, time)
@@ -267,6 +267,71 @@ class Pacifica
 			if(object.class.name == "Earthquake")
 				win.addstr("E")
 			elsif(object.class.name == "Boat")
+				#if boat has arrived at destination, effect happens				
+				if(object.getDx == 0 && object.getDy == 0)
+					if(object.getType == "war")
+						if(object.getDestinationName == "kiribati")
+							@islands.at(0).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "kwajaleins")
+							@islands.at(1).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "hawaii")
+							@islands.at(2).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "samoa")
+							@islands.at(3).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tokelau")
+							@islands.at(4).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "vanuatu")
+							@islands.at(5).attacked(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tahiti")
+							@islands.at(6).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "takutea")
+							@islands.at(7).attacked(object.getCurrentCrew, object.getKingdomName)			
+						elsif(object.getDestinationName == "tuvalu")
+							@islands.at(8).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "fiji")
+							@islands.at(9).attacked(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tonga")
+							@islands.at(10).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tuamotus")
+							@islands.at(11).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "rapa nui")
+							@islands.at(12).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "aotearoa")
+							@islands.at(13).attacked(object.getCurrentCrew, object.getKingdomName)
+						end
+					elsif(object.getType == "trade")
+						if(object.getDestinationName == "kiribati")
+							@islands.at(0).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "kwajaleins")
+							@islands.at(1).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "hawaii")
+							@islands.at(2).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "samoa")
+							@islands.at(3).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tokelau")
+							@islands.at(4).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "vanuatu")
+							@islands.at(5).traded(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tahiti")
+							@islands.at(6).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "takutea")
+							@islands.at(7).traded(object.getCurrentCrew, object.getKingdomName)			
+						elsif(object.getDestinationName == "tuvalu")
+							@islands.at(8).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "fiji")
+							@islands.at(9).traded(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tonga")
+							@islands.at(10).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tuamotus")
+							@islands.at(11).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "rapa nui")
+							@islands.at(12).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "aotearoa")
+							@islands.at(13).traded(object.getCurrentCrew, object.getKingdomName)
+						end
+					end
+				end
+				#display boat and decide whether it has been damaged
 				if(object.getType == "trade")
 					win.addstr("T")
 				elsif(object.getType == "war")
@@ -381,7 +446,7 @@ class Pacifica
 	
 	def random_earthquake_generator
 		prob = rand(100)
-		if(prob%25 == 0)
+		if(prob%4 == 0)
 		epiX = rand(50 - 3) +3
 		epiY = rand(18 - 1) +1
 		sz = rand(4-1) + 1
@@ -391,7 +456,7 @@ class Pacifica
 				addObject(tsunami)
 			end
 		addObject(earthquake1)
-		elsif(prob % 49 == 0)
+		elsif(prob % 25 == 0)
 		epiX = rand(58 - 14) + 14
 		epiY = rand(17 - 3) + 
 		sz = rand(6-3) + 3
@@ -464,15 +529,50 @@ class Pacifica
 	  kinfo.box(?|, ?-)
 			x = 1
 			y = 1
-		@islands.each do |island|
-		
-	  		kinfo.setpos(y, x)
-			kinfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)} -	$#{island.getCurrentWealth}")
-			y+=1
 			kinfo.setpos(y, x)
-			kinfo.addstr("-->Pop:#{island.getPopulation}	ShipSkill:#{island.getShipGuildSkill}")
-			y+=1
-		end	
+			kinfo.addstr("#{islands.at(6).getName.slice(0,1).capitalize+islands.at(6).getName.slice(1..-1)}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("$#{islands.at(6).getCurrentWealth}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(6).getEnemies}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(6).getTradePartners}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(7).getName.slice(0,1).capitalize+islands.at(7).getName.slice(1..-1)}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("$#{islands.at(7).getCurrentWealth}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(7).getEnemies}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(7).getTradePartners}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(13).getName.slice(0,1).capitalize+islands.at(13).getName.slice(1..-1)}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("$#{islands.at(13).getCurrentWealth}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(13).getEnemies}")
+			y += 1
+			kinfo.setpos(y, x)
+			kinfo.addstr("#{islands.at(13).getTradePartners}")
+#		@islands.each do |island|
+#		
+#	  		kinfo.setpos(y, x)
+#			kinfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)} -	$#{island.getCurrentWealth}")
+#			y+=1
+#			kinfo.setpos(y, x)
+#			kinfo.addstr("-->Pop:#{island.getPopulation}	ShipSkill:#{island.getShipGuildSkill}")
+#			y+=1
+#		end	
 		
 	  kinfo.refresh
 	end
@@ -486,6 +586,12 @@ begin
 crmode
 pacifica = Pacifica.new
 pacifica.addIslands
+	# adding one enemy to each island's list
+	pacifica.getIslands.each do |island|
+		randomIslandId = rand(13) + 1
+		enemy = pacifica.getIslands.at(randomIslandId).getName
+		island.addEnemy(enemy)
+	end
 pacifica.make_diplomacy_window
 
 while TRUE
@@ -580,7 +686,7 @@ while TRUE
 	end
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_kingdom_info_window(pacifica.getIslands)
-		sleep(0.5)
+		sleep(0.05)
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)

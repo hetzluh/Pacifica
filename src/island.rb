@@ -43,6 +43,8 @@ class Island
 		@locationY = locationY
 		@activeTradeBoats = Array.new
 		@activeWarBoats = Array.new
+		@enemies = Array.new
+		@tradePartners = Array.new
 	end
 
 	def monthlyPay
@@ -54,23 +56,53 @@ class Island
 	end
 
 	def think(islands)
+		@tradePartners.uniq!
+		@enemies.uniq!
 		r = rand(10)
-		randomIslandId = rand(13) + 1
-		target = islands.at(randomIslandId).getName
-		if(r > 8 && @population > @popcap/3 && @currentWealth > @startWealth-15)
-			makeTradeBoat(target)
-		elsif(r < 2 && @population > @popcap/3 && @currentWealth > @startWealth-15)
-			makeWarBoat(target)
+		if(@tradePartners.size == 0)
+			newTradePartner(islands)
+	    elsif(r > 8 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+			@tradePartners.each do |partner|
+				makeTradeBoat(partner)
+			end
+		elsif(r < 1 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+			@enemies.each do |enemy|
+				makeWarBoat(enemy)
+			end
 		else
-			if(r %2 == 1)
+			if(r % 9 == 0)
 				babiesBorn
 			end
 		end
 	end
 
+	def findRandomEnemy
+		r = rand(@enemies.length - 1) + 1
+		@enemies.at(r)
+	end
+
+	def newTradePartner(islands)
+		randomIslandId = rand(13) + 1
+		newPartner = islands.at(randomIslandId)
+		@tradePartners.push(newPartner.getName)
+	end
+
+	def findRandomTradePartner
+		r = rand(@tradePartners.length - 1) + 1
+		@tradePartners.at(r)
+	end
+
 	def babiesBorn
 		r = rand(3)
 		@population += r
+	end	
+
+	def getEnemies
+		@enemies
+	end	
+
+	def getTradePartners
+		@tradePartners
 	end	
 
 	def getId
@@ -184,8 +216,11 @@ class Island
 		elsif(destinationIslandName == "aotearoa")
 			destinationX = 8
 			destinationY = 20
+		else
+			destinationX = 59
+			destinationY = 1
 		end
-		warBoat = Boat.new(@kingdomId, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 				0, @shipGuildSkill)
+		warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, @shipGuildSkill)
 		@activeWarBoats.push(warBoat)
 	end
 
@@ -234,14 +269,35 @@ class Island
 		elsif(destinationIslandName == "aotearoa")
 			destinationX = 8
 			destinationY = 20
+		else
+			destinationX = 59
+			destinationY = 1
 		end
-		tradeBoat = Boat.new(@kingdomId, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 				0, @shipGuildSkill)
+		tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, @shipGuildSkill)
+
 		@activeTradeBoats.push(tradeBoat)
 	end
 
 	def earthquake
 		@population = -1
 	end	
+
+	def attacked(numberAttacking, kingdomAttacking)
+		@population -= numberAttacking
+		@enemies.push(kingdomAttacking)
+	end
+	
+	def addEnemy(kingdomName)
+		@enemies.push(kingdomName)
+	end
+
+	def traded(numberCrew, kingdomTrading)
+		@population += numberCrew
+		@currentWealth += 1
+		if(@tradePartners.length < 4)
+			@tradePartners.push(kingdomTrading)
+		end
+	end
 
 end
 #END kingdom.rb

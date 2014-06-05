@@ -131,14 +131,17 @@ class Typhoon
 		dx = @locationX - @destinationX
 		dy = @locationY - @destinationY
 		newRand = rand(10)
-		if(dx > 0 || dy > 0)
-			if(newRand % 2 == 0)
-			@locationX -= 1 
-			dx -= 1
-			elsif(newRand % 2 ==1)
-			@locationY -= 1
-			dy -= 1
-			end		
+		otherRand = rand(100)
+		if(otherRand % 3 == 0)
+			if(dx > 0 || dy > 0)
+				if(newRand % 2 == 0)
+					@locationX -= 1 
+					dx -= 1
+				elsif(newRand % 2 ==1)
+					@locationY -= 1
+					dy -= 1
+				end		
+			end	
 		end	
 		growOrShrink
 		if(dx <= 3 || dy <= 3)

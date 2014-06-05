@@ -24,8 +24,10 @@ Hollaaa
 
 class Boat
 	
-	def initialize(kingdomId, currentCrew, locationX, locationY, destinationX, destinationY, type, spawnTime, shipGuildSkill)
+	def initialize(kingdomId, kingdomName, destinationName, currentCrew, locationX, locationY, destinationX, destinationY, type, spawnTime, shipGuildSkill)
 		@kingdomId = kingdomId
+		@kingdomName = kingdomName
+		@destinationName = destinationName
 		@currentCrew = currentCrew
 		@locationX = locationX
 		@locationY = locationY
@@ -34,14 +36,22 @@ class Boat
 		@type = type
 		@spawnTime = spawnTime
 		@shipGuildSkill = shipGuildSkill
-		@dx = @locationX - @destinationX
-		@dy = @locationY - @destinationY
+		@dx = locationX - destinationX
+		@dy = locationY - destinationY
 		@waitOneMoonToDie = false
 	end
 
 	def getSpawnTime
 		@spawnTime
 	end	
+
+	def getDestinationName
+		@destinationName
+	end
+
+	def getKingdomName
+		@kingdomName
+	end
 
 	def getShipGuildSkill
 		@shipGuildSkill
@@ -53,6 +63,14 @@ class Boat
 	
 	def getCurrentCrew
 		@currentCrew
+	end
+	
+	def getDx
+		@dx
+	end
+
+	def getDy
+		@dy
 	end
 	
 	def getLocationX
@@ -68,43 +86,59 @@ class Boat
 	end
 	
 	def move
-		newRand = rand(10)
-		if(newRand % 2 == 0 && (@dx > 0 || @dx < 0))
-				if(@dx > 0)
-					@locationX -= 1
-					@dx -=1
-				elsif(@dx < 0)
-					@locationX += 1
-					@dx += 1
-				end	
-		elsif(newRand % 2 == 1 && (@dy > 0 || @dy < 0))
-				if(@dy > 0)
-					@locationY -= 1
-					@dy -= 1
-				elsif(@dy < 0)
-					@locationY += 1
-					@dy += 1
-				end
+		if(@shipGuildSkill == 1)
+		n = 5
+		elsif(@shipguildSkill == 2)
+		n = 4
+		elsif(@shipGuildSkill == 3)
+		n = 3
+		elsif(@shipguildSkill == 4)
+		n = 2
+		elsif(@shipguildSkill == 5)
+		n = 1
 		else
-			if(@dx != 0)
-				if(@dx > 0)
-					@locationX -= 1
-					@dx -=1
-				elsif(@dx < 0)
-					@locationX += 1
-					@dx += 1
-				end	
-			end
-			if(@dy != 0)
-				if(@dy > 0)
-					@locationY -= 1
-					@dy -=1
-				elsif(@dy < 0)
-					@locationY += 1
-					@dy += 1
-				end	
-			end
-		end	
+		n = 5
+		end
+		skillRand = rand(100)
+		if(skillRand % n == 0)
+			newRand = rand(10)
+			if(newRand % 2 == 0 && (@dx > 0 || @dx < 0))
+					if(@dx > 0)
+						@locationX -= 1
+						@dx -=1
+					elsif(@dx < 0)
+						@locationX += 1
+						@dx += 1
+					end	
+			elsif(newRand % 2 == 1 && (@dy > 0 || @dy < 0))
+					if(@dy > 0)
+						@locationY -= 1
+						@dy -= 1
+					elsif(@dy < 0)
+						@locationY += 1
+						@dy += 1
+					end
+			else
+				if(@dx != 0)
+					if(@dx > 0)
+						@locationX -= 1
+						@dx -=1
+					elsif(@dx < 0)
+						@locationX += 1
+						@dx += 1
+					end	
+				end
+				if(@dy != 0)
+					if(@dy > 0)
+						@locationY -= 1
+						@dy -=1
+					elsif(@dy < 0)
+						@locationY += 1
+						@dy += 1
+					end	
+				end
+			end	
+		end
 		if(@dx == 0 && @dy == 0)
 			if(@waitOneMoonToDie == true)
 				@currentCrew = 0 
@@ -115,9 +149,9 @@ class Boat
 
 	def damage
 		if(@shipGuildSkill > 3)
-		@currentCrew -= 1
+			@currentCrew -= 1
 		else
-		@currentCrew -= 10
+			@currentCrew -= 10
 		end
 	end
 
