@@ -1,5 +1,4 @@
 Alliances are now implemented.
-Currently they are randomly decided, independently, on generation of each island kingdom.
 
 Palm:
 	-Will have a fertility bonus (slightly faster pop growth, good-ish)
