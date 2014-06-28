@@ -430,7 +430,7 @@ class Pacifica
 				if(object.getSize == 5)
 					win.setpos(y, x-5)
 					win.addstr("~")
-					win.setpos(y, x+5	)
+					win.setpos(y, x+5)
 					win.addstr("~")
 				end
 			end	
@@ -499,15 +499,22 @@ class Pacifica
 				end
 			end
 		end
+
+		@palmAlliance.clear
+		@obsidianAlliance.clear
+		@pearlAlliance.clear
+		@neutralAlliance.clear
+
 		@islands.each do |island|
-			if(island.getTeam == "neutral")
-				@neutralAlliance.push(island.getName)
-			elsif(island.getTeam == "pearl")
+			if(island.getTeam == "pearl" && @pearlAlliance.size < 5)
 				@pearlAlliance.push(island.getName)
-			elsif(island.getTeam == "obsidian")
+			elsif(island.getTeam == "obsidian" && @obsidianAlliance.size < 5)
 				@obsidianAlliance.push(island.getName)
-			elsif(island.getTeam == "palm")
+			elsif(island.getTeam == "palm" && @palmAlliance.size < 5)
 				@palmAlliance.push(island.getName)
+			else
+				@neutralAlliance.push(island.getName)
+				island.setTeam("neutral")
 			end
 		end
 	end
@@ -536,10 +543,16 @@ class Pacifica
 		end
 	end
 	
-	def make_diplomacy_window
-	  winfo = Window.new(4, 64, 26, (cols-100)/2)
+	def make_diplomacy_window(islands)
+	  winfo = Window.new(5, 64, 30, (cols-100)/2)
 	  winfo.box(?|, ?-)
-	  winfo.setpos(2, 3)
+	  winfo.setpos(1, 1)
+	  r = rand (14 + 1) -1
+	  winfo.addstr("#{islands.at(r).getName}")
+ 	  winfo.setpos(2, 1)
+	  winfo.addstr("Allies:#{islands.at(r).getAllies}")
+ 	  winfo.setpos(3, 1)
+	  winfo.addstr("Enemies:#{islands.at(r).getEnemies}")
 	  winfo.refresh
 	end
 	
@@ -660,17 +673,7 @@ begin
 crmode
 pacifica = Pacifica.new
 pacifica.addIslands
-	# adding one enemy to each island's list
-	pacifica.getIslands.each do |island|
-		while (island.getEnemies.size < 2)
-			randomIslandId = rand(13) + 1
-			enemy = pacifica.getIslands.at(randomIslandId).getName
-			if(island.getTradePartners.include?(enemy) == false)
-				island.addEnemy(enemy)
-			end
-		end
-	end
-pacifica.make_diplomacy_window
+pacifica.make_diplomacy_window(pacifica.getIslands)
 
 while TRUE
 	objTemp = Array.new
@@ -763,11 +766,32 @@ while TRUE
 		pacifica.setMonth("dec")	
 	end
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
+		
+	#Now we are going to add to each island's allies & enemies list
+	#Everyone in an alliance is an ally/trade partner to everyone else in the alliance, except for neutral
+	#Palms and obsidians are enemies at start
+		pacifica.getIslands.each do |island1|
+			island1.getAllies.clear
+			island1.getEnemies.clear
+			pacifica.getIslands.each do |island2|	
+			if((island1.getName != island2.getName) && (island1.getTeam != "neutral") && (island1.getTeam == island2.getTeam))
+				island1.addAlly(island2.getName)
+			end
+			if((island1.getName != island2.getName)	&& (island1.getTeam == "palm") && (island2.getTeam == "obsidian"))
+				island1.addEnemy(island2.getName)
+			end
+			if((island1.getName != island2.getName)	&& (island1.getTeam == "obsidian") && (island2.getTeam == "palm"))
+				island1.addEnemy(island2.getName)
+			end
+			end
+		end
+
 		pacifica.make_neutral_info_window(pacifica.getIslands)
 		pacifica.make_obsidian_info_window(pacifica.getIslands)
 		pacifica.make_palm_info_window(pacifica.getIslands)
 		pacifica.make_pearl_info_window(pacifica.getIslands)
-		sleep(0.1)
+		pacifica.make_diplomacy_window(pacifica.getIslands)
+		sleep(25)
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)

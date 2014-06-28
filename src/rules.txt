@@ -1,0 +1,58 @@
+Alliances are now implemented.
+Currently they are randomly decided, independently, on generation of each island kingdom.
+
+Palm:
+	-Will have a fertility bonus (slightly faster pop growth, good-ish)
+Pearl:
+	-Will have economic bonus, trade with pearl members is more valuable for other pearls and neutrals (neutral-ish)
+Obsidian:
+	-Will have war bonus (evil-ish)
+Neutral:
+	-Can trade with whoever, can war with whoever, +additional money at start, +1 shipbuilding bonus at start
+
+Alliance Interaction
+-> Palm and Obsidian will attack each other more viciously. 
+-> Obsidian will be more aggressive.
+-> Pearl will focus more on trading and keeping resources up.
+-> Pearl will send trade ships to Neutral and Palm.
+-> Neutral will send trade ships to anybody not on their war list, will favor Pearls due to $ bonus
+
+Chance to join an alliance at start is decided by island group:
+
+1 - Western island cluster: Vanuatu, Fiji, Tuvalu, Tokelau, Samoa, Tonga
+2 - Powerhouses: Hawaii, Aotearoa
+3 - Far-flung traders: Tuamotus, Rapa nui
+4 - Central pair: Tahiti, Takutea
+5 - Northwest pair: Kwajaleins, Kiribati
+
+
+Western Island Cluster:
+Palm:		40%
+Pearl: 		30%
+Obsidian: 	20%
+Neutral: 	10%
+
+Powerhouses:
+Palm:		10%
+Pearl: 		10%
+Obsidian: 	50%
+Neutral: 	30%
+
+Far-flung Traders:
+Palm:		20%
+Pearl: 		50%
+Obsidian: 	20%
+Neutral: 	10%
+
+Central Pair:
+Palm:		30%
+Pearl: 		30%
+Obsidian: 	30%
+Neutral: 	10%
+
+Northwest Pair:
+Palm:		20%
+Pearl: 		30%
+Obsidian: 	30%
+Neutral: 	20%
+

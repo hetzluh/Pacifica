@@ -32,6 +32,18 @@ class Island
 		#initializing all kingdom attributes
 		@kingdomId = kingdomId
 		@name = name
+		#determining island group to decide probability of alliance placement (later in constructor, defined in src/rules.txt)
+		if(@name == "vanuatu" || @name ==  "fiji" || @name == "tuvalu" || @name == "tokelau" || @name == "samoa" || @name == "tonga")
+			@group = 1
+		elsif(@name == "hawaii" || @name == "aotearoa")
+			@group = 2
+		elsif(@name == "tuamotus" || @name == "rapa nui")
+			@group = 3
+		elsif(@name == "tahiti" || @name == "takutea")
+			@group = 4
+		elsif(@name =="kwajaleins" || @name == "kiribati")
+			@group = 5
+		end
 		@startWealth = startWealth
 		@currentWealth = currentWealth 
 		@power = power
@@ -44,22 +56,72 @@ class Island
 		@activeTradeBoats = Array.new
 		@activeWarBoats = Array.new
 		@enemies = Array.new
-		@tradePartners = Array.new
-		r = rand(4)
-		if(r == 0)
-		@team = "neutral"
-		elsif(r == 1)
-		@team = "palm"
-		elsif(r == 2)
-		@team = "pearl"
-		elsif(r == 3)
-		@team = "obsidian"
+		@allies = Array.new
+		if(@group == 1)
+			r = rand(10 + 1) - 1
+			if(r < 5)
+			@team = "palm"
+			elsif(r > 4 && r < 8)
+			@team = "pearl"
+			elsif(r == 8 || r == 9)
+			@team = "obsidian"
+			elsif(r == 10)
+			@team = "neutral"
+			end
+		elsif(@group == 2)
+			r = rand(10 + 1) - 1
+			if(r < 6)
+			@team = "obsidian"
+			elsif(r == 6)
+			@team = "palm"
+			elsif(r == 7)
+			@team = "pearl"
+			elsif(r > 7)
+			@team = "neutral"
+			end
+		elsif(@group == 3)
+			r = rand(10 + 1) - 1
+			if(r < 6)
+			@team = "pearl"
+			elsif(r == 6 || r == 7)
+			@team = "palm"
+			elsif(r == 8 || r == 9)
+			@team = "obsidian"
+			elsif(r == 10)
+			@team = "neutral"
+			end
+		elsif(@group == 4)
+			r = rand(10 + 1) - 1
+			if(r < 4)
+			@team = "palm"
+			elsif(r > 3 && r < 7)
+			@team = "pearl"
+			elsif(r > 6  && r < 10)
+			@team = "obsidian"
+			elsif(r == 10)
+			@team = "neutral"
+			end
+		elsif(@group == 5)
+			r = rand(10 + 1) - 1
+			if(r < 4)
+			@team = "obsidian"
+			elsif(r > 3 && r < 7)
+			@team = "pearl"
+			elsif(r == 7 || r == 8)
+			@team = "palm"
+			elsif(r == 9 || r == 10)
+			@team = "neutral"
+			end
 		end
 	end
 
 	def getTeam
 		@team
-	end	
+	end
+
+	def setTeam(newTeamName)
+		@team = newTeamName
+	end		
 	
 	def monthlyPay
 		@currentWealth += ((@power*10)+@size)
@@ -71,15 +133,13 @@ class Island
 
 	def think(islands)
 		#purge non-unique array entries
-		@tradePartners.uniq!
+		@allies.uniq!
 		@enemies.uniq!
 
 		r = rand(20)
-		if(@tradePartners.size < 2)
-			newTradePartner(islands)
-	    elsif(@activeWarBoats.size < 2 && @activeTradeBoats.size < 2&& r > 17 && @population > @popcap/3 && @currentWealth > @startWealth-15)
+	    if(@activeWarBoats.size < 2 && @activeTradeBoats.size < 2&& r > 17 && @population > @popcap/3 && @currentWealth > @startWealth-15)
 			if(r%2 ==0)
-			@tradePartners.each do |partner|
+			@allies.each do |partner|
 				makeTradeBoat(partner)
 			end
 			elsif(r%2 == 1)
@@ -103,13 +163,13 @@ class Island
 		randomIslandId = rand(13) + 1
 		newPartner = islands.at(randomIslandId)
 		if(@enemies.include?(newPartner.getName) == false)
-			@tradePartners.push(newPartner.getName)
+			@allies.push(newPartner.getName)
 		end
 	end
 
 	def findRandomTradePartner
-		r = rand(@tradePartners.length - 1) + 1
-		@tradePartners.at(r)
+		r = rand(@allies.length - 1) + 1
+		@allies.at(r)
 	end
 
 	def babiesBorn
@@ -121,8 +181,8 @@ class Island
 		@enemies
 	end	
 
-	def getTradePartners
-		@tradePartners
+	def getAllies
+		@allies
 	end	
 
 	def getId
@@ -307,15 +367,19 @@ class Island
 		@enemies.push(kingdomAttacking)
 	end
 	
-	def addEnemy(kingdomName)
-		@enemies.push(kingdomName)
+	def addEnemy(island)
+		@enemies.push(island)
+	end
+	
+	def addAlly(island)
+		@allies.push(island)
 	end
 
 	def traded(numberCrew, kingdomTrading)
 		@population += numberCrew
 		@currentWealth += 1
-		if(@tradePartners.length < 4 && @enemies.include?(kingdomTrading) == false)
-			@tradePartners.push(kingdomTrading)
+		if(@allies.length < 4 && @enemies.include?(kingdomTrading) == false)
+			@allies.push(kingdomTrading)
 		end
 	end
 
