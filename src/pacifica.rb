@@ -33,6 +33,7 @@ class Pacifica
 		@obsidianAlliance = Array.new
 		@pearlAlliance = Array.new
 		@neutralAlliance = Array.new
+		@selected = "hawaii"
 	end
 
 	def clearHazards
@@ -566,9 +567,9 @@ class Pacifica
 	  y += 1
 	  neutralInfo.setpos(y, x)
 	  neutralInfo.addstr("**********")
-	  y += 1
 		@islands.each do |island|
 		if(island.getTeam == "neutral")
+			y += 1
 			neutralInfo.setpos(y, x)
 			neutralInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
 			y += 1
@@ -635,6 +636,9 @@ class Pacifica
 			y += 1
 			pearlInfo.setpos(y, x)
 			pearlInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
+			y += 1
+			pearlInfo.setpos(y, x)
+			pearlInfo.addstr("pow: #{island.getPower}")
 			y += 2
 		end
 		end
@@ -689,7 +693,7 @@ while TRUE
 	pacifica.clearHazards
 	pacifica.getObjects.each do |object|
 		if(object.class.name == "Earthquake")
-			if((pacifica.getCurrentTime - object.getSpawnTime) < 4)
+			if((pacifica.getCurrentTime - object.getSpawnTime) < 4 && (pacifica.getCurrentTime - object.getSpawnTime) > 0)
 				objTemp.push(object)
 				pacifica.addEpicenterX(object.getLocationX)
 				pacifica.addEpicenterY(object.getLocationY)

@@ -137,7 +137,7 @@ class Island
 		@enemies.uniq!
 
 		r = rand(20)
-	    if(@activeWarBoats.size < 1 && @activeTradeBoats.size < 2 && r > 10 && @population > @popcap/4 && @currentWealth > @startWealth-20)
+	    if(@activeWarBoats.size < 1 && @activeTradeBoats.size < 2 && r > 18 && @population > @popcap/4 && @currentWealth > @startWealth-20)
 			if(r%2 ==0)
 			@allies.each do |partner|
 				makeTradeBoat(partner)
