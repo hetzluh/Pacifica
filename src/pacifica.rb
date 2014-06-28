@@ -263,8 +263,8 @@ class Pacifica
 			#End kingdom graphics
 		end
 
-#	random_earthquake_generator
-#		random_typhoon_generator	
+		random_earthquake_generator
+		random_typhoon_generator	
 
 		@objects.each do |object|
 			y = object.getLocationY
@@ -544,8 +544,8 @@ class Pacifica
 	end
 	
 	def make_diplomacy_window(islands)
-	  winfo = Window.new(5, 64, 30, (cols-100)/2)
-	  winfo.box(?|, ?-)
+	  winfo = Window.new(6, 64, 30, (cols-100)/2)
+	  winfo.box(?|, ?=)
 	  winfo.setpos(1, 1)
 	  r = rand (14 + 1) -1
 	  winfo.addstr("#{islands.at(r).getName}")
@@ -580,6 +580,8 @@ class Pacifica
 			y += 2
 		end
 		end
+	  neutralInfo.setpos(29, x)
+	  neutralInfo.addstr("**********")
 	  neutralInfo.refresh
 	end
 
@@ -607,6 +609,8 @@ class Pacifica
 			y += 2
 		end
 		end
+	  palmInfo.setpos(29, x)
+	  palmInfo.addstr("**********")
 	  palmInfo.refresh
 	end
 
@@ -634,6 +638,8 @@ class Pacifica
 			y += 2
 		end
 		end
+	  pearlInfo.setpos(29, x)
+	  pearlInfo.addstr("**********")
 	  pearlInfo.refresh
 	end
 
@@ -661,6 +667,8 @@ class Pacifica
 			y += 2
 		end
 		end
+	  obsidianInfo.setpos(29, x)
+	  obsidianInfo.addstr("**********")
 	  obsidianInfo.refresh
 	end
 end	
@@ -791,7 +799,7 @@ while TRUE
 		pacifica.make_palm_info_window(pacifica.getIslands)
 		pacifica.make_pearl_info_window(pacifica.getIslands)
 		pacifica.make_diplomacy_window(pacifica.getIslands)
-		sleep(25)
+		sleep(0.5)
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)
