@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby
 
 
-require 'boat.rb'
+require './boat.rb'
 require "curses"
 include Curses
 
@@ -45,8 +45,22 @@ class Island
 		@activeWarBoats = Array.new
 		@enemies = Array.new
 		@tradePartners = Array.new
+		r = rand(4)
+		if(r == 0)
+		@team = "neutral"
+		elsif(r == 1)
+		@team = "palm"
+		elsif(r == 2)
+		@team = "pearl"
+		elsif(r == 3)
+		@team = "obsidian"
+		end
 	end
 
+	def getTeam
+		@team
+	end	
+	
 	def monthlyPay
 		@currentWealth += ((@power*10)+@size)
 	end

@@ -1,11 +1,11 @@
 #!/usr/local/bin/ruby
 
 
-require 'island.rb'
-require 'boat.rb'
-require 'earthquake.rb'
-require 'tsunami.rb'
-require 'typhoon.rb'
+require './island.rb'
+require './boat.rb'
+require './earthquake.rb'
+require './tsunami.rb'
+require './typhoon.rb'
 
 require "curses"
 include Curses
@@ -29,6 +29,10 @@ class Pacifica
 		@year = 500
 		@moon = 1
 		@month = "jan"
+		@palmAlliance = Array.new
+		@obsidianAlliance = Array.new
+		@pearlAlliance = Array.new
+		@neutralAlliance = Array.new
 	end
 
 	def clearHazards
@@ -131,9 +135,13 @@ class Pacifica
 			@moon = 10
 		end
 		moon = @moon
-   	    win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
-		
 	
+		if @moon == 10
+   	        win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
+		else
+		win.addstr("Moon:  #{moon}, Month: #{month}, Year: #{year}")
+		end
+
 		@islands.each do |island|
 			y = island.getLocationY
 			x = island.getLocationX
@@ -491,6 +499,17 @@ class Pacifica
 				end
 			end
 		end
+		@islands.each do |island|
+			if(island.getTeam == "neutral")
+				@neutralAlliance.push(island.getName)
+			elsif(island.getTeam == "pearl")
+				@pearlAlliance.push(island.getName)
+			elsif(island.getTeam == "obsidian")
+				@obsidianAlliance.push(island.getName)
+			elsif(island.getTeam == "palm")
+				@palmAlliance.push(island.getName)
+			end
+		end
 	end
 
 	def random_typhoon_generator
@@ -524,81 +543,112 @@ class Pacifica
 	  winfo.refresh
 	end
 	
-	def make_kingdom_info_window(islands)
-	  kinfo = Window.new(25, 30, (((lines-25)/2)-2), 64+((cols-100)/2))
-	  kinfo.box(?|, ?-)
-			x = 1
-			y = 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(6).getName.slice(0,1).capitalize+islands.at(6).getName.slice(1..-1)}")
+	def make_neutral_info_window(islands)
+	  neutralInfo = Window.new(30, 12, (((lines-25)/2)-2), 64+((cols-100)/2))
+	  neutralInfo.box(?|, ?-)
+ 	  x = 1
+	  y = 0
+	  neutralInfo.setpos(y, x)
+	  neutralInfo.addstr("Neutral")
+	  y += 1
+	  neutralInfo.setpos(y, x)
+	  neutralInfo.addstr("**********")
+	  y += 1
+		@islands.each do |island|
+		if(island.getTeam == "neutral")
+			neutralInfo.setpos(y, x)
+			neutralInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("doe: $#{islands.at(6).getCurrentWealth}")
+			neutralInfo.setpos(y, x)
+			neutralInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("foe: #{islands.at(6).getEnemies}")
-			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("trade: #{islands.at(6).getTradePartners}")
+			neutralInfo.setpos(y, x)
+			neutralInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
 			y += 2
-			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(7).getName.slice(0,1).capitalize+islands.at(7).getName.slice(1..-1)}")
+		end
+		end
+	  neutralInfo.refresh
+	end
+
+	def make_palm_info_window(islands)
+	  palmInfo = Window.new(30, 12, (((lines-25)/2)-2), 76+((cols-100)/2))
+	  palmInfo.box(?|, ?-)
+ 	  x = 1
+	  y = 0
+	  palmInfo.setpos(y, x)
+	  palmInfo.addstr("Palm")
+	  y += 1
+	  palmInfo.setpos(y, x)
+	  palmInfo.addstr("**********")
+	  y += 1
+		@islands.each do |island|
+		if(island.getTeam == "palm")
+			palmInfo.setpos(y, x)
+			palmInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("doe: $#{islands.at(7).getCurrentWealth}")
+			palmInfo.setpos(y, x)
+			palmInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("foe: #{islands.at(7).getEnemies}")
-			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("trade:  #{islands.at(7).getTradePartners}")
+			palmInfo.setpos(y, x)
+			palmInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
 			y += 2
-			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(13).getName.slice(0,1).capitalize+islands.at(13).getName.slice(1..-1)}")
+		end
+		end
+	  palmInfo.refresh
+	end
+
+	def make_pearl_info_window(islands)
+	  pearlInfo = Window.new(30, 12, (((lines-25)/2)-2), 88+((cols-100)/2))
+	  pearlInfo.box(?|, ?-)
+	  x = 1
+	  y = 0
+	  pearlInfo.setpos(y, x)
+	  pearlInfo.addstr("Pearl")
+	  y += 1
+	  pearlInfo.setpos(y, x)
+	  pearlInfo.addstr("**********")
+	  y += 1
+		@islands.each do |island|
+		if(island.getTeam == "pearl")
+			pearlInfo.setpos(y, x)
+			pearlInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("doe: $#{islands.at(13).getCurrentWealth}")
+			pearlInfo.setpos(y, x)
+			pearlInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("foe: #{islands.at(13).getEnemies}")
-			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("trade: #{islands.at(13).getTradePartners}")
-			y+=2
-			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(2).getName.slice(0,1).capitalize+islands.at(2).getName.slice(1..-1)}")
-			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("doe: $#{islands.at(2).getCurrentWealth}")
-			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("foe: #{islands.at(2).getEnemies}")
-			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("trade: #{islands.at(2).getTradePartners}")
+			pearlInfo.setpos(y, x)
+			pearlInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
 			y += 2
-			kinfo.setpos(y, x)
-			kinfo.addstr("#{islands.at(4).getName.slice(0,1).capitalize+islands.at(4).getName.slice(1..-1)}")
+		end
+		end
+	  pearlInfo.refresh
+	end
+
+	def make_obsidian_info_window(islands)
+	  obsidianInfo = Window.new(30, 12, (((lines-25)/2)-2), 100+((cols-100)/2))
+	  obsidianInfo.box(?|, ?-)
+ 	  x = 1
+	  y = 0
+	  obsidianInfo.setpos(y, x)
+	  obsidianInfo.addstr("Obsidian")
+	  y += 1
+	  obsidianInfo.setpos(y, x)
+	  obsidianInfo.addstr("**********")
+	  y += 1
+		@islands.each do |island|
+		if(island.getTeam == "obsidian")
+			obsidianInfo.setpos(y, x)
+			obsidianInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("doe: #{islands.at(4).getCurrentWealth}")
+			obsidianInfo.setpos(y, x)
+			obsidianInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
 			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("foe: #{islands.at(4).getEnemies}")
-			y += 1
-			kinfo.setpos(y, x)
-			kinfo.addstr("trade: #{islands.at(4).getTradePartners}")
-#		@islands.each do |island|
-#		
-#	  		kinfo.setpos(y, x)
-#			kinfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)} -	$#{island.getCurrentWealth}")
-#			y+=1
-#			kinfo.setpos(y, x)
-#			kinfo.addstr("-->Pop:#{island.getPopulation}	ShipSkill:#{island.getShipGuildSkill}")
-#			y+=1
-#		end	
-		
-	  kinfo.refresh
+			obsidianInfo.setpos(y, x)
+			obsidianInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
+			y += 2
+		end
+		end
+	  obsidianInfo.refresh
 	end
 end	
 
@@ -713,7 +763,10 @@ while TRUE
 		pacifica.setMonth("dec")	
 	end
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
-		pacifica.make_kingdom_info_window(pacifica.getIslands)
+		pacifica.make_neutral_info_window(pacifica.getIslands)
+		pacifica.make_obsidian_info_window(pacifica.getIslands)
+		pacifica.make_palm_info_window(pacifica.getIslands)
+		pacifica.make_pearl_info_window(pacifica.getIslands)
 		sleep(0.1)
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)

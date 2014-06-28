@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby
 
 
-require 'tsunami.rb'
+require './tsunami.rb'
 
 require "curses"
 include Curses
