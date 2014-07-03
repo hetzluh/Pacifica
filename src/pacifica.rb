@@ -35,6 +35,7 @@ class Pacifica
 		@neutralAlliance = Array.new
 		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
 		@diplomacyState = "main"
+		@labelsOn = false
 	end
 
 	def clearHazards
@@ -130,6 +131,8 @@ class Pacifica
 	end
 
 	def make_start_window
+	setpos(5, 15)
+	addstr("#{has_colors?}")
 	setpos(6, 15)
  	addstr("Welcome to Pacifica.\n\t\tThis is a work-in-progress grand strategy game/simulation, set in the South Pacific.
 			\n\n\t\tPress 'a' to select an island and an alliance\n\n\t\tPress 'q' to quit")
@@ -147,7 +150,7 @@ class Pacifica
 	def make_player_options
 	refresh
 	setpos(4, 6)
- 	addstr("Select your island kingdom:\n\t\t1. Kiribati\n\t\t2. Kwajaleins\n\t\t3. Hawaii\n\t\t4. Samoa\n\t\t5. Tokelau\n\t\t6. Vanuatu\n\t\t7. Tahiti\n\t\t8. Takutea\n\t\t9. Tuvalu\n\t\ta. Fiji\n\t\tb. Tonga\n\t\tc. Tuamotus\n\t\td. Rapa Nui\n\t\te. Aotearoa")
+ 	addstr("Select your island kingdom:\n\n\t\t1. Kiribati\n\n\t\t2. Kwajaleins\n\n\t\t3. Hawaii\n\n\t\t4. Samoa\n\n\t\t5. Tokelau\n\n\t\t6. Vanuatu\n\n\t\t7. Tahiti\n\n\t\t8. Takutea\n\n\t\t9. Tuvalu\n\n\t\ta. Fiji\n\n\t\tb. Tonga\n\n\t\tc. Tuamotus\n\n\t\td. Rapa Nui\n\n\t\te. Aotearoa")
  	refresh
  	ch = getch
 	if(ch == '1')
@@ -213,7 +216,7 @@ class Pacifica
 	end
  	clear
 	setpos(4, 6)
-	addstr("Select your alliance:\n\t\t1. Neutral (no alliance)\n\t\t2. Palm\n\t\t3. Pearl\n\t\t4. Obsidian")
+	addstr("Select your alliance:\n\n\t\t1. Neutral (no alliance)\n\n\t\t2. Palm\n\n\t\t3. Pearl\n\n\t\t4. Obsidian")
 	refresh
 	chtwo = getch
 	if(chtwo == '1')
@@ -276,14 +279,22 @@ class Pacifica
 			#Kingdom-specific graphics start now
 			if (island.getName == "kiribati")
 				win.addstr("*")
-				win.setpos(y -1, x)
+				win.setpos(y-1, x)
 				win.addstr(".")
+				if(@labelsOn == true)
+				win.setpos(y, x+2)
+				win.addstr("kiribati")
+				end			
 			end
 	
 			if (island.getName == "kwajaleins")
 				win.addstr("*")
 				win.setpos(y, x-1)
 				win.addstr("'")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("kwajaleins")
+				end
 			end
 	
 			if (island.getName == "hawaii")
@@ -294,18 +305,30 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y-1, x-5)
 				win.addstr("'")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("hawaii")
+				end
 			end
 			
 			if (island.getName == "samoa")
 				win.addstr("*")
 				win.setpos(y, x-1)
 				win.addstr("o")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("samoa")
+				end
 			end
 	
 			if (island.getName == "tokelau")
 				win.addstr("*")
 				win.setpos(y-1, x-1)
 				win.addstr(".")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("tokelau")
+				end
 			end
 	
 			if (island.getName == "tuvalu")
@@ -314,6 +337,10 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y, x-1)
 				win.addstr("'")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-3)
+				win.addstr("tuvalu")
+				end
 			end
 	
 			if (island.getName == "vanuatu")
@@ -322,6 +349,10 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y, x+2)
 				win.addstr("o")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("vanuatu")
+				end
 			end
 	
 			if (island.getName == "fiji")
@@ -330,20 +361,36 @@ class Pacifica
 				win.addstr(",")
 				win.setpos(y, x-1)
 				win.addstr("'")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("fiji")
+				end
 			end
 	
 			if (island.getName == "tonga")
 				win.addstr("*")
 				win.setpos(y-1, x)
 				win.addstr(".")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("tonga")
+				end
 			end
 	
 			if (island.getName == "takutea")
 				win.addstr("*")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("takutea")
+				end
 			end
 	
 			if (island.getName == "tahiti")
 				win.addstr("*")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-2)
+				win.addstr("tahiti")
+				end
 			end
 			
 			if (island.getName == "tuamotus")
@@ -354,10 +401,18 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y+1, x+1)
 				win.addstr("'")
+				if(@labelsOn == true)
+				win.setpos(y-2, x-4)
+				win.addstr("tuamotus")
+				end
 			end
 	
 			if (island.getName == "rapa nui")
 				win.addstr("* o")
+				if(@labelsOn == true)
+				win.setpos(y+1, x-4)
+				win.addstr("rapa nui")
+				end
 			end
 			
 			if (island.getName == "aotearoa")
@@ -366,13 +421,17 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y+1, x-1)
 				win.addstr("ooo")
+				if(@labelsOn == true)
+				win.setpos(y+1, x+4)
+				win.addstr("aotearoa")
+				end
 			end
 			#End kingdom graphics
 		end
 
 		random_earthquake_generator
 		random_typhoon_generator	
-
+		if(@labelsOn == false)
 		@objects.each do |object|
 			y = object.getLocationY
 			x = object.getLocationX
@@ -541,6 +600,7 @@ class Pacifica
 					win.addstr("~")
 				end
 			end	
+			end
 		end
 		
 	
@@ -665,13 +725,13 @@ class Pacifica
 	
 	def make_kingdom_info_window
 		kinfo = Window.new(6, 48, 30, (cols-100)/2+64)
-			kinfo.box(?!, ?-)
+			kinfo.box(?|, ?-)
 		kinfo.setpos(0, 1)
 		kinfo.addstr("Your Kingdom")
 		kinfo.setpos(1, 1)
 		kinfo.addstr("#{@playerIsland.getName.slice(0,1).capitalize+@playerIsland.getName.slice(1..-1)}\t\tAlliance: #{@playerIsland.getTeam.slice(0,1).capitalize+@playerIsland.getTeam.slice(1..-1)}")
 		kinfo.setpos(2, 1)
-		kinfo.addstr("$: #{@playerIsland.getCurrentWealth.to_i}\t\tP: #{@playerIsland.getPopulation}/#{@playerIsland.getPopCap}\tPow: #{@playerIsland.getPower}")
+		kinfo.addstr("$: #{@playerIsland.getCurrentWealth.to_i}\tP: #{@playerIsland.getPopulation}/#{@playerIsland.getPopCap}\tPow: #{@playerIsland.getPower}\tShip: #{@playerIsland.getShipGuildSkill}")
 	 	kinfo.setpos(3, 1)
 		kinfo.addstr("Allies:#{@playerIsland.getAllies}")
 	 	kinfo.setpos(4, 1)
@@ -686,14 +746,13 @@ class Pacifica
 		winfo.setpos(0, 1)
 		winfo.addstr("Diplomacy")
 		if(@diplomacyState == "main")
-			winfo.setpos(1, 1)
-			winfo.addstr("Diplomacy Options:")
+			@labelsOn = false
+			winfo.setpos(2, 1)
+			winfo.addstr("t. Trade Canoe\t\tw. War Canoe")
 			winfo.setpos(3, 1)
-			winfo.addstr("t. Trade Canoe\t\tw. War Canoe\t\tp. Pray")
+			winfo.addstr("m. Island names on\t\tp. Pray")
 			winfo.refresh
 			ch = getch	
-			winfo.setpos(4, 1)
-			winfo.addstr("USER INPUT: #{ch}")
 			refresh
 			if(ch == 'q')
 				abort("quit pacifica")
@@ -704,6 +763,8 @@ class Pacifica
 					@diplomacyState = "sendingWar"
 				elsif(ch == 'p')
 					@diplomacyState = "praying"
+				elsif(ch == 'm')
+					@diplomacyState = "mapMode"
 				end
 			end
 		elsif(@diplomacyState == "sendingTrade")
@@ -725,24 +786,27 @@ class Pacifica
 			winfo.addstr("Select where you would like to send a war boat:")
 			winfo.refresh
 			ch = getch	
-			winfo.setpos(4, 1)
-			winfo.addstr("USER INPUT: #{ch}")
-			winfo.setpos(4, 16)
-			winfo.addstr("back: ENTER")
 			refresh
 				if(ch == 'q')
 					abort("quit pacifica")
 				end
 			@diplomacyState = "main"	
+		elsif(@diplomacyState == "mapMode")
+			@labelsOn = true
+			winfo.setpos(1, 1)
+			winfo.addstr("Map labels on, press enter to go back")
+			winfo.refresh
+			ch = getch	
+			refresh
+				if(ch == 'q')
+					abort("quit pacifica")
+				end
+			@diplomacyState = "main"
 		elsif(@diplomacyState == "praying")
 			winfo.setpos(1, 1)
 			winfo.addstr("We are praying to the gods")
 			winfo.refresh
 			ch = getch	
-			winfo.setpos(4, 1)
-			winfo.addstr("USER INPUT: #{ch}")
-			winfo.setpos(4, 16)
-			winfo.addstr("back: ENTER")
 			refresh
 				if(ch == 'q')
 					abort("quit pacifica")
@@ -1012,7 +1076,7 @@ while TRUE
 		pacifica.make_obsidian_info_window(pacifica.getIslands)
 		pacifica.make_kingdom_info_window
 		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
-		sleep(0.5)
+		sleep(0.8)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
