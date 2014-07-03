@@ -148,12 +148,13 @@ class Island
 		r = rand(20)
 	  	if( r == 19 && @population > @popcap/4 && @currentWealth > @startWealth-20)
 			
-			@allies.each do |partner|
-			makeTradeBoat(partner)
+			r = rand(4)
+			if(@allies.size >r)
+			makeTradeBoat(@allies.at(r))
 			end
 		
-			@enemies.each do |enemy|
-			makeWarBoat(enemy)
+			if(@enemies.size >r)
+			makeWarBoat(@enemies.at(r))
 			end
 	    	else
 			if(r % 9 == 0)

@@ -131,10 +131,8 @@ class Pacifica
 	end
 
 	def make_start_window
-	setpos(5, 15)
-	addstr("#{has_colors?}")
 	setpos(6, 15)
- 	addstr("Welcome to Pacifica.\n\t\tThis is a work-in-progress grand strategy game/simulation, set in the South Pacific.
+ 	addstr("Welcome to Pacifica.\n\n\t\tThis is a work-in-progress grand strategy game/simulation, set in the South Pacific.
 			\n\n\t\tPress 'a' to select an island and an alliance\n\n\t\tPress 'q' to quit")
  	refresh
 	ch = getch
@@ -292,7 +290,7 @@ class Pacifica
 				win.setpos(y, x-1)
 				win.addstr("'")
 				if(@labelsOn == true)
-				win.setpos(y+1, x-2)
+				win.setpos(y-1, x+1)
 				win.addstr("kwajaleins")
 				end
 			end
@@ -621,7 +619,7 @@ class Pacifica
 	
 	def random_earthquake_generator
 		prob = rand(100)
-		if(prob%4 == 0)
+		if(prob%33 == 0)
 		epiX = rand(50 - 3) +3
 		epiY = rand(18 - 1) +1
 		sz = rand(4-1) + 1
@@ -631,7 +629,7 @@ class Pacifica
 				addObject(tsunami)
 			end
 		addObject(earthquake1)
-		elsif(prob % 25 == 0)
+		elsif(prob % 49 == 0)
 		epiX = rand(58 - 14) + 14
 		epiY = rand(17 - 3) + 
 		sz = rand(6-3) + 3
@@ -702,7 +700,7 @@ class Pacifica
 	def random_typhoon_generator
 		r = rand(50)
 		#Normal Typhoon
-		if(r%25 == 0)
+		if(r%46 == 0)
 		sz = rand(3)
 		sX = rand(40-12) + 12
 		sY = rand(12-1) + 1
@@ -1069,14 +1067,14 @@ while TRUE
 			end
 			end
 		end
+		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
+		pacifica.make_kingdom_info_window
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_neutral_info_window(pacifica.getIslands)
 		pacifica.make_palm_info_window(pacifica.getIslands)
 		pacifica.make_pearl_info_window(pacifica.getIslands)
 		pacifica.make_obsidian_info_window(pacifica.getIslands)
-		pacifica.make_kingdom_info_window
-		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
-		sleep(0.8)
+		sleep(0.5)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
