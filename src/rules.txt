@@ -54,4 +54,13 @@ Palm:		20%
 Pearl: 		30%
 Obsidian: 	30%
 Neutral: 	20%
+ 
+
+
+Ship Guild Skill -> int, 1-5, determines boat effectiveness
+	Lvl1:	Boat moves 1/3 of the time, hazard kills 7 crew
+	2:	Boat moves 1/2 of the time, hazard kills 5 crew
+	3:	Boat moves 2/3 of the time, hazard kills 4 crew
+	4:	Boat moves 3/4 of the time, hazard kills 3 crew
+	5:	Boat moves every time, hazard kills 1 crew
 

@@ -20,8 +20,11 @@ startPopulation -> int, starting population (MAX 10,000)
 currentPopulation -> int, current
 size -> int, 0-2; 0 is small, size modifier used for various purposes
 shipGuildSkill -> int, 1-5, determines boat effectiveness
-
-Hollaaa
+	Lvl1:	Boat moves 1/3 of the time, hazard kills 7 crew
+	2:	Boat moves 1/2 of the time, hazard kills 7 crew
+	3:	Boat moves 1/2 of the time, hazard kills 4 crew
+	4:	Boat moves 2/3 of the time, hazard kills 4 crew
+	5:	Boat moves every time, hazard kills 1 crew
 =end
 
 
@@ -114,6 +117,7 @@ class Island
 			end
 		end
 		@playerIsland = playerIsland 
+		@boatsSent = 0
 	end
 
 	def getTeam
@@ -123,13 +127,18 @@ class Island
 	def setTeam(newTeamName)
 		@team = newTeamName
 	end		
+
+	def getBoatsSent
+		@boatsSent
+	end
 	
 	def monthlyPay
-		@currentWealth += ((@power*10)+@size)
+		payout = @power+@size
+		@currentWealth += payout.ceil
 	end
 
 	def yearlyPopExplosion
-		@population += 25
+		@population += 10
 	end
 
 	def getPlayerIsland
@@ -146,20 +155,18 @@ class Island
 		@enemies.uniq!
 
 		r = rand(20)
-	  	if( r == 19 && @population > @popcap/4 && @currentWealth > @startWealth-20)
-			
+	  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
 			r = rand(4)
-			if(@allies.size >r)
-			makeTradeBoat(@allies.at(r))
+			if(@allies.size > r && @currentWealth < 80)
+				makeTradeBoat(@allies.at(r))	
+			elsif(@enemies.size > 0 && @currentWealth > 79)	
+				while(@currentWealth >80)
+					r = rand(@enemies.size)
+					makeWarBoat(@enemies.at(r))
+				end
 			end
-		
-			if(@enemies.size >r)
-			makeWarBoat(@enemies.at(r))
-			end
-	    	else
-			if(r % 9 == 0)
-				babiesBorn
-			end
+		else
+			babiesBorn
 		end
 	end
 =begin
@@ -193,8 +200,11 @@ etc.
 	end
 
 	def babiesBorn
-		r = rand(14)
-		@population += r
+		r = rand(4)
+		@population += r	
+		if(@population > @popcap)
+			@population = @popcap
+		end
 	end	
 
 	def getEnemies
@@ -217,6 +227,10 @@ etc.
 		@startWealth
 	end
 	
+	def setCurrentWealth(plusAmt)
+		@currentWealth += plusAmt
+	end
+
 	def getCurrentWealth
 		@currentWealth
 	end
@@ -322,6 +336,7 @@ etc.
 		end
 		warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, @shipGuildSkill)
 		@activeWarBoats.push(warBoat)
+		@boatsSent += 1
 	end
 
 	def makeTradeBoat(destinationIslandName)
@@ -376,6 +391,11 @@ etc.
 		tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, @shipGuildSkill)
 
 		@activeTradeBoats.push(tradeBoat)
+		@boatsSent += 1
+
+		if(@boatsSent % 10 == 0)
+			@shipGuildSkill += 1
+		end
 	end
 
 	def earthquake
@@ -397,7 +417,7 @@ etc.
 
 	def traded(numberCrew, kingdomTrading)
 		@population += numberCrew
-		@currentWealth += 1
+		@currentWealth += 7
 		if(@allies.length < 4 && @enemies.include?(kingdomTrading) == false)
 			@allies.push(kingdomTrading)
 		end

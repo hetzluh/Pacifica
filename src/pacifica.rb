@@ -112,7 +112,7 @@ class Pacifica
 =end
 		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 7, 8, false)
 		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 4, 5, false)
-		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
+		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 25, 85, 2, 32, 3, false)
 		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 21, 14, false)
 		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 12, false)
 		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 4, 14, false)
@@ -325,6 +325,11 @@ class Pacifica
 						elsif(object.getDestinationName == "aotearoa")
 							@islands.at(13).traded(object.getCurrentCrew, object.getKingdomName)
 						end
+						@islands.each do |island|
+							if(island.getName == object.getKingdomName)
+								island.setCurrentWealth(15)
+							end
+						end
 					end
 				end
 				#display boat and decide whether it has been damaged
@@ -442,7 +447,7 @@ class Pacifica
 					end
 				end
 				if(landEqY == true)
-					island.earthquake
+#					island.earthquake
 					landEqX = false
 					landEqY = false 
 				end
@@ -552,7 +557,7 @@ class Pacifica
 			if (island.getName == "takutea")
 				win.addstr("*")
 				if(@labelsOn == true)
-				win.setpos(y+1, x-2)
+				win.setpos(y+1, x-3)
 				win.addstr("takutea")
 				end
 			end
@@ -697,9 +702,10 @@ class Pacifica
 	end
 
 	def random_typhoon_generator
-		r = rand(50)
+		
 		#Normal Typhoon
-		if(r%46 == 0)
+		r = rand(50)  #Currently:  1/50 chance
+		if(r%49 == 0)
 		sz = rand(3)
 		sX = rand(40-12) + 12
 		sY = rand(12-1) + 1
@@ -709,7 +715,8 @@ class Pacifica
 		addObject(typhoon1)
 		end
 		#Strong Typhoon
-		if(r%49 == 0)
+		r = rand(90)  #Currently:  1/90 chance
+		if(r%89 == 0)
 		sz = 3
 		sX = rand(46-12) + 12
 		sY = rand(12-1) + 1
@@ -721,7 +728,7 @@ class Pacifica
 	end
 	
 	def make_kingdom_info_window
-		kinfo = Window.new(6, 48, 30, (cols-100)/2+64)
+		kinfo = Window.new(7, 48, 30, (cols-100)/2+64)
 			kinfo.box(?|, ?-)
 		kinfo.setpos(0, 1)
 		kinfo.addstr("Your Kingdom")
@@ -733,11 +740,13 @@ class Pacifica
 		kinfo.addstr("Allies:#{@playerIsland.getAllies}")
 	 	kinfo.setpos(4, 1)
 		kinfo.addstr("Enemies:#{@playerIsland.getEnemies}")
+		kinfo.setpos(5, 1)
+		kinfo.addstr("Boats sent: #{@playerIsland.getBoatsSent}")
 		kinfo.refresh
 	end
 
 	def make_diplomacy_window(islands)
-		winfo = Window.new(6, 64, 30, (cols-100)/2)
+		winfo = Window.new(7, 64, 30, (cols-100)/2)
 		raw
 		winfo.box(?|, ?=)
 		winfo.setpos(0, 1)
@@ -1073,7 +1082,7 @@ while TRUE
 		pacifica.make_palm_info_window(pacifica.getIslands)
 		pacifica.make_pearl_info_window(pacifica.getIslands)
 		pacifica.make_obsidian_info_window(pacifica.getIslands)
-		sleep(0.5)
+		sleep(0.4)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)

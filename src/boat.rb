@@ -87,20 +87,31 @@ class Boat
 	
 	def move
 		if(@shipGuildSkill == 1)
-		n = 5
+			moveRand = rand(3 - 1) + 1
+			if (moveRand < 2)
+				moveNow = true
+			end
 		elsif(@shipguildSkill == 2)
-		n = 4
+			moveRand = rand(3 - 1) + 1
+			if (moveRand == 2)
+				moveNow = true
+			end
 		elsif(@shipGuildSkill == 3)
-		n = 3
+			moveRand = rand(4 - 1) + 1
+			if (moveRand < 3)
+				moveNow = true
+			end
 		elsif(@shipguildSkill == 4)
-		n = 2
+			moveRand = rand(5 - 1) + 1
+			if (moveRand < 4)
+				moveNow = true
+			end
 		elsif(@shipguildSkill == 5)
-		n = 1
+			moveNow = true
 		else
 		n = 1
 		end
-		skillRand = rand(100)
-		if(true)
+		if(moveNow == true)
 			newRand = rand(10)
 			if(newRand % 2 == 0 && (@dx > 0 || @dx < 0))
 					if(@dx > 0)
@@ -148,10 +159,16 @@ class Boat
 	end
 
 	def damage
-		if(@shipGuildSkill > 3)
+		if(@shipGuildSkill == 1)
+			@currentCrew -= 7
+		elsif(@shipGuildSkill == 2)
+			@currentCrew -= 5
+		elsif(@shipGuildSkill == 3)
+			@currentCrew -= 4
+		elsif(@shipGuildSkill == 4)
+			@currentCrew -= 3
+		elsif(@shipGuildSkill == 1)
 			@currentCrew -= 1
-		else
-			@currentCrew -= 10
 		end
 	end
 
