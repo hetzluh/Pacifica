@@ -193,7 +193,7 @@ etc.
 	end
 
 	def babiesBorn
-		r = rand(100)
+		r = rand(14)
 		@population += r
 	end	
 

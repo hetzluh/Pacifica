@@ -249,7 +249,181 @@ class Pacifica
 		else
 		win.addstr("Moon:  #{moon}, Month: #{month}, Year: #{year}")
 		end
+		
 
+		random_earthquake_generator
+		random_typhoon_generator	
+
+		@objects.each do |object|
+			y = object.getLocationY
+			x = object.getLocationX
+			boatHitX = false
+			boatHitY = false
+			win.setpos(y, x)
+			if(object.class.name == "Earthquake" && @labelsOn == false)
+				win.addstr("E")
+			elsif(object.class.name == "Boat" && @labelsOn == false)
+				#if boat has arrived at destination, effect happens				
+				if(object.getDx == 0 && object.getDy == 0)
+					if(object.getType == "war")
+						if(object.getDestinationName == "kiribati")
+							@islands.at(0).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "kwajaleins")
+							@islands.at(1).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "hawaii")
+							@islands.at(2).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "samoa")
+							@islands.at(3).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tokelau")
+							@islands.at(4).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "vanuatu")
+							@islands.at(5).attacked(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tahiti")
+							@islands.at(6).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "takutea")
+							@islands.at(7).attacked(object.getCurrentCrew, object.getKingdomName)			
+						elsif(object.getDestinationName == "tuvalu")
+							@islands.at(8).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "fiji")
+							@islands.at(9).attacked(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tonga")
+							@islands.at(10).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tuamotus")
+							@islands.at(11).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "rapa nui")
+							@islands.at(12).attacked(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "aotearoa")
+							@islands.at(13).attacked(object.getCurrentCrew, object.getKingdomName)
+						end
+					elsif(object.getType == "trade")
+						if(object.getDestinationName == "kiribati")
+							@islands.at(0).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "kwajaleins")
+							@islands.at(1).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "hawaii")
+							@islands.at(2).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "samoa")
+							@islands.at(3).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tokelau")
+							@islands.at(4).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "vanuatu")
+							@islands.at(5).traded(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tahiti")
+							@islands.at(6).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "takutea")
+							@islands.at(7).traded(object.getCurrentCrew, object.getKingdomName)			
+						elsif(object.getDestinationName == "tuvalu")
+							@islands.at(8).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "fiji")
+							@islands.at(9).traded(object.getCurrentCrew, object.getKingdomName)				
+						elsif(object.getDestinationName == "tonga")
+							@islands.at(10).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "tuamotus")
+							@islands.at(11).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "rapa nui")
+							@islands.at(12).traded(object.getCurrentCrew, object.getKingdomName)
+						elsif(object.getDestinationName == "aotearoa")
+							@islands.at(13).traded(object.getCurrentCrew, object.getKingdomName)
+						end
+					end
+				end
+				#display boat and decide whether it has been damaged
+				if(object.getType == "trade")
+					win.addstr("T")
+				elsif(object.getType == "war")
+					win.addstr("W")
+				end
+				@hazardLocationsX.each do |hazard|
+					if(object.getLocationX == hazard)
+						boatHitX = true
+					end
+				end
+				if(boatHitX == true)
+					@hazardLocationsY.each do |hazard|
+						if(object.getLocationY == hazard)
+							boatHitY = true
+						end
+					end
+				end
+				if(boatHitY == true)
+					object.damage
+				end
+			elsif(object.class.name == "Typhoon" && @labelsOn == false)
+			win.addstr("@")
+				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3)
+					win.setpos(y, x-1)
+					win.addstr("(")
+					win.setpos(y, x+1)
+					win.addstr(")")
+				end
+				if(object.getSize == 2 || object.getSize == 3)
+					win.setpos(y, x-2)
+					win.addstr("(")
+					win.setpos(y, x+2)
+					win.addstr(")")
+					win.setpos(y-1, x)
+					win.addstr("^")
+					win.setpos(y+1, x)
+					win.addstr("v")
+				end
+				if(object.getSize == 3)
+					win.setpos(y, x-3)
+					win.addstr("(")
+					win.setpos(y, x+3)
+					win.addstr(")")
+					win.setpos(y-1, x-1)
+					win.addstr("-")
+					win.setpos(y-1, x)
+					win.addstr("-")
+					win.setpos(y-1, x+1)
+					win.addstr("-")
+					win.setpos(y+1, x-1)
+					win.addstr("-")
+					win.setpos(y+1, x)
+					win.addstr("-")
+					win.setpos(y+1, x+1)
+					win.addstr("-")
+					win.setpos(y-2, x)
+					win.addstr("^")
+					win.setpos(y+2, x)
+					win.addstr("v")
+				end
+			elsif(object.class.name == "Tsunami" && @labelsOn == false)
+			win.addstr("~")
+				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3 ||
+					object.getSize == 4 || object.getSize == 5)
+					win.setpos(y, x-1)
+					win.addstr("~")
+					win.setpos(y, x+1)
+					win.addstr("~")
+				end
+				if(object.getSize == 2 || object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
+					win.setpos(y, x-2)
+					win.addstr("~")
+					win.setpos(y, x+2)
+					win.addstr("~")
+				end
+				if(object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
+					win.setpos(y, x-3)
+					win.addstr("~")
+					win.setpos(y, x+3)
+					win.addstr("~")
+				end
+				if(object.getSize == 4 || object.getSize == 5)
+					win.setpos(y, x-4)
+					win.addstr("~")
+					win.setpos(y, x+4)
+					win.addstr("~")
+				end
+				if(object.getSize == 5)
+					win.setpos(y, x-5)
+					win.addstr("~")
+					win.setpos(y, x+5)
+					win.addstr("~")
+				end
+			end	
+		end
+		
 		@islands.each do |island|
 			y = island.getLocationY
 			x = island.getLocationX
@@ -426,181 +600,6 @@ class Pacifica
 			end
 			#End kingdom graphics
 		end
-
-		random_earthquake_generator
-		random_typhoon_generator	
-		if(@labelsOn == false)
-		@objects.each do |object|
-			y = object.getLocationY
-			x = object.getLocationX
-			boatHitX = false
-			boatHitY = false
-			win.setpos(y, x)
-			if(object.class.name == "Earthquake")
-				win.addstr("E")
-			elsif(object.class.name == "Boat")
-				#if boat has arrived at destination, effect happens				
-				if(object.getDx == 0 && object.getDy == 0)
-					if(object.getType == "war")
-						if(object.getDestinationName == "kiribati")
-							@islands.at(0).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "kwajaleins")
-							@islands.at(1).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "hawaii")
-							@islands.at(2).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "samoa")
-							@islands.at(3).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "tokelau")
-							@islands.at(4).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "vanuatu")
-							@islands.at(5).attacked(object.getCurrentCrew, object.getKingdomName)				
-						elsif(object.getDestinationName == "tahiti")
-							@islands.at(6).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "takutea")
-							@islands.at(7).attacked(object.getCurrentCrew, object.getKingdomName)			
-						elsif(object.getDestinationName == "tuvalu")
-							@islands.at(8).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "fiji")
-							@islands.at(9).attacked(object.getCurrentCrew, object.getKingdomName)				
-						elsif(object.getDestinationName == "tonga")
-							@islands.at(10).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "tuamotus")
-							@islands.at(11).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "rapa nui")
-							@islands.at(12).attacked(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "aotearoa")
-							@islands.at(13).attacked(object.getCurrentCrew, object.getKingdomName)
-						end
-					elsif(object.getType == "trade")
-						if(object.getDestinationName == "kiribati")
-							@islands.at(0).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "kwajaleins")
-							@islands.at(1).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "hawaii")
-							@islands.at(2).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "samoa")
-							@islands.at(3).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "tokelau")
-							@islands.at(4).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "vanuatu")
-							@islands.at(5).traded(object.getCurrentCrew, object.getKingdomName)				
-						elsif(object.getDestinationName == "tahiti")
-							@islands.at(6).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "takutea")
-							@islands.at(7).traded(object.getCurrentCrew, object.getKingdomName)			
-						elsif(object.getDestinationName == "tuvalu")
-							@islands.at(8).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "fiji")
-							@islands.at(9).traded(object.getCurrentCrew, object.getKingdomName)				
-						elsif(object.getDestinationName == "tonga")
-							@islands.at(10).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "tuamotus")
-							@islands.at(11).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "rapa nui")
-							@islands.at(12).traded(object.getCurrentCrew, object.getKingdomName)
-						elsif(object.getDestinationName == "aotearoa")
-							@islands.at(13).traded(object.getCurrentCrew, object.getKingdomName)
-						end
-					end
-				end
-				#display boat and decide whether it has been damaged
-				if(object.getType == "trade")
-					win.addstr("T")
-				elsif(object.getType == "war")
-					win.addstr("W")
-				end
-				@hazardLocationsX.each do |hazard|
-					if(object.getLocationX == hazard)
-						boatHitX = true
-					end
-				end
-				if(boatHitX == true)
-					@hazardLocationsY.each do |hazard|
-						if(object.getLocationY == hazard)
-							boatHitY = true
-						end
-					end
-				end
-				if(boatHitY == true)
-					object.damage
-				end
-			elsif(object.class.name == "Typhoon")
-			win.addstr("@")
-				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3)
-					win.setpos(y, x-1)
-					win.addstr("(")
-					win.setpos(y, x+1)
-					win.addstr(")")
-				end
-				if(object.getSize == 2 || object.getSize == 3)
-					win.setpos(y, x-2)
-					win.addstr("(")
-					win.setpos(y, x+2)
-					win.addstr(")")
-					win.setpos(y-1, x)
-					win.addstr("^")
-					win.setpos(y+1, x)
-					win.addstr("v")
-				end
-				if(object.getSize == 3)
-					win.setpos(y, x-3)
-					win.addstr("(")
-					win.setpos(y, x+3)
-					win.addstr(")")
-					win.setpos(y-1, x-1)
-					win.addstr("-")
-					win.setpos(y-1, x)
-					win.addstr("-")
-					win.setpos(y-1, x+1)
-					win.addstr("-")
-					win.setpos(y+1, x-1)
-					win.addstr("-")
-					win.setpos(y+1, x)
-					win.addstr("-")
-					win.setpos(y+1, x+1)
-					win.addstr("-")
-					win.setpos(y-2, x)
-					win.addstr("^")
-					win.setpos(y+2, x)
-					win.addstr("v")
-				end
-			elsif(object.class.name == "Tsunami")
-			win.addstr("~")
-				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3 ||
-					object.getSize == 4 || object.getSize == 5)
-					win.setpos(y, x-1)
-					win.addstr("~")
-					win.setpos(y, x+1)
-					win.addstr("~")
-				end
-				if(object.getSize == 2 || object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
-					win.setpos(y, x-2)
-					win.addstr("~")
-					win.setpos(y, x+2)
-					win.addstr("~")
-				end
-				if(object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
-					win.setpos(y, x-3)
-					win.addstr("~")
-					win.setpos(y, x+3)
-					win.addstr("~")
-				end
-				if(object.getSize == 4 || object.getSize == 5)
-					win.setpos(y, x-4)
-					win.addstr("~")
-					win.setpos(y, x+4)
-					win.addstr("~")
-				end
-				if(object.getSize == 5)
-					win.setpos(y, x-5)
-					win.addstr("~")
-					win.setpos(y, x+5)
-					win.addstr("~")
-				end
-			end	
-			end
-		end
-		
 	
 	  win.refresh
 	  
@@ -746,7 +745,7 @@ class Pacifica
 		if(@diplomacyState == "main")
 			@labelsOn = false
 			winfo.setpos(2, 1)
-			winfo.addstr("t. Trade Canoe\t\tw. War Canoe")
+			winfo.addstr("t. Trade Canoe\t\t\tw. War Canoe")
 			winfo.setpos(3, 1)
 			winfo.addstr("m. Island names on\t\tp. Pray")
 			winfo.refresh
