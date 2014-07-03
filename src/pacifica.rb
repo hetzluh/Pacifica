@@ -33,7 +33,8 @@ class Pacifica
 		@obsidianAlliance = Array.new
 		@pearlAlliance = Array.new
 		@neutralAlliance = Array.new
-		@selected = "hawaii"
+		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
+		@diplomacyState = "main"
 	end
 
 	def clearHazards
@@ -131,23 +132,106 @@ class Pacifica
 	def make_start_window
 	setpos(6, 15)
  	addstr("Welcome to Pacifica.\n\t\tThis is a work-in-progress grand strategy game/simulation, set in the South Pacific.
-			\n\n\t\tPress 'a' to simulate.\n\t\tPress 'b' for single player (not yet implemented)\n\n\t\tPress 'q' to quit")
+			\n\n\t\tPress 'a' to select an island and an alliance\n\n\t\tPress 'q' to quit")
  	refresh
 	ch = getch
-	if(ch == "b")	
+	if(ch == "a")	
 		clear
 		make_player_options
+	else
+		abort("quitting pacifica")
 	end
 	clear
 	end
 
 	def make_player_options
 	refresh
-	setpos((lines - 5) / 2, (cols - 10) / 2)
- 	addstr("Single player options not ready. Hit any key to continue to simulation.")
+	setpos(4, 6)
+ 	addstr("Select your island kingdom:\n\t\t1. Kiribati\n\t\t2. Kwajaleins\n\t\t3. Hawaii\n\t\t4. Samoa\n\t\t5. Tokelau\n\t\t6. Vanuatu\n\t\t7. Tahiti\n\t\t8. Takutea\n\t\t9. Tuvalu\n\t\ta. Fiji\n\t\tb. Tonga\n\t\tc. Tuamotus\n\t\td. Rapa Nui\n\t\te. Aotearoa")
  	refresh
- 	getch
- 	refresh
+ 	ch = getch
+	if(ch == '1')
+		@islands.at(0).setPlayerIsland(true)
+		selected = "Kiribati"
+		@playerIsland = @islands.at(0)
+	elsif(ch == '2')
+		@islands.at(1).setPlayerIsland(true)
+		selected = "Kwajaleins"
+		@playerIsland = @islands.at(1)
+	elsif(ch == '3')
+		@islands.at(2).setPlayerIsland(true)
+		selected = "Hawaii"
+		@playerIsland = @islands.at(2)
+	elsif(ch == '4')
+		@islands.at(3).setPlayerIsland(true)
+		selected = "Samoa"
+		@playerIsland = @islands.at(3)
+	elsif(ch == '5')
+		@islands.at(4).setPlayerIsland(true)
+		selected = "Tokelau"
+		@playerIsland = @islands.at(4)
+	elsif(ch == '6')
+		@islands.at(5).setPlayerIsland(true)
+		selected = "Vanuatu"
+		@playerIsland = @islands.at(5)
+	elsif(ch == '7')
+		@islands.at(6).setPlayerIsland(true)
+		selected = "Tahiti"
+		@playerIsland = @islands.at(6)
+	elsif(ch == '8')
+		@islands.at(7).setPlayerIsland(true)
+		selected = "Takutea"
+		@playerIsland = @islands.at(7)
+	elsif(ch == '9')
+		@islands.at(8).setPlayerIsland(true)
+		selected = "Tuvalu"
+		@playerIsland = @islands.at(8)
+	elsif(ch == 'a')
+		@islands.at(9).setPlayerIsland(true)
+		selected = "Fiji"
+		@playerIsland = @islands.at(9)
+	elsif(ch == 'b')
+		@islands.at(10).setPlayerIsland(true)
+		selected = "Tonga"
+		@playerIsland = @islands.at(10)
+	elsif(ch == 'c')
+		@islands.at(11).setPlayerIsland(true)
+		selected = "Tuamotus"
+		@playerIsland = @islands.at(11)
+	elsif(ch == 'd')
+		@islands.at(12).setPlayerIsland(true)
+		selected = "Rapa Nui"
+		@playerIsland = @islands.at(12)
+	elsif(ch == 'e')
+		@islands.at(13).setPlayerIsland(true)
+		selected = "Aotearoa"
+		@playerIsland = @islands.at(13)
+	else
+		@islands.at(2).setPlayerIsland(true)
+		selected = "Invalid selection, Hawaii auto-selected"
+		@playerIsland = @islands.at(2)
+	end
+ 	clear
+	setpos(4, 6)
+	addstr("Select your alliance:\n\t\t1. Neutral (no alliance)\n\t\t2. Palm\n\t\t3. Pearl\n\t\t4. Obsidian")
+	refresh
+	chtwo = getch
+	if(chtwo == '1')
+		@playerIsland.setTeam("neutral")
+	elsif(chtwo == '2')
+		@playerIsland.setTeam("palm")
+	elsif(chtwo == '3')
+		@playerIsland.setTeam("pearl")
+	elsif(chtwo == '4')
+		@playerIsland.setTeam("obsidian")
+	else
+		@playerIsland.setTeam("neutral")
+	end
+	clear
+	setpos(4, 6)
+	addstr("Island selected: #{selected}\n\t\tAlliance selected: #{@playerIsland.getTeam}\n\n\t\tPress ENTER to begin.")
+	getch
+	refresh
 	end
 
 	def make_game_window(islands, objects, month, year, time)
@@ -527,17 +611,30 @@ class Pacifica
 		@obsidianAlliance.clear
 		@pearlAlliance.clear
 		@neutralAlliance.clear
-
+		#Adding to teams and balancing if necessary. Max alliance size is 4
 		@islands.each do |island|
-			if(island.getTeam == "pearl" && @pearlAlliance.size < 5)
+			if(island.getTeam == "pearl" && @pearlAlliance.size < 4)
 				@pearlAlliance.push(island.getName)
-			elsif(island.getTeam == "obsidian" && @obsidianAlliance.size < 5)
+			elsif(island.getTeam == "obsidian" && @obsidianAlliance.size < 4)
 				@obsidianAlliance.push(island.getName)
-			elsif(island.getTeam == "palm" && @palmAlliance.size < 5)
+			elsif(island.getTeam == "palm" && @palmAlliance.size < 4)
 				@palmAlliance.push(island.getName)
 			else
-				@neutralAlliance.push(island.getName)
-				island.setTeam("neutral")
+				if(@neutralAlliance.size < 4)
+					@neutralAlliance.push(island.getName)
+					island.setTeam("neutral")
+				else
+					if(@pearlAlliance.size < 4)
+						@pearlAlliance.push(island.getName)
+						island.setTeam("pearl")
+					elsif(@obsidianAlliance.size < 4)
+						@obsidianAlliance.push(island.getName)
+						island.setTeam("obsidian")
+					elsif(@palmAlliance.size < 4)
+						@obsidianAlliance.push(island.getName)
+						island.setTeam("palm")	
+					end
+				end
 			end
 		end
 	end
@@ -566,31 +663,97 @@ class Pacifica
 		end
 	end
 	
-	def make_diplomacy_window(islands)
-	winfo = Window.new(6, 64, 30, (cols-100)/2)
-	raw
-	winfo.box(?|, ?=)
-	winfo.setpos(1, 1)
-	r = rand (14 + 1) -1
-	winfo.addstr("#{islands.at(r).getName}")
- 	winfo.setpos(2, 1)
-	winfo.addstr("Allies:#{islands.at(r).getAllies}")
- 	winfo.setpos(3, 1)
-	winfo.addstr("Enemies:#{islands.at(r).getEnemies}")
-	winfo.refresh
-	ch = getch
-	if(ch == "q")
-		abort("quit pacifica")
-	else(ch == "a")
-		winfo.setpos(4, 1)
-		winfo.addstr("USER INPUT: #{ch}")
-		winfo.refresh
+	def make_kingdom_info_window
+		kinfo = Window.new(6, 48, 30, (cols-100)/2+64)
+			kinfo.box(?!, ?-)
+		kinfo.setpos(0, 1)
+		kinfo.addstr("Your Kingdom")
+		kinfo.setpos(1, 1)
+		kinfo.addstr("#{@playerIsland.getName.slice(0,1).capitalize+@playerIsland.getName.slice(1..-1)}\t\tAlliance: #{@playerIsland.getTeam.slice(0,1).capitalize+@playerIsland.getTeam.slice(1..-1)}")
+		kinfo.setpos(2, 1)
+		kinfo.addstr("$: #{@playerIsland.getCurrentWealth.to_i}\t\tP: #{@playerIsland.getPopulation}/#{@playerIsland.getPopCap}\tPow: #{@playerIsland.getPower}")
+	 	kinfo.setpos(3, 1)
+		kinfo.addstr("Allies:#{@playerIsland.getAllies}")
+	 	kinfo.setpos(4, 1)
+		kinfo.addstr("Enemies:#{@playerIsland.getEnemies}")
+		kinfo.refresh
 	end
-	  
+
+	def make_diplomacy_window(islands)
+		winfo = Window.new(6, 64, 30, (cols-100)/2)
+		raw
+		winfo.box(?|, ?=)
+		winfo.setpos(0, 1)
+		winfo.addstr("Diplomacy")
+		if(@diplomacyState == "main")
+			winfo.setpos(1, 1)
+			winfo.addstr("Diplomacy Options:")
+			winfo.setpos(3, 1)
+			winfo.addstr("t. Trade Canoe\t\tw. War Canoe\t\tp. Pray")
+			winfo.refresh
+			ch = getch	
+			winfo.setpos(4, 1)
+			winfo.addstr("USER INPUT: #{ch}")
+			refresh
+			if(ch == 'q')
+				abort("quit pacifica")
+			else
+				if(ch == 't')
+					@diplomacyState = "sendingTrade"
+				elsif(ch == 'w')
+					@diplomacyState = "sendingWar"
+				elsif(ch == 'p')
+					@diplomacyState = "praying"
+				end
+			end
+		elsif(@diplomacyState == "sendingTrade")
+			winfo.setpos(1, 1)
+			winfo.addstr("Select where you would like to send a trade boat:")
+			winfo.refresh
+			ch = getch	
+			winfo.setpos(4, 1)
+			winfo.addstr("USER INPUT: #{ch}")
+			winfo.setpos(4, 16)
+			winfo.addstr("back: ENTER")
+			refresh
+				if(ch == 'q')
+					abort("quit pacifica")
+				end
+			@diplomacyState = "main"
+		elsif(@diplomacyState == "sendingWar")
+			winfo.setpos(1, 1)
+			winfo.addstr("Select where you would like to send a war boat:")
+			winfo.refresh
+			ch = getch	
+			winfo.setpos(4, 1)
+			winfo.addstr("USER INPUT: #{ch}")
+			winfo.setpos(4, 16)
+			winfo.addstr("back: ENTER")
+			refresh
+				if(ch == 'q')
+					abort("quit pacifica")
+				end
+			@diplomacyState = "main"	
+		elsif(@diplomacyState == "praying")
+			winfo.setpos(1, 1)
+			winfo.addstr("We are praying to the gods")
+			winfo.refresh
+			ch = getch	
+			winfo.setpos(4, 1)
+			winfo.addstr("USER INPUT: #{ch}")
+			winfo.setpos(4, 16)
+			winfo.addstr("back: ENTER")
+			refresh
+				if(ch == 'q')
+					abort("quit pacifica")
+				end
+			@diplomacyState = "main"
+		end
+		  
 	end
 	
 	def make_neutral_info_window(islands)
-	  neutralInfo = Window.new(30, 12, (((lines-25)/2)-2), 64+((cols-100)/2))
+	  neutralInfo = Window.new(24, 12, (((lines-25)/2)-2), 64+((cols-100)/2))
 	  neutralInfo.box(?|, ?-)
  	  x = 1
 	  y = 0
@@ -610,16 +773,19 @@ class Pacifica
 			y += 1
 			neutralInfo.setpos(y, x)
 			neutralInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
-			y += 2
+			y += 1
+			neutralInfo.setpos(y, x)
+			neutralInfo.addstr("pow: #{island.getPower}")
+			y += 1
 		end
 		end
-	  neutralInfo.setpos(29, x)
+	  neutralInfo.setpos(23, x)
 	  neutralInfo.addstr("**********")
 	  neutralInfo.refresh
 	end
 
 	def make_palm_info_window(islands)
-	  palmInfo = Window.new(30, 12, (((lines-25)/2)-2), 76+((cols-100)/2))
+	  palmInfo = Window.new(24, 12, (((lines-25)/2)-2), 76+((cols-100)/2))
 	  palmInfo.box(?|, ?-)
  	  x = 1
 	  y = 0
@@ -639,16 +805,19 @@ class Pacifica
 			y += 1
 			palmInfo.setpos(y, x)
 			palmInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
+			y += 1
+			palmInfo.setpos(y, x)
+			palmInfo.addstr("pow: #{island.getPower}")
 			y += 2
 		end
 		end
-	  palmInfo.setpos(29, x)
+	  palmInfo.setpos(23, x)
 	  palmInfo.addstr("**********")
 	  palmInfo.refresh
 	end
 
 	def make_pearl_info_window(islands)
-	  pearlInfo = Window.new(30, 12, (((lines-25)/2)-2), 88+((cols-100)/2))
+	  pearlInfo = Window.new(24, 12, (((lines-25)/2)-2), 88+((cols-100)/2))
 	  pearlInfo.box(?|, ?-)
 	  x = 1
 	  y = 0
@@ -674,13 +843,13 @@ class Pacifica
 			y += 2
 		end
 		end
-	  pearlInfo.setpos(29, x)
+	  pearlInfo.setpos(23, x)
 	  pearlInfo.addstr("**********")
 	  pearlInfo.refresh
 	end
 
 	def make_obsidian_info_window(islands)
-	  obsidianInfo = Window.new(30, 12, (((lines-25)/2)-2), 100+((cols-100)/2))
+	  obsidianInfo = Window.new(24, 12, (((lines-25)/2)-2), 100+((cols-100)/2))
 	  obsidianInfo.box(?|, ?-)
  	  x = 1
 	  y = 0
@@ -700,10 +869,13 @@ class Pacifica
 			y += 1
 			obsidianInfo.setpos(y, x)
 			obsidianInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
+			y += 1
+			obsidianInfo.setpos(y, x)
+			obsidianInfo.addstr("pow: #{island.getPower}")
 			y += 2
 		end
 		end
-	  obsidianInfo.setpos(29, x)
+	  obsidianInfo.setpos(23, x)
 	  obsidianInfo.addstr("**********")
 	  obsidianInfo.refresh
 	end
@@ -718,9 +890,10 @@ end
 	raw
 	pacifica = Pacifica.new
 	
+	pacifica.addIslands
+
 	pacifica.make_start_window
 
-	pacifica.addIslands
 
 while TRUE
 	objTemp = Array.new
@@ -837,6 +1010,7 @@ while TRUE
 		pacifica.make_palm_info_window(pacifica.getIslands)
 		pacifica.make_pearl_info_window(pacifica.getIslands)
 		pacifica.make_obsidian_info_window(pacifica.getIslands)
+		pacifica.make_kingdom_info_window
 		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
 		sleep(0.5)
 		diploThr.kill

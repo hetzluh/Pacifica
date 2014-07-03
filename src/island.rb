@@ -74,9 +74,9 @@ class Island
 			@team = "obsidian"
 			elsif(r == 6)
 			@team = "palm"
-			elsif(r == 7)
+			elsif(r == 7 || r == 8)
 			@team = "pearl"
-			elsif(r > 7)
+			elsif(r > 8)
 			@team = "neutral"
 			end
 		elsif(@group == 3)

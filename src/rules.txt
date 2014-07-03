@@ -33,9 +33,9 @@ Neutral: 	10%
 
 Powerhouses:
 Palm:		10%
-Pearl: 		10%
+Pearl: 		20%
 Obsidian: 	50%
-Neutral: 	30%
+Neutral: 	20%
 
 Far-flung Traders:
 Palm:		20%
