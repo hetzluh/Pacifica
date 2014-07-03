@@ -236,7 +236,7 @@ class Pacifica
 	end
 
 	def make_game_window(islands, objects, month, year, time)
-	  win = Window.new(24, 64, ((lines-25)/2)-2, (cols-100)/2)
+	  win = Window.new(24, 64, ((42-25)/2)-2, (168-100)/2)
 	  win.box(?|, ?-)
 		@moon = (time+1)%10
 		if @moon == 0
@@ -728,7 +728,7 @@ class Pacifica
 	end
 	
 	def make_kingdom_info_window
-		kinfo = Window.new(7, 48, 30, (cols-100)/2+64)
+		kinfo = Window.new(7, 48, 30, (168-100)/2+64)
 			kinfo.box(?|, ?-)
 		kinfo.setpos(0, 1)
 		kinfo.addstr("Your Kingdom")
@@ -746,7 +746,7 @@ class Pacifica
 	end
 
 	def make_diplomacy_window(islands)
-		winfo = Window.new(7, 64, 30, (cols-100)/2)
+		winfo = Window.new(7, 64, 30, (168-100)/2)
 		raw
 		winfo.box(?|, ?=)
 		winfo.setpos(0, 1)
@@ -823,7 +823,7 @@ class Pacifica
 	end
 	
 	def make_neutral_info_window(islands)
-	  neutralInfo = Window.new(24, 12, (((lines-25)/2)-2), 64+((cols-100)/2))
+	  neutralInfo = Window.new(24, 12, (((42-25)/2)-2), 64+((168-100)/2))
 	  neutralInfo.box(?|, ?-)
  	  x = 1
 	  y = 0
@@ -855,7 +855,7 @@ class Pacifica
 	end
 
 	def make_palm_info_window(islands)
-	  palmInfo = Window.new(24, 12, (((lines-25)/2)-2), 76+((cols-100)/2))
+	  palmInfo = Window.new(24, 12, (((42-25)/2)-2), 76+((168-100)/2))
 	  palmInfo.box(?|, ?-)
  	  x = 1
 	  y = 0
@@ -887,7 +887,7 @@ class Pacifica
 	end
 
 	def make_pearl_info_window(islands)
-	  pearlInfo = Window.new(24, 12, (((lines-25)/2)-2), 88+((cols-100)/2))
+	  pearlInfo = Window.new(24, 12, (((42-25)/2)-2), 88+((168-100)/2))
 	  pearlInfo.box(?|, ?-)
 	  x = 1
 	  y = 0
@@ -919,7 +919,7 @@ class Pacifica
 	end
 
 	def make_obsidian_info_window(islands)
-	  obsidianInfo = Window.new(24, 12, (((lines-25)/2)-2), 100+((cols-100)/2))
+	  obsidianInfo = Window.new(24, 12, (((42-25)/2)-2), 100+((168-100)/2))
 	  obsidianInfo.box(?|, ?-)
  	  x = 1
 	  y = 0
