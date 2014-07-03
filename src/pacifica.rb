@@ -18,7 +18,7 @@ top left = (1, 6)
 
 class Pacifica
 	def initialize()
-		@currentTime = 0
+		@currentTime = -1
 		@islands = Array.new
 		@objects = Array.new
 		@currentTsunamis = Array.new
@@ -106,26 +106,48 @@ class Pacifica
 	def addIslands
 =begin
 		Reminder: (kingdomId, name, size, startWealth, currentWealth, power, population
-					popcap, shipGuildSkill, locationX, locationY)
+					popcap, shipGuildSkill, locationX, locationY, playerIsland)
 =end
-		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 7, 8)
-		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 4, 5)
-		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3)
-		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 21, 14)
-		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 12)
-		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 4, 14)
-		tahiti 	 = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 , 40, 14)
-		takutea	 = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 33, 15)
-		tuvalu	 = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 10, 10)
-		fiji	 = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  11, 16)
-		tonga    = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 18, 17)
-		tuamotus = Island.new(12, "tuamotus", 1, 40, 40, 1.3, 15, 70, 3, 50, 15)
-		rapanui  = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 58, 17)
-		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 6, 21)
+		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 7, 8, false)
+		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 4, 5, false)
+		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
+		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 21, 14, false)
+		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 12, false)
+		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 4, 14, false)
+		tahiti 	 = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 , 40, 14, false)
+		takutea	 = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 33, 15, false)
+		tuvalu	 = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 10, 10, false)
+		fiji	 = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  11, 16, false)
+		tonga    = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 18, 17, false)
+		tuamotus = Island.new(12, "tuamotus", 1, 40, 40, 1.3, 15, 70, 3, 50, 15, false)
+		rapanui  = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 58, 17, false)
+		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 6, 21, false)
 
 		@islands.push(kiribati, kwajaleins, hawaii, samoa, tokelau,
 						vanuatu, tahiti, takutea, tuvalu, fiji, tonga,
 							tuamotus, rapanui, aotearoa)
+	end
+
+	def make_start_window
+	setpos(6, 15)
+ 	addstr("Welcome to Pacifica.\n\t\tThis is a work-in-progress grand strategy game/simulation, set in the South Pacific.
+			\n\n\t\tPress 'a' to simulate.\n\t\tPress 'b' for single player (not yet implemented)\n\n\t\tPress 'q' to quit")
+ 	refresh
+	ch = getch
+	if(ch == "b")	
+		clear
+		make_player_options
+	end
+	clear
+	end
+
+	def make_player_options
+	refresh
+	setpos((lines - 5) / 2, (cols - 10) / 2)
+ 	addstr("Single player options not ready. Hit any key to continue to simulation.")
+ 	refresh
+ 	getch
+ 	refresh
 	end
 
 	def make_game_window(islands, objects, month, year, time)
@@ -545,16 +567,26 @@ class Pacifica
 	end
 	
 	def make_diplomacy_window(islands)
-	  winfo = Window.new(6, 64, 30, (cols-100)/2)
-	  winfo.box(?|, ?=)
-	  winfo.setpos(1, 1)
-	  r = rand (14 + 1) -1
-	  winfo.addstr("#{islands.at(r).getName}")
- 	  winfo.setpos(2, 1)
-	  winfo.addstr("Allies:#{islands.at(r).getAllies}")
- 	  winfo.setpos(3, 1)
-	  winfo.addstr("Enemies:#{islands.at(r).getEnemies}")
-	  winfo.refresh
+	winfo = Window.new(6, 64, 30, (cols-100)/2)
+	raw
+	winfo.box(?|, ?=)
+	winfo.setpos(1, 1)
+	r = rand (14 + 1) -1
+	winfo.addstr("#{islands.at(r).getName}")
+ 	winfo.setpos(2, 1)
+	winfo.addstr("Allies:#{islands.at(r).getAllies}")
+ 	winfo.setpos(3, 1)
+	winfo.addstr("Enemies:#{islands.at(r).getEnemies}")
+	winfo.refresh
+	ch = getch
+	if(ch == "q")
+		abort("quit pacifica")
+	else(ch == "a")
+		winfo.setpos(4, 1)
+		winfo.addstr("USER INPUT: #{ch}")
+		winfo.refresh
+	end
+	  
 	end
 	
 	def make_neutral_info_window(islands)
@@ -679,13 +711,16 @@ end
 
 
 # Begin script of Pacifica (c) simulation and game
-init_screen
-noecho
-begin
-crmode
-pacifica = Pacifica.new
-pacifica.addIslands
-pacifica.make_diplomacy_window(pacifica.getIslands)
+	init_screen
+	noecho
+	begin
+	crmode
+	raw
+	pacifica = Pacifica.new
+	
+	pacifica.make_start_window
+
+	pacifica.addIslands
 
 while TRUE
 	objTemp = Array.new
@@ -777,7 +812,7 @@ while TRUE
 		when 110..119
 		pacifica.setMonth("dec")	
 	end
-		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
+		
 		
 	#Now we are going to add to each island's allies & enemies list
 	#Everyone in an alliance is an ally/trade partner to everyone else in the alliance, except for neutral
@@ -797,13 +832,14 @@ while TRUE
 			end
 			end
 		end
-
+		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_neutral_info_window(pacifica.getIslands)
-		pacifica.make_obsidian_info_window(pacifica.getIslands)
 		pacifica.make_palm_info_window(pacifica.getIslands)
 		pacifica.make_pearl_info_window(pacifica.getIslands)
-		pacifica.make_diplomacy_window(pacifica.getIslands)
+		pacifica.make_obsidian_info_window(pacifica.getIslands)
+		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
 		sleep(0.5)
+		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
 	elsif(pacifica.getCurrentTime == 120)

@@ -28,7 +28,7 @@ Hollaaa
 class Island
 
 	def initialize(kingdomId, name, size, startWealth, currentWealth, power, population,
-					popcap, shipGuildSkill, locationX, locationY)
+					popcap, shipGuildSkill, locationX, locationY, playerIsland)
 		#initializing all kingdom attributes
 		@kingdomId = kingdomId
 		@name = name
@@ -113,6 +113,7 @@ class Island
 			@team = "neutral"
 			end
 		end
+		@playerIsland = playerIsland 
 	end
 
 	def getTeam
@@ -131,27 +132,45 @@ class Island
 		@population += 25
 	end
 
+	def getPlayerIsland
+		@playerIsland
+	end
+
+	def setPlayerIsland(setBool)
+		@playerIsland = setBool
+	end
+
 	def think(islands)
 		#purge non-unique array entries
 		@allies.uniq!
 		@enemies.uniq!
 
 		r = rand(20)
-	    if(@activeWarBoats.size < 1 && @activeTradeBoats.size < 2 && r > 18 && @population > @popcap/4 && @currentWealth > @startWealth-20)
-			if(r%2 ==0)
+	  	if( r == 19 && @population > @popcap/4 && @currentWealth > @startWealth-20)
+			
 			@allies.each do |partner|
-				makeTradeBoat(partner)
+			makeTradeBoat(partner)
 			end
-			elsif(r%2 == 1)
+		
 			@enemies.each do |enemy|
-				makeWarBoat(enemy)
+			makeWarBoat(enemy)
 			end
-			end
-		else
+	    	else
 			if(r % 9 == 0)
 				babiesBorn
 			end
 		end
+	end
+=begin
+When an island prays, it can bring different things. From common to rare:
+-Baby boom
+-Ship build skill increase
+-Typhoons
+-Earthquake to an enemy island
+etc.
+=end
+	def pray
+
 	end
 
 	def findRandomEnemy
@@ -173,7 +192,7 @@ class Island
 	end
 
 	def babiesBorn
-		r = rand(3)
+		r = rand(100)
 		@population += r
 	end	
 
@@ -384,4 +403,4 @@ class Island
 	end
 
 end
-#END kingdom.rb
+#END island.rb

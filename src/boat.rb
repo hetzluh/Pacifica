@@ -97,10 +97,10 @@ class Boat
 		elsif(@shipguildSkill == 5)
 		n = 1
 		else
-		n = 5
+		n = 1
 		end
 		skillRand = rand(100)
-		if(skillRand % n == 0)
+		if(true)
 			newRand = rand(10)
 			if(newRand % 2 == 0 && (@dx > 0 || @dx < 0))
 					if(@dx > 0)
