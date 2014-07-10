@@ -60,6 +60,9 @@ class Island
 		@activeWarBoats = Array.new
 		@enemies = Array.new
 		@allies = Array.new
+		#start goal is gather resources
+		@goal = "START"
+		
 		if(@group == 1)
 			r = rand(10 + 1) - 1
 			if(r < 5)
@@ -149,21 +152,35 @@ class Island
 		@playerIsland = setBool
 	end
 
+	def updateGoal
+		if(@population>@popcap/4&&@currentWealth>10)
+			if( @currentWealth < 80)
+				@goal = "TRADING"
+			elsif(@enemies.size > 0 && @currentWealth > 79)
+				@goal = "RAIDING"
+			end
+		end
+	end
+
 	def think(islands)
 		#purge non-unique array entries
 		@allies.uniq!
 		@enemies.uniq!
+		#sets goal (might need to move into the if clause)
+		updateGoal
 
 		r = rand(20)
 	  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
 			r = rand(4)
-			if(@allies.size > r && @currentWealth < 80)
+			if(@allies.size > r && @goal=="TRADING")
 				makeTradeBoat(@allies.at(r))	
-			elsif(@enemies.size > 0 && @currentWealth > 79)	
+			elsif(@enemies.size > 0 && @goal=="RAIDING")	
 				while(@currentWealth >80)
 					r = rand(@enemies.size)
 					makeWarBoat(@enemies.at(r))
 				end
+			elsif(@goal="RETALIATING")
+				makeWarBoat(@enemies.at(-1))
 			end
 		else
 			babiesBorn
@@ -405,6 +422,8 @@ etc.
 	def attacked(numberAttacking, kingdomAttacking)
 		@population -= numberAttacking
 		@enemies.push(kingdomAttacking)
+		@goal = "RETALIATING"
+
 	end
 	
 	def addEnemy(island)
