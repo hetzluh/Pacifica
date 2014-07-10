@@ -179,7 +179,7 @@ class Island
 					r = rand(@enemies.size)
 					makeWarBoat(@enemies.at(r))
 				end
-			elsif(@goal="RETALIATING")
+			elsif(@goal=="RETALIATING")
 				makeWarBoat(@enemies.at(-1))
 			end
 		else
