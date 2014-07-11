@@ -751,6 +751,8 @@ class Pacifica
 		winfo.box(?|, ?=)
 		winfo.setpos(0, 1)
 		winfo.addstr("Diplomacy")
+		winfo.setpos(4, 1)
+		winfo.addstr("#{@islands.at(2).getName} current goal: #{@islands.at(2).getGoal}")
 		if(@diplomacyState == "main")
 			@labelsOn = false
 			winfo.setpos(2, 1)

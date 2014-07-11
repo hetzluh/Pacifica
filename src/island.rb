@@ -123,6 +123,10 @@ class Island
 		@boatsSent = 0
 	end
 
+	def getGoal
+		@goal
+	end
+
 	def getTeam
 		@team
 	end
