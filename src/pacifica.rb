@@ -847,7 +847,7 @@ class Pacifica
 			neutralInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
 			y += 1
 			neutralInfo.setpos(y, x)
-			neutralInfo.addstr("pow: #{island.getPower}")
+			neutralInfo.addstr("ship: #{island.getShipGuildSkill}")
 			y += 1
 		end
 		end
@@ -879,7 +879,7 @@ class Pacifica
 			palmInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
 			y += 1
 			palmInfo.setpos(y, x)
-			palmInfo.addstr("pow: #{island.getPower}")
+			palmInfo.addstr("ship: #{island.getShipGuildSkill}")
 			y += 2
 		end
 		end
@@ -911,7 +911,7 @@ class Pacifica
 			pearlInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
 			y += 1
 			pearlInfo.setpos(y, x)
-			pearlInfo.addstr("pow: #{island.getPower}")
+			pearlInfo.addstr("ship: #{island.getShipGuildSkill}")
 			y += 2
 		end
 		end
@@ -943,7 +943,7 @@ class Pacifica
 			obsidianInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
 			y += 1
 			obsidianInfo.setpos(y, x)
-			obsidianInfo.addstr("pow: #{island.getPower}")
+			obsidianInfo.addstr("ship: #{island.getShipGuildSkill}")
 			y += 2
 		end
 		end
