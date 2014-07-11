@@ -36,6 +36,7 @@ class Pacifica
 		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
 		@diplomacyState = "main"
 		@labelsOn = false
+		@infoState = "kingdoms" #states: events, kingdoms, neutral, palm, pearl, obsidian
 	end
 
 	def clearHazards
@@ -675,28 +676,15 @@ class Pacifica
 		@neutralAlliance.clear
 		#Adding to teams and balancing if necessary. Max alliance size is 4
 		@islands.each do |island|
-			if(island.getTeam == "pearl" && @pearlAlliance.size < 4)
+			if(island.getTeam == "pearl" && @pearlAlliance.size < 6)
 				@pearlAlliance.push(island.getName)
-			elsif(island.getTeam == "obsidian" && @obsidianAlliance.size < 4)
+			elsif(island.getTeam == "obsidian" && @obsidianAlliance.size < 6)
 				@obsidianAlliance.push(island.getName)
-			elsif(island.getTeam == "palm" && @palmAlliance.size < 4)
+			elsif(island.getTeam == "palm" && @palmAlliance.size < 6)
 				@palmAlliance.push(island.getName)
-			else
-				if(@neutralAlliance.size < 4)
-					@neutralAlliance.push(island.getName)
-					island.setTeam("neutral")
-				else
-					if(@pearlAlliance.size < 4)
-						@pearlAlliance.push(island.getName)
-						island.setTeam("pearl")
-					elsif(@obsidianAlliance.size < 4)
-						@obsidianAlliance.push(island.getName)
-						island.setTeam("obsidian")
-					elsif(@palmAlliance.size < 4)
-						@obsidianAlliance.push(island.getName)
-						island.setTeam("palm")	
-					end
-				end
+			else		
+				@neutralAlliance.push(island.getName)
+				island.setTeam("neutral")
 			end
 		end
 	end
@@ -751,14 +739,14 @@ class Pacifica
 		winfo.box(?|, ?=)
 		winfo.setpos(0, 1)
 		winfo.addstr("Diplomacy")
-		winfo.setpos(4, 1)
-		winfo.addstr("#{@islands.at(2).getName} current goal: #{@islands.at(2).getGoal}")
 		if(@diplomacyState == "main")
 			@labelsOn = false
 			winfo.setpos(2, 1)
 			winfo.addstr("t. Trade Canoe\t\t\tw. War Canoe")
 			winfo.setpos(3, 1)
 			winfo.addstr("m. Island names on\t\tp. Pray")
+			winfo.setpos(4, 1)
+			winfo.addstr("i. Toggle info window, events / kingdoms")
 			winfo.refresh
 			ch = getch	
 			refresh
@@ -773,6 +761,12 @@ class Pacifica
 					@diplomacyState = "praying"
 				elsif(ch == 'm')
 					@diplomacyState = "mapMode"
+				elsif(ch == 'i')
+					if(@infoState == "kingdoms")
+						@infoState = "events"
+					elsif(@infoState == "events")
+						@infoState = "kingdoms"
+					end
 				end
 			end
 		elsif(@diplomacyState == "sendingTrade")
@@ -824,133 +818,93 @@ class Pacifica
 		  
 	end
 	
-	def make_neutral_info_window(islands)
-	  neutralInfo = Window.new(24, 12, (((42-25)/2)-2), 64+((168-100)/2))
-	  neutralInfo.box(?|, ?-)
- 	  x = 1
-	  y = 0
-	  neutralInfo.setpos(y, x)
-	  neutralInfo.addstr("Neutral")
-	  y += 1
-	  neutralInfo.setpos(y, x)
-	  neutralInfo.addstr("**********")
+	def make_info_window(islands)
+	info = Window.new(24, 48, (((42-25)/2)-2), 64+((168-100)/2))
+	info.box(?|, ?-)
+ 	x = 1
+	y = 0
+	info.setpos(y, x)
+	if (@infoState == "kingdoms")
+	 	  info.addstr("-Events--------|Kingdoms|")
+		  y += 2
+		  info.setpos(y, x)
+		  info.addstr("Kingdom\tWealth\tPow\tShip\tPop/Cap")
+		  y += 1
+		  info.setpos(y, x)
+		  info.addstr("--------------------------------------neutral")
+			@islands.each do |island|
+				if(island.getTeam == "neutral")
+					y += 1
+					info.setpos(y, x)
+					if(island.getName.size < 7)
+					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					else
+info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					end
+				end
+			end
+		y += 1
+		info.setpos(y, x)
+		info.addstr("-----------------------------------------palm")
+			@islands.each do |island|
+				if(island.getTeam == "palm")
+					y += 1
+					info.setpos(y, x)
+					if(island.getName.size < 7)
+					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					else
+info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					end
+				end
+			end
+		y += 1
+		info.setpos(y, x)
+		info.addstr("----------------------------------------pearl")
+			@islands.each do |island|
+				if(island.getTeam == "pearl")
+					y += 1
+					info.setpos(y, x)
+					if(island.getName.size < 7)
+					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					else
+info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					end
+				end
+			end
+		y += 1
+		info.setpos(y, x)
+		info.addstr("-------------------------------------obsidian")
+			@islands.each do |island|
+				if(island.getTeam == "obsidian")
+					y += 1
+					info.setpos(y, x)
+					if(island.getName.size < 7)
+					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					else
+info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					end
+				end
+			end
+	info.refresh
+	end
+	if (@infoState == "events")
+	 	info.addstr("|Events|--------Kingdoms-")
+		y = 2
+		x = 1
 		@islands.each do |island|
-		if(island.getTeam == "neutral")
-			y += 1
-			neutralInfo.setpos(y, x)
-			neutralInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
-			y += 1
-			neutralInfo.setpos(y, x)
-			neutralInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
-			y += 1
-			neutralInfo.setpos(y, x)
-			neutralInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
-			y += 1
-			neutralInfo.setpos(y, x)
-			neutralInfo.addstr("ship: #{island.getShipGuildSkill}")
-			y += 1
+		info.setpos(y, x)
+			if(island.getName.size < 7)
+			info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\tcurrent goal: #{island.getGoal}")
+			y+=1
+			else
+			info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\tcurrent goal: #{island.getGoal}")
+			y+=1
+			end
 		end
-		end
-	  neutralInfo.setpos(23, x)
-	  neutralInfo.addstr("**********")
-	  neutralInfo.refresh
+		info.refresh
+	end
 	end
 
-	def make_palm_info_window(islands)
-	  palmInfo = Window.new(24, 12, (((42-25)/2)-2), 76+((168-100)/2))
-	  palmInfo.box(?|, ?-)
- 	  x = 1
-	  y = 0
-	  palmInfo.setpos(y, x)
-	  palmInfo.addstr("Palm")
-	  y += 1
-	  palmInfo.setpos(y, x)
-	  palmInfo.addstr("**********")
-	  y += 1
-		@islands.each do |island|
-		if(island.getTeam == "palm")
-			palmInfo.setpos(y, x)
-			palmInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
-			y += 1
-			palmInfo.setpos(y, x)
-			palmInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
-			y += 1
-			palmInfo.setpos(y, x)
-			palmInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
-			y += 1
-			palmInfo.setpos(y, x)
-			palmInfo.addstr("ship: #{island.getShipGuildSkill}")
-			y += 2
-		end
-		end
-	  palmInfo.setpos(23, x)
-	  palmInfo.addstr("**********")
-	  palmInfo.refresh
-	end
-
-	def make_pearl_info_window(islands)
-	  pearlInfo = Window.new(24, 12, (((42-25)/2)-2), 88+((168-100)/2))
-	  pearlInfo.box(?|, ?-)
-	  x = 1
-	  y = 0
-	  pearlInfo.setpos(y, x)
-	  pearlInfo.addstr("Pearl")
-	  y += 1
-	  pearlInfo.setpos(y, x)
-	  pearlInfo.addstr("**********")
-	  y += 1
-		@islands.each do |island|
-		if(island.getTeam == "pearl")
-			pearlInfo.setpos(y, x)
-			pearlInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
-			y += 1
-			pearlInfo.setpos(y, x)
-			pearlInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
-			y += 1
-			pearlInfo.setpos(y, x)
-			pearlInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
-			y += 1
-			pearlInfo.setpos(y, x)
-			pearlInfo.addstr("ship: #{island.getShipGuildSkill}")
-			y += 2
-		end
-		end
-	  pearlInfo.setpos(23, x)
-	  pearlInfo.addstr("**********")
-	  pearlInfo.refresh
-	end
-
-	def make_obsidian_info_window(islands)
-	  obsidianInfo = Window.new(24, 12, (((42-25)/2)-2), 100+((168-100)/2))
-	  obsidianInfo.box(?|, ?-)
- 	  x = 1
-	  y = 0
-	  obsidianInfo.setpos(y, x)
-	  obsidianInfo.addstr("Obsidian")
-	  y += 1
-	  obsidianInfo.setpos(y, x)
-	  obsidianInfo.addstr("**********")
-	  y += 1
-		@islands.each do |island|
-		if(island.getTeam == "obsidian")
-			obsidianInfo.setpos(y, x)
-			obsidianInfo.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
-			y += 1
-			obsidianInfo.setpos(y, x)
-			obsidianInfo.addstr("$: $#{island.getCurrentWealth.to_i}")
-			y += 1
-			obsidianInfo.setpos(y, x)
-			obsidianInfo.addstr("P: #{island.getPopulation}/#{island.getPopCap}")
-			y += 1
-			obsidianInfo.setpos(y, x)
-			obsidianInfo.addstr("ship: #{island.getShipGuildSkill}")
-			y += 2
-		end
-		end
-	  obsidianInfo.setpos(23, x)
-	  obsidianInfo.addstr("**********")
-	  obsidianInfo.refresh
-	end
 end	
 
 
@@ -1080,10 +1034,7 @@ while TRUE
 		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
 		pacifica.make_kingdom_info_window
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
-		pacifica.make_neutral_info_window(pacifica.getIslands)
-		pacifica.make_palm_info_window(pacifica.getIslands)
-		pacifica.make_pearl_info_window(pacifica.getIslands)
-		pacifica.make_obsidian_info_window(pacifica.getIslands)
+		pacifica.make_info_window(pacifica.getIslands)
 		sleep(0.4)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
