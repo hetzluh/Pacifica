@@ -88,22 +88,22 @@ class Boat
 	def move
 		moveNow = false
 		if(@shipGuildSkill == 1)
-			moveRand = rand(4 - 1) + 1
+			moveRand = rand(3 - 1) + 1
 			if (moveRand == 2)
 				moveNow = true
 			end
 		elsif(@shipGuildSkill == 2)
-			moveRand = rand(4 - 1) + 1
+			moveRand = rand(3 - 1) + 1
 			if (moveRand < 2)
 				moveNow = true
 			end
 		elsif(@shipGuildSkill == 3)
-			moveRand = rand(5 - 1) + 1
+			moveRand = rand(4 - 1) + 1
 			if (moveRand < 3)
 				moveNow = true
 			end
 		elsif(@shipGuildSkill == 4)
-			moveRand = rand(6 - 1) + 1
+			moveRand = rand(5 - 1) + 1
 			if (moveRand < 4)
 				moveNow = true
 			end

@@ -414,7 +414,7 @@ etc.
 		@activeTradeBoats.push(tradeBoat)
 		@boatsSent += 1
 
-		if(@boatsSent % 10 == 0)
+		if(@boatsSent % 10 == 0 && @shipGuildSkill < 5)
 			@shipGuildSkill += 1
 		end
 	end
