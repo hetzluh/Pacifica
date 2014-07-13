@@ -26,34 +26,34 @@ Chance to join an alliance at start is decided by island group:
 
 
 Western Island Cluster:
-Palm:		40%
-Pearl: 		30%
-Obsidian: 	20%
-Neutral: 	10%
+Palm:		30%
+Pearl: 		20%
+Obsidian: 	10%
+Neutral: 	40%
 
 Powerhouses:
 Palm:		10%
 Pearl: 		20%
-Obsidian: 	50%
-Neutral: 	20%
+Obsidian: 	30%
+Neutral: 	40%
 
 Far-flung Traders:
-Palm:		20%
-Pearl: 		50%
+Palm:		10%
+Pearl: 		30%
 Obsidian: 	20%
-Neutral: 	10%
+Neutral: 	40%
 
 Central Pair:
-Palm:		30%
-Pearl: 		30%
-Obsidian: 	30%
-Neutral: 	10%
+Palm:		20%
+Pearl: 		20%
+Obsidian: 	20%
+Neutral: 	40%
 
 Northwest Pair:
 Palm:		20%
-Pearl: 		30%
-Obsidian: 	30%
-Neutral: 	20%
+Pearl: 		20%
+Obsidian: 	10%
+Neutral: 	50%
  
 
 

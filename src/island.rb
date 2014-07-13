@@ -66,61 +66,70 @@ class Island
 		if(@group == 1)
 			r = rand(10 + 1) - 1
 			if(r < 5)
-			@team = "palm"
-			elsif(r > 4 && r < 8)
-			@team = "pearl"
-			elsif(r == 8 || r == 9)
-			@team = "obsidian"
-			elsif(r == 10)
 			@team = "neutral"
+			elsif(r > 4 && r < 8)
+			@team = "palm"
+			elsif(r == 8 || r == 9)
+			@team = "pearl"
+			elsif(r == 10)
+			@team = "obsidian"
 			end
 		elsif(@group == 2)
 			r = rand(10 + 1) - 1
-			if(r < 6)
+			if(r < 4)
 			@team = "obsidian"
-			elsif(r == 6)
+			elsif(r == 4)
 			@team = "palm"
-			elsif(r == 7 || r == 8)
+			elsif(r == 5 || r == 6)
 			@team = "pearl"
-			elsif(r > 8)
+			elsif(r > 6)
 			@team = "neutral"
 			end
 		elsif(@group == 3)
 			r = rand(10 + 1) - 1
-			if(r < 6)
-			@team = "pearl"
-			elsif(r == 6 || r == 7)
-			@team = "palm"
-			elsif(r == 8 || r == 9)
-			@team = "obsidian"
-			elsif(r == 10)
+			if(r < 5)
 			@team = "neutral"
+			elsif(r == 5)
+			@team = "palm"
+			elsif(r == 6 || r == 7)
+			@team = "obsidian"
+			elsif(r > 7)
+			@team = "pearl"
 			end
 		elsif(@group == 4)
 			r = rand(10 + 1) - 1
-			if(r < 4)
-			@team = "palm"
-			elsif(r > 3 && r < 7)
-			@team = "pearl"
-			elsif(r > 6  && r < 10)
-			@team = "obsidian"
-			elsif(r == 10)
+			if(r < 5)
 			@team = "neutral"
+			elsif(r == 5 || r == 6)
+			@team = "pearl"
+			elsif(r == 7 || r == 8)
+			@team = "obsidian"
+			elsif(r == 9 || r == 10)
+			@team = "palm"
 			end
 		elsif(@group == 5)
 			r = rand(10 + 1) - 1
-			if(r < 4)
+			if(r < 6)
+			@team = "neutral"
+			elsif(r == 6)
 			@team = "obsidian"
-			elsif(r > 3 && r < 7)
-			@team = "pearl"
 			elsif(r == 7 || r == 8)
 			@team = "palm"
 			elsif(r == 9 || r == 10)
-			@team = "neutral"
+			@team = "pearl"
 			end
 		end
 		@playerIsland = playerIsland 
 		@boatsSent = 0
+		@playerState = "default"
+	end
+
+	def getPlayerState
+		@playerState
+	end
+
+	def setPlayerState(toSet)
+		@playerState = toSet
 	end
 
 	def getGoal
@@ -166,28 +175,47 @@ class Island
 		end
 	end
 
-	def think(islands)
+	def think(islands, playerOption, playerState)
 		#purge non-unique array entries
 		@allies.uniq!
 		@enemies.uniq!
-		#sets goal (might need to move into the if clause)
-		updateGoal
 
-		r = rand(20)
-	  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
-			r = rand(4)
-			if(@allies.size > r && @goal=="TRADING")
-				makeTradeBoat(@allies.at(r))	
-			elsif(@enemies.size > 0 && @goal=="RAIDING")	
-				while(@currentWealth >80)
-					r = rand(@enemies.size)
-					makeWarBoat(@enemies.at(r))
+		# Case for AI
+		if(@playerIsland == false)
+			#sets goal (might need to move into the if clause)
+			updateGoal
+	
+			r = rand(20)
+		  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
+				r = rand(4)
+				if(@allies.size > r && @goal=="TRADING")
+					makeTradeBoat(@allies.at(r))	
+				elsif(@enemies.size > 0 && @goal=="RAIDING")	
+					while(@currentWealth >80)
+						r = rand(@enemies.size)
+						makeWarBoat(@enemies.at(r))
+					end
+				elsif(@goal=="RETALIATING")
+					makeWarBoat(@enemies.at(-1))
 				end
-			elsif(@goal=="RETALIATING")
-				makeWarBoat(@enemies.at(-1))
+			elsif(r < 2)
+				babiesBorn
 			end
-		else
-			babiesBorn
+
+		# Case for actual player
+		elsif(@playerIsland == true)
+			if(@playerState == "default")
+			elsif(@playerState == "sendingTrade")
+				if(playerOption.is_a?(Fixnum))
+				makeTradeBoat(islands.at(playerOption.to_i).getName)
+				setPlayerState("default")
+				end
+			elsif(@playerState == "sendingWar")	
+				if(playerOption.is_a?(Fixnum))
+				makeWarBoat(islands.at(playerOption.to_i).getName)	
+				setPlayerState("default")
+				end
+			end
 		end
 	end
 =begin

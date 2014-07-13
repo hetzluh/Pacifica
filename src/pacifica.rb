@@ -36,7 +36,8 @@ class Pacifica
 		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
 		@diplomacyState = "main"
 		@labelsOn = false
-		@infoState = "kingdoms" #states: events, kingdoms, neutral, palm, pearl, obsidian
+		@infoState = "kingdoms" #states: events, kingdoms
+		@playerOption = nil
 	end
 
 	def clearHazards
@@ -252,8 +253,8 @@ class Pacifica
 		end
 		
 
-		random_earthquake_generator
-		random_typhoon_generator	
+	#	random_earthquake_generator                 /*  commented out for debug */
+	#	random_typhoon_generator	
 
 		@objects.each do |object|
 			y = object.getLocationY
@@ -655,7 +656,11 @@ class Pacifica
 			if(@moon == 1 && @month == "jan")
 				island.yearlyPopExplosion
 			end
-			island.think(@islands)
+			if(island.getPlayerIsland == false)
+				island.think(@islands, nil ,nil)
+			elsif(island.getPlayerIsland == true)
+				island.think(@islands, @playerOption, island.getPlayerState)
+			end
 		end
 		@islands.each do |island|
 			island.getActiveTradeBoats.each do |boat|
@@ -734,6 +739,7 @@ class Pacifica
 	end
 
 	def make_diplomacy_window(islands)
+		@playerOption = nil
 		winfo = Window.new(7, 64, 30, (168-100)/2)
 		raw
 		winfo.box(?|, ?=)
@@ -749,14 +755,17 @@ class Pacifica
 			winfo.addstr("i. Toggle info window, events / kingdoms")
 			winfo.refresh
 			ch = getch	
-			refresh
 			if(ch == 'q')
 				abort("quit pacifica")
 			else
 				if(ch == 't')
 					@diplomacyState = "sendingTrade"
+					@playerIsland.setPlayerState("sendingTrade")
+					ch = nil
 				elsif(ch == 'w')
 					@diplomacyState = "sendingWar"
+					@playerIsland.setPlayerState("sendingWar")
+					ch = nil
 				elsif(ch == 'p')
 					@diplomacyState = "praying"
 				elsif(ch == 'm')
@@ -773,32 +782,32 @@ class Pacifica
 			winfo.setpos(1, 1)
 			winfo.addstr("Select where you would like to send a trade boat:")
 			winfo.refresh
-			ch = getch	
-			winfo.setpos(4, 1)
-			winfo.addstr("USER INPUT: #{ch}")
-			winfo.setpos(4, 16)
-			winfo.addstr("back: ENTER")
-			refresh
+			ch = getch
+			@playerOption = ch.to_i	
+			winfo.refresh
 				if(ch == 'q')
 					abort("quit pacifica")
 				end
 			@diplomacyState = "main"
+			playerIsland.setPlayerState("default")
 		elsif(@diplomacyState == "sendingWar")
 			winfo.setpos(1, 1)
 			winfo.addstr("Select where you would like to send a war boat:")
 			winfo.refresh
-			ch = getch	
-			refresh
+			ch = getch
+			@playerOption = ch.to_i			
+			winfo.refresh
 				if(ch == 'q')
 					abort("quit pacifica")
 				end
 			@diplomacyState = "main"	
+			playerIsland.setPlayerState("default")
 		elsif(@diplomacyState == "mapMode")
 			@labelsOn = true
 			winfo.setpos(1, 1)
 			winfo.addstr("Map labels on, press enter to go back")
 			winfo.refresh
-			ch = getch	
+			ch = getch
 			refresh
 				if(ch == 'q')
 					abort("quit pacifica")
@@ -808,7 +817,8 @@ class Pacifica
 			winfo.setpos(1, 1)
 			winfo.addstr("We are praying to the gods")
 			winfo.refresh
-			ch = getch	
+			ch = getch
+			@playerOption = ch		
 			refresh
 				if(ch == 'q')
 					abort("quit pacifica")
@@ -901,6 +911,9 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 			y+=1
 			end
 		end
+		y += 2
+		info.setpos(y, x)
+		info.addstr("Player #{@playerIsland.getName.slice(0,1).capitalize+@playerIsland.getName.slice(1..-1)}\t\tcurrent state: #{@playerIsland.getPlayerState}")
 		info.refresh
 	end
 	end
@@ -1035,7 +1048,7 @@ while TRUE
 		pacifica.make_kingdom_info_window
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_info_window(pacifica.getIslands)
-		sleep(0.4)
+		sleep(0.1)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
