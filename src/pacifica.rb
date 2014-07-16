@@ -1030,9 +1030,9 @@ class Pacifica
 					y += 1
 					info.setpos(y, x)
 					if(island.getName.size < 7)
-					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getAllies}")
 					else
-info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
+info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getAllies}")
 					end
 				end
 			end
@@ -1221,8 +1221,6 @@ while TRUE
 	#Everyone in an alliance is an ally/trade partner to everyone else in the alliance, except for neutral
 	#Palms and obsidians are enemies at start
 		pacifica.getIslands.each do |island1|
-			island1.getAllies.clear
-			island1.getEnemies.clear
 			pacifica.getIslands.each do |island2|	
 			if((island1.getName != island2.getName) && (island1.getTeam != "neutral") && (island1.getTeam == island2.getTeam))
 				island1.addAlly(island2.getName)

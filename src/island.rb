@@ -169,7 +169,7 @@ class Island
 		if(@population>@popcap/4&&@currentWealth>10)
 			if( @currentWealth < 80)
 				@goal = "TRADING"
-			elsif(@enemies.size > 0 && @currentWealth > 79)
+			elsif(@enemies.size > 0 && @currentWealth > 179)
 				@goal = "RAIDING"
 			end
 		end
@@ -187,8 +187,8 @@ class Island
 	
 			r = rand(20)
 		  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
-				r = rand(4)
-				if(@allies.size > r && @goal=="TRADING")
+				r = rand(@allies.size)
+				if(@allies.size > 0 && @goal=="TRADING")
 					makeTradeBoat(@allies.at(r))	
 				elsif(@enemies.size > 0 && @goal=="RAIDING")	
 					while(@currentWealth >80)
@@ -470,7 +470,7 @@ etc.
 		@population += numberCrew
 		@currentWealth += 7
 		if(@allies.length < 4 && @enemies.include?(kingdomTrading) == false)
-			@allies.push(kingdomTrading)
+			addAlly(kingdomTrading)
 		end
 	end
 
