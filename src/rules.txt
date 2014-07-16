@@ -64,3 +64,15 @@ Ship Guild Skill -> int, 1-5, determines boat effectiveness
 	4:	Boat moves 3/4 of the time, hazard kills 3 crew
 	5:	Boat moves every time, hazard kills 1 crew
 
+
+Typhoon Frequency:
+	SOURCE: http://en.wikipedia.org/wiki/Typhoon#Frequency
+	
+	The math works out.
+
+	Actual number of hurricanes per month on average/3, except for jan-feb-mar
+	
+	These have the actual rate of spawn, but can not make large typhoons
+		
+
+

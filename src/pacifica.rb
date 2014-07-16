@@ -38,6 +38,7 @@ class Pacifica
 		@labelsOn = false
 		@infoState = "kingdoms" #states: events, kingdoms
 		@playerOption = nil
+		@first_make_game = true
 	end
 
 	def clearHazards
@@ -251,11 +252,13 @@ class Pacifica
 		else
 		win.addstr("Moon:  #{moon}, Month: #{month}, Year: #{year}")
 		end
+	
 		
-
-	#	random_earthquake_generator                 /*  commented out for debug */
-	#	random_typhoon_generator	
-
+		random_earthquake_generator                 
+		#random_typhoon_generator	
+		
+		calendar_typhoon_generator		
+	
 		@objects.each do |object|
 			y = object.getLocationY
 			x = object.getLocationX
@@ -263,7 +266,9 @@ class Pacifica
 			boatHitY = false
 			win.setpos(y, x)
 			if(object.class.name == "Earthquake" && @labelsOn == false)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				win.addstr("E")
+				win.attroff(color_pair(COLOR_RED)|A_NORMAL)
 			elsif(object.class.name == "Boat" && @labelsOn == false)
 				#if boat has arrived at destination, effect happens				
 				if(object.getDx == 0 && object.getDy == 0)
@@ -335,11 +340,19 @@ class Pacifica
 					end
 				end
 				#display boat and decide whether it has been damaged
+				
+
+				
 				if(object.getType == "trade")
+					win.attron(color_pair(COLOR_YELLOW)|A_NORMAL)
 					win.addstr("T")
+					win.attroff(color_pair(COLOR_YELLOW)|A_NORMAL)
 				elsif(object.getType == "war")
+					win.attron(color_pair(COLOR_MAGENTA)|A_NORMAL)
 					win.addstr("W")
+					win.attroff(color_pair(COLOR_MAGENTA)|A_NORMAL)
 				end
+				
 				@hazardLocationsX.each do |hazard|
 					if(object.getLocationX == hazard)
 						boatHitX = true
@@ -356,6 +369,7 @@ class Pacifica
 					object.damage
 				end
 			elsif(object.class.name == "Typhoon" && @labelsOn == false)
+			win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
 			win.addstr("@")
 				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3)
 					win.setpos(y, x-1)
@@ -395,7 +409,9 @@ class Pacifica
 					win.setpos(y+2, x)
 					win.addstr("v")
 				end
+				win.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
 			elsif(object.class.name == "Tsunami" && @labelsOn == false)
+			win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
 			win.addstr("~")
 				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3 ||
 					object.getSize == 4 || object.getSize == 5)
@@ -429,6 +445,7 @@ class Pacifica
 					win.addstr("~")
 				end
 			end	
+			win.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
 		end
 		
 		@islands.each do |island|
@@ -457,9 +474,11 @@ class Pacifica
 
 			#Kingdom-specific graphics start now
 			if (island.getName == "kiribati")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y-1, x)
 				win.addstr(".")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y, x+2)
 				win.addstr("kiribati")
@@ -467,9 +486,11 @@ class Pacifica
 			end
 	
 			if (island.getName == "kwajaleins")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y, x-1)
 				win.addstr("'")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y-1, x+1)
 				win.addstr("kwajaleins")
@@ -477,6 +498,7 @@ class Pacifica
 			end
 	
 			if (island.getName == "hawaii")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*O")
 				win.setpos(y-1, x-1)
 				win.addstr(",")
@@ -484,6 +506,7 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y-1, x-5)
 				win.addstr("'")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-2)
 				win.addstr("hawaii")
@@ -491,9 +514,11 @@ class Pacifica
 			end
 			
 			if (island.getName == "samoa")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y, x-1)
 				win.addstr("o")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-2)
 				win.addstr("samoa")
@@ -501,9 +526,11 @@ class Pacifica
 			end
 	
 			if (island.getName == "tokelau")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y-1, x-1)
 				win.addstr(".")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-2)
 				win.addstr("tokelau")
@@ -511,11 +538,13 @@ class Pacifica
 			end
 	
 			if (island.getName == "tuvalu")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y, x+1)
 				win.addstr(".")
 				win.setpos(y, x-1)
 				win.addstr("'")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-3)
 				win.addstr("tuvalu")
@@ -523,11 +552,13 @@ class Pacifica
 			end
 	
 			if (island.getName == "vanuatu")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y, x+1)
 				win.addstr(".")
 				win.setpos(y, x+2)
 				win.addstr("o")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-2)
 				win.addstr("vanuatu")
@@ -535,11 +566,13 @@ class Pacifica
 			end
 	
 			if (island.getName == "fiji")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y-1, x+1)
 				win.addstr(",")
 				win.setpos(y, x-1)
 				win.addstr("'")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-2)
 				win.addstr("fiji")
@@ -547,9 +580,11 @@ class Pacifica
 			end
 	
 			if (island.getName == "tonga")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y-1, x)
 				win.addstr(".")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-2)
 				win.addstr("tonga")
@@ -557,7 +592,9 @@ class Pacifica
 			end
 	
 			if (island.getName == "takutea")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-3)
 				win.addstr("takutea")
@@ -565,7 +602,9 @@ class Pacifica
 			end
 	
 			if (island.getName == "tahiti")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-2)
 				win.addstr("tahiti")
@@ -573,6 +612,7 @@ class Pacifica
 			end
 			
 			if (island.getName == "tuamotus")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("*")
 				win.setpos(y, x+2)
 				win.addstr(",")
@@ -580,6 +620,7 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y+1, x+1)
 				win.addstr("'")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y-2, x-4)
 				win.addstr("tuamotus")
@@ -587,7 +628,9 @@ class Pacifica
 			end
 	
 			if (island.getName == "rapa nui")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("* o")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x-4)
 				win.addstr("rapa nui")
@@ -595,11 +638,13 @@ class Pacifica
 			end
 			
 			if (island.getName == "aotearoa")
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				win.addstr("oo*")
 				win.setpos(y-1, x-1)
 				win.addstr(".")
 				win.setpos(y+1, x-1)
 				win.addstr("ooo")
+				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@labelsOn == true)
 				win.setpos(y+1, x+4)
 				win.addstr("aotearoa")
@@ -694,6 +739,144 @@ class Pacifica
 		end
 	end
 
+=begin
+		Reminder:
+		Jan - 50% chance of 1
+		Feb - 20% chance of 1
+		Mar - 40% chance of 1
+		Apr - 60% chance of 1
+		May - 1 - 2
+		Jun - 1 - 2
+		Jul - 3 - 4
+		Aug - 5 - 6
+		Sep - 4 - 5
+		Oct - 4
+		Nov - 2 - 3
+		Dec - 1 - 2
+=end
+		
+	def make_large_typhoon
+		sz = 3
+		sX = rand(46-10) + 10
+		sY = rand(14-1) + 1
+		dX = rand(11-2) + 2
+		dY = rand(4-1) + 1
+		typhoon1 = Typhoon.new(sz, sX, sY, dX, dY, @currentTime)
+		addObject(typhoon1)
+	end
+
+	def make_small_typhoon
+		sz = rand(3)
+		sX = rand(40-11) + 11
+		sY = rand(13-1) + 1
+		dX = rand(10-3) + 3
+		dY = rand(3-1) + 1
+		typhoon1 = Typhoon.new(sz, sX, sY, dX, dY, @currentTime)
+		addObject(typhoon1)
+	end
+
+	def calendar_typhoon_generator
+		if(@month == "jan")
+			r = rand(20)
+			if(r == 1)
+			make_small_typhoon
+			end
+		elsif(@month == "feb")
+			r = rand(50)
+			if(r == 1)
+			make_small_typhoon
+			end
+		elsif(@month == "mar")
+			r = rand(50)
+			if(r < 2)
+			make_small_typhoon
+			end
+		elsif(@month == "apr")
+			r = rand(50)
+			if(r < 4)
+				if(r == 1)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end
+			end
+		elsif(@month == "may")
+			r = rand(100)
+			if(r < 12/3)
+				if(r < 1)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end
+			end
+		elsif(@month == "jun")
+			r = rand(100)
+			if(r < 18/3)
+				if(r < 2)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end
+			end
+		elsif(@month == "jul")
+			r = rand(100)
+			if(r < 39/3)
+				if(r < 5)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end
+			end
+		elsif(@month == "aug")
+			r = rand(100)
+			if(r < 57/3)
+				if(r < 8)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end	
+			end
+		elsif(@month == "sep")
+			r = rand(100)
+			if(r < 51/3)
+				if(r < 7)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end	
+			end
+		elsif(@month == "oct")
+			r = rand(100)
+			if(r < 42/3)
+				if(r < 5)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end	
+			end
+		elsif(@month == "nov")
+			r = rand(100)
+			if(r < 27/3)
+				if(r < 2)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end	
+			end
+		elsif(@month == "dec")
+			r = rand(100)
+			if(r < 12/3)
+				if(r < 1)
+				make_large_typhoon
+				else
+				make_small_typhoon
+				end	
+			end
+		end
+	end
+	
+		
+	# This method will not be used in actual gameplay/final implementation	
 	def random_typhoon_generator
 		
 		#Normal Typhoon
@@ -922,11 +1105,19 @@ end
 
 
 # Begin script of Pacifica (c) simulation and game
-	init_screen
-	noecho
+	Curses.init_screen
+	Curses.start_color
+	Curses.init_pair(COLOR_BLUE,COLOR_BLUE,COLOR_BLUE) 
+	Curses.init_pair(COLOR_RED,COLOR_RED,COLOR_BLACK)
+	Curses.init_pair(COLOR_CYAN,COLOR_CYAN,COLOR_BLACK) 
+	Curses.init_pair(COLOR_GREEN,COLOR_GREEN,COLOR_BLACK)
+	Curses.init_pair(COLOR_YELLOW,COLOR_YELLOW,COLOR_BLACK) 
+	Curses.init_pair(COLOR_MAGENTA,COLOR_MAGENTA,COLOR_BLACK)
+	Curses.init_pair(COLOR_WHITE,COLOR_WHITE,COLOR_BLACK) 
+	Curses.noecho
 	begin
-	crmode
-	raw
+	Curses.crmode
+	Curses.raw
 	pacifica = Pacifica.new
 	
 	pacifica.addIslands
@@ -1048,7 +1239,7 @@ while TRUE
 		pacifica.make_kingdom_info_window
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_info_window(pacifica.getIslands)
-		sleep(0.1)
+		sleep(0.2)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
@@ -1058,7 +1249,7 @@ while TRUE
 	end
 end
 ensure
-  close_screen
+  Curses.close_screen
 end
 
 

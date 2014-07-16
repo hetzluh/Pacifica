@@ -2,7 +2,7 @@
 
 
 require './boat.rb'
-require "curses"
+require "ncurses"
 include Curses
 
 =begin
