@@ -36,7 +36,7 @@ class Pacifica
 		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
 		@diplomacyState = "main"
 		@labelsOn = false
-		@infoState = "kingdoms" #states: events, kingdoms
+		@infoState = "kingdoms" #states: kingdoms, events, allies, enemies, help
 		@playerOption = nil
 		@first_make_game = true
 	end
@@ -265,11 +265,11 @@ class Pacifica
 			boatHitX = false
 			boatHitY = false
 			win.setpos(y, x)
-			if(object.class.name == "Earthquake" && @labelsOn == false)
+			if(object.class.name == "Earthquake")
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				win.addstr("E")
 				win.attroff(color_pair(COLOR_RED)|A_NORMAL)
-			elsif(object.class.name == "Boat" && @labelsOn == false)
+			elsif(object.class.name == "Boat")
 				#if boat has arrived at destination, effect happens				
 				if(object.getDx == 0 && object.getDy == 0)
 					if(object.getType == "war")
@@ -334,7 +334,7 @@ class Pacifica
 						end
 						@islands.each do |island|
 							if(island.getName == object.getKingdomName)
-								island.setCurrentWealth(15)
+								island.setCurrentWealth(5)
 							end
 						end
 					end
@@ -368,7 +368,7 @@ class Pacifica
 				if(boatHitY == true)
 					object.damage
 				end
-			elsif(object.class.name == "Typhoon" && @labelsOn == false)
+			elsif(object.class.name == "Typhoon")
 			win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
 			win.addstr("@")
 				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3)
@@ -410,7 +410,7 @@ class Pacifica
 					win.addstr("v")
 				end
 				win.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
-			elsif(object.class.name == "Tsunami" && @labelsOn == false)
+			elsif(object.class.name == "Tsunami")
 			win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
 			win.addstr("~")
 				if(object.getSize == 1 || object.getSize == 2 || object.getSize == 3 ||
@@ -695,8 +695,8 @@ class Pacifica
 
 	def handle_kingdoms(islands)
 		@islands.each do |island|
-			if(@moon == 1)
-				island.monthlyPay
+			if(@moon == 1 && ((@month == "jan" && @year != 500) || @month == "jul"))
+				island.biyearlyPay
 			end
 			if(@moon == 1 && @month == "jan")
 				island.yearlyPopExplosion
@@ -935,7 +935,7 @@ class Pacifica
 			winfo.setpos(3, 1)
 			winfo.addstr("m. Island names on\t\tp. Pray")
 			winfo.setpos(4, 1)
-			winfo.addstr("i. Toggle info window, events / kingdoms")
+			winfo.addstr("u/i. Toggle info window left/right ")
 			winfo.refresh
 			ch = getch	
 			if(ch == 'q')
@@ -957,7 +957,25 @@ class Pacifica
 					if(@infoState == "kingdoms")
 						@infoState = "events"
 					elsif(@infoState == "events")
+						@infoState = "allies"
+					elsif(@infoState == "allies")
+						@infoState = "enemies"
+					elsif(@infoState == "enemies")
+						@infoState = "help"
+					elsif(@infoState == "help")
 						@infoState = "kingdoms"
+					end
+				elsif(ch == 'u')
+					if(@infoState == "kingdoms")
+						@infoState = "help"
+					elsif(@infoState == "events")
+						@infoState = "kingdoms"
+					elsif(@infoState == "allies")
+						@infoState = "events"
+					elsif(@infoState == "enemies")
+						@infoState = "allies"
+					elsif(@infoState == "help")
+						@infoState = "enemies"
 					end
 				end
 			end
@@ -1018,7 +1036,7 @@ class Pacifica
 	y = 0
 	info.setpos(y, x)
 	if (@infoState == "kingdoms")
-	 	  info.addstr("-Events--------|Kingdoms|")
+	 	  info.addstr("---|Kingdoms|-Events--Allies--Enemies--Help-")
 		  y += 2
 		  info.setpos(y, x)
 		  info.addstr("Kingdom\tWealth\tPow\tShip\tPop/Cap")
@@ -1030,9 +1048,9 @@ class Pacifica
 					y += 1
 					info.setpos(y, x)
 					if(island.getName.size < 7)
-					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getAllies}")
+					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
-info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getAllies}")
+info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					end
 				end
 			end
@@ -1081,7 +1099,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 	info.refresh
 	end
 	if (@infoState == "events")
-	 	info.addstr("|Events|--------Kingdoms-")
+	 	info.addstr("----Kingdoms-|Events|-Allies--Enemies--Help-")
 		y = 2
 		x = 1
 		@islands.each do |island|
@@ -1099,8 +1117,77 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 		info.addstr("Player #{@playerIsland.getName.slice(0,1).capitalize+@playerIsland.getName.slice(1..-1)}\t\tcurrent state: #{@playerIsland.getPlayerState}")
 		info.refresh
 	end
+	if (@infoState == "allies")
+		info.addstr("----Kingdoms--Events-|Allies|-Enemies--Help-")
+			@islands.each do |island|
+				y += 1
+				info.setpos(y, x)
+				if(island.getName.size < 7)
+				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getAllies}")
+				else
+				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getAllies}")
+				end
+			end
+		info.refresh
 	end
-
+	if (@infoState == "enemies")
+		info.addstr("----Kingdoms--Events--Allies-|Enemies|-Help-")
+		@islands.each do |island|
+				y += 1
+				info.setpos(y, x)
+				if(island.getName.size < 7)
+				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getEnemies}")
+				else
+				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getEnemies}")
+				end
+			end
+		info.refresh
+	end
+	if (@infoState == "help")
+		info.addstr("----Kingdoms--Events--Allies--Enemies-|Help|")
+		info.setpos(19, x)
+		info.addstr("**********************************************")
+		info.setpos(20, x)
+		info.addstr("Key:")
+		info.setpos(21, x)
+		info.addstr("Island:")
+		info.setpos(21, x+8)
+		info.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+		info.addstr("*")
+		info.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
+		info.setpos(21, x+11)
+		info.addstr("Trade canoe:")
+		info.setpos(21, x+24)
+		info.attron(color_pair(COLOR_YELLOW)|A_NORMAL)
+		info.addstr("T")
+		info.attroff(color_pair(COLOR_YELLOW)|A_NORMAL)
+		info.setpos(21, x+27)
+		info.addstr("War canoe:")
+		info.setpos(21, x+38)
+		info.attron(color_pair(COLOR_MAGENTA)|A_NORMAL)
+		info.addstr("W")
+		info.attroff(color_pair(COLOR_MAGENTA)|A_NORMAL)
+		info.setpos(22, x)
+		info.addstr("Tsunami:")
+		info.setpos(22, x+9)
+		info.attron(color_pair(COLOR_CYAN)|A_NORMAL)
+		info.addstr("~")
+		info.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
+		info.setpos(22, x+12)
+		info.addstr("Earthquake:")
+		info.setpos(22, x+24)
+		info.attron(color_pair(COLOR_RED)|A_NORMAL)
+		info.addstr("E")
+		info.attroff(color_pair(COLOR_RED)|A_NORMAL)
+		info.setpos(22, x+27)
+		info.addstr("Typhoon:")
+		info.setpos(22, x+37)
+		info.attron(color_pair(COLOR_CYAN)|A_NORMAL)
+		info.addstr("(@)")
+		info.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
+		info.refresh
+	end
+	end
 end	
 
 

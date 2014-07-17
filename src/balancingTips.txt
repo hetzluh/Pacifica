@@ -1,0 +1,13 @@
+The answer is: Entropy Filter.
+
+Otherwise known as Trial and Error, or (Natural) Selection. It's the oldest design trick in the book, it's literally the very first trick, billions of years old, and still in use today.
+
+So, what you do is you rig up your system with random weights for its values. Then you run it forward and chart its "balance" whatever that means. You're going to have to define that in some terms in order to select against it. Life didn't have this problem defining itself, Death provided a selection pressure.
+
+Then you record the balance and weights and then rejigger the weights and run the simulation again. Once you've done this enough times you select the best few weights and average them. This is your new baseline for your randomness. Do this a few times then reduce the amount of randomness applied to the batch of simulations.
+
+There are back-propagation tricks you can use, but life didn't need that, and neither do you in the strictest of sense.
+
+Basically any time you don't know what the solution is just just introduce randomness (entropy / chaos), then select the most favorable outcome, then repeat. Eventually the solution will emerge.
+
+I honestly don't know why they don't teach the universal laws of information propagation in elementary school.

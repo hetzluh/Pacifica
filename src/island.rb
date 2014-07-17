@@ -148,13 +148,13 @@ class Island
 		@boatsSent
 	end
 	
-	def monthlyPay
+	def biyearlyPay
 		payout = @power+@size
 		@currentWealth += payout.ceil
 	end
 
 	def yearlyPopExplosion
-		@population += 10
+		@population += 4
 	end
 
 	def getPlayerIsland
@@ -169,7 +169,7 @@ class Island
 		if(@population>@popcap/4&&@currentWealth>10)
 			if( @currentWealth < 80)
 				@goal = "TRADING"
-			elsif(@enemies.size > 0 && @currentWealth > 179)
+			elsif(@enemies.size > 0 && @currentWealth > 79)
 				@goal = "RAIDING"
 			end
 		end
@@ -190,10 +190,20 @@ class Island
 				r = rand(@allies.size)
 				if(@allies.size > 0 && @goal=="TRADING")
 					makeTradeBoat(@allies.at(r))	
+					r2 = rand(4)
+						if (r2 == 0)	
+							newTradePartner(islands)
+						end
 				elsif(@enemies.size > 0 && @goal=="RAIDING")	
 					while(@currentWealth >80)
+						if(@enemies.size > 0)
 						r = rand(@enemies.size)
 						makeWarBoat(@enemies.at(r))
+						break
+						elsif(@enemies.size == 0)
+						findRandomEnemy(islands)
+						end
+						
 					end
 				elsif(@goal=="RETALIATING")
 					makeWarBoat(@enemies.at(-1))
@@ -230,9 +240,11 @@ etc.
 
 	end
 
-	def findRandomEnemy
-		r = rand(@enemies.length - 1) + 1
-		@enemies.at(r)
+	def findRandomEnemy(islands)
+		r = rand(islands.size)
+		if(islands.at(r).getName != @name && @allies.include?(islands.at(r).getName) == false && @enemies.include?(islands.at(r).getName))
+		addEnemy(islands.at(r).getName)	
+		end
 	end
 
 	def newTradePartner(islands)
@@ -249,7 +261,7 @@ etc.
 	end
 
 	def babiesBorn
-		r = rand(4)
+		r = rand(2)
 		@population += r	
 		if(@population > @popcap)
 			@population = @popcap
@@ -468,7 +480,7 @@ etc.
 
 	def traded(numberCrew, kingdomTrading)
 		@population += numberCrew
-		@currentWealth += 7
+		@currentWealth += 3
 		if(@allies.length < 4 && @enemies.include?(kingdomTrading) == false)
 			addAlly(kingdomTrading)
 		end
