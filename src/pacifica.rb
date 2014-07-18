@@ -35,10 +35,14 @@ class Pacifica
 		@neutralAlliance = Array.new
 		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
 		@diplomacyState = "main"
-		@labelsOn = false
+		@mapMode = false
 		@infoState = "kingdoms" #states: kingdoms, events, allies, enemies, help
 		@playerOption = nil
 		@first_make_game = true
+		@alliesText = "OFF"
+		@enemiesText = "ON"
+		@alliesBlue = false
+		@enemiesRed = false
 	end
 
 	def clearHazards
@@ -254,8 +258,7 @@ class Pacifica
 		end
 	
 		
-		random_earthquake_generator                 
-		#random_typhoon_generator	
+		random_earthquake_generator                 	
 		
 		calendar_typhoon_generator		
 	
@@ -475,11 +478,17 @@ class Pacifica
 			#Kingdom-specific graphics start now
 			if (island.getName == "kiribati")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y-1, x)
 				win.addstr(".")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y, x+2)
 				win.addstr("kiribati")
 				end			
@@ -487,11 +496,17 @@ class Pacifica
 	
 			if (island.getName == "kwajaleins")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y, x-1)
 				win.addstr("'")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y-1, x+1)
 				win.addstr("kwajaleins")
 				end
@@ -499,6 +514,12 @@ class Pacifica
 	
 			if (island.getName == "hawaii")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*O")
 				win.setpos(y-1, x-1)
 				win.addstr(",")
@@ -506,8 +527,8 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y-1, x-5)
 				win.addstr("'")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-2)
 				win.addstr("hawaii")
 				end
@@ -515,11 +536,17 @@ class Pacifica
 			
 			if (island.getName == "samoa")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y, x-1)
 				win.addstr("o")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-2)
 				win.addstr("samoa")
 				end
@@ -527,11 +554,17 @@ class Pacifica
 	
 			if (island.getName == "tokelau")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y-1, x-1)
 				win.addstr(".")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-2)
 				win.addstr("tokelau")
 				end
@@ -539,13 +572,19 @@ class Pacifica
 	
 			if (island.getName == "tuvalu")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y, x+1)
 				win.addstr(".")
 				win.setpos(y, x-1)
 				win.addstr("'")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-3)
 				win.addstr("tuvalu")
 				end
@@ -553,13 +592,19 @@ class Pacifica
 	
 			if (island.getName == "vanuatu")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y, x+1)
 				win.addstr(".")
 				win.setpos(y, x+2)
 				win.addstr("o")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-2)
 				win.addstr("vanuatu")
 				end
@@ -567,13 +612,19 @@ class Pacifica
 	
 			if (island.getName == "fiji")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y-1, x+1)
 				win.addstr(",")
 				win.setpos(y, x-1)
 				win.addstr("'")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-2)
 				win.addstr("fiji")
 				end
@@ -581,11 +632,17 @@ class Pacifica
 	
 			if (island.getName == "tonga")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y-1, x)
 				win.addstr(".")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-2)
 				win.addstr("tonga")
 				end
@@ -593,9 +650,15 @@ class Pacifica
 	
 			if (island.getName == "takutea")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-3)
 				win.addstr("takutea")
 				end
@@ -603,9 +666,15 @@ class Pacifica
 	
 			if (island.getName == "tahiti")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-2)
 				win.addstr("tahiti")
 				end
@@ -613,6 +682,12 @@ class Pacifica
 			
 			if (island.getName == "tuamotus")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("*")
 				win.setpos(y, x+2)
 				win.addstr(",")
@@ -620,8 +695,8 @@ class Pacifica
 				win.addstr(".")
 				win.setpos(y+1, x+1)
 				win.addstr("'")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y-2, x-4)
 				win.addstr("tuamotus")
 				end
@@ -629,9 +704,15 @@ class Pacifica
 	
 			if (island.getName == "rapa nui")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("* o")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x-4)
 				win.addstr("rapa nui")
 				end
@@ -639,13 +720,19 @@ class Pacifica
 			
 			if (island.getName == "aotearoa")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				win.attron(color_pair(COLOR_RED)|A_NORMAL)
+				end
+				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+				end
 				win.addstr("oo*")
 				win.setpos(y-1, x-1)
 				win.addstr(".")
 				win.setpos(y+1, x-1)
 				win.addstr("ooo")
-				win.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@labelsOn == true)
+				win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+				if(@mapMode == true)
 				win.setpos(y+1, x+4)
 				win.addstr("aotearoa")
 				end
@@ -904,7 +991,7 @@ class Pacifica
 	end
 	
 	def make_kingdom_info_window
-		kinfo = Window.new(7, 48, 30, (168-100)/2+64)
+		kinfo = Window.new(4, 48, 33, (168-100)/2+64)
 			kinfo.box(?|, ?-)
 		kinfo.setpos(0, 1)
 		kinfo.addstr("Your Kingdom")
@@ -912,11 +999,7 @@ class Pacifica
 		kinfo.addstr("#{@playerIsland.getName.slice(0,1).capitalize+@playerIsland.getName.slice(1..-1)}\t\tAlliance: #{@playerIsland.getTeam.slice(0,1).capitalize+@playerIsland.getTeam.slice(1..-1)}")
 		kinfo.setpos(2, 1)
 		kinfo.addstr("$: #{@playerIsland.getCurrentWealth.to_i}\tP: #{@playerIsland.getPopulation}/#{@playerIsland.getPopCap}\tPow: #{@playerIsland.getPower}\tShip: #{@playerIsland.getShipGuildSkill}")
-	 	kinfo.setpos(3, 1)
-		kinfo.addstr("Allies:#{@playerIsland.getAllies}")
-	 	kinfo.setpos(4, 1)
-		kinfo.addstr("Enemies:#{@playerIsland.getEnemies}")
-		kinfo.setpos(5, 1)
+		kinfo.setpos(3, 1)
 		kinfo.addstr("Boats sent: #{@playerIsland.getBoatsSent}")
 		kinfo.refresh
 	end
@@ -929,13 +1012,16 @@ class Pacifica
 		winfo.setpos(0, 1)
 		winfo.addstr("Diplomacy")
 		if(@diplomacyState == "main")
-			@labelsOn = false
-			winfo.setpos(2, 1)
+			winfo.setpos(1, 1)
 			winfo.addstr("t. Trade Canoe\t\t\tw. War Canoe")
-			winfo.setpos(3, 1)
+			winfo.setpos(2, 1)
 			winfo.addstr("m. Island names on\t\tp. Pray")
-			winfo.setpos(4, 1)
+			winfo.setpos(3, 1)
 			winfo.addstr("u/i. Toggle info window left/right ")
+			winfo.setpos(4, 1)
+			winfo.addstr("a. Show allies in blue (#{@alliesText}) ")
+			winfo.setpos(5, 1)
+			winfo.addstr("e. Show enemies in red (#{@enemiesText}) ")
 			winfo.refresh
 			ch = getch	
 			if(ch == 'q')
@@ -952,7 +1038,11 @@ class Pacifica
 				elsif(ch == 'p')
 					@diplomacyState = "praying"
 				elsif(ch == 'm')
-					@diplomacyState = "mapMode"
+					if(@mapMode == false)
+					@mapMode = true
+					elsif(@mapMode == true)
+					@mapMode = false
+					end
 				elsif(ch == 'i')
 					if(@infoState == "kingdoms")
 						@infoState = "events"
@@ -976,6 +1066,22 @@ class Pacifica
 						@infoState = "allies"
 					elsif(@infoState == "help")
 						@infoState = "enemies"
+					end
+				elsif (ch == 'a')
+					if(@alliesBlue == false)
+					@alliesBlue = true
+					@alliesText = "ON"
+					elsif(@alliesBlue == true)
+					@alliesBlue = false
+					@alliesText = "OFF"
+					end
+				elsif (ch == 'e')
+					if(@enemiesRed == false)
+					@enemiesRed = true
+					@enemiesText = "ON"
+					elsif(@enemiesRed == true)
+					@enemiesRed = false
+					@enemiesText = "OFF"
 					end
 				end
 			end
@@ -1003,17 +1109,6 @@ class Pacifica
 				end
 			@diplomacyState = "main"	
 			playerIsland.setPlayerState("default")
-		elsif(@diplomacyState == "mapMode")
-			@labelsOn = true
-			winfo.setpos(1, 1)
-			winfo.addstr("Map labels on, press enter to go back")
-			winfo.refresh
-			ch = getch
-			refresh
-				if(ch == 'q')
-					abort("quit pacifica")
-				end
-			@diplomacyState = "main"
 		elsif(@diplomacyState == "praying")
 			winfo.setpos(1, 1)
 			winfo.addstr("We are praying to the gods")
@@ -1030,7 +1125,7 @@ class Pacifica
 	end
 	
 	def make_info_window(islands)
-	info = Window.new(24, 48, (((42-25)/2)-2), 64+((168-100)/2))
+	info = Window.new(27, 48, (((42-25)/2)-2), 64+((168-100)/2))
 	info.box(?|, ?-)
  	x = 1
 	y = 0
@@ -1120,14 +1215,168 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 	if (@infoState == "allies")
 		info.addstr("----Kingdoms--Events-|Allies|-Enemies--Help-")
 			@islands.each do |island|
-				y += 1
 				info.setpos(y, x)
-				if(island.getName.size < 7)
-				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getAllies}")
-				else
-				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getAllies}")
+				case island.getName
+					when "kiribati"
+						y = 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "kwajaleins"
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "hawaii" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "samoa"   
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "tokelau" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "vanuatu"  
+						y = 2
+						x = 16
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "tahiti" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "takutea"	
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "tuvalu"	
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "fiji"
+						y = 2
+						x = 32
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "tonga"   
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "tuamotus"
+						y  += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "rapa nui" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+					when "aotearoa"
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getAllies.each do |ally|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+						end
+						
 				end
 			end
+		
 		info.refresh
 	end
 	if (@infoState == "enemies")
@@ -1145,43 +1394,43 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 	end
 	if (@infoState == "help")
 		info.addstr("----Kingdoms--Events--Allies--Enemies-|Help|")
-		info.setpos(19, x)
+		info.setpos(22, x)
 		info.addstr("**********************************************")
-		info.setpos(20, x)
+		info.setpos(23, x)
 		info.addstr("Key:")
-		info.setpos(21, x)
+		info.setpos(24, x)
 		info.addstr("Island:")
-		info.setpos(21, x+8)
+		info.setpos(24, x+8)
 		info.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 		info.addstr("*")
 		info.attroff(color_pair(COLOR_GREEN)|A_NORMAL)
-		info.setpos(21, x+11)
+		info.setpos(24, x+11)
 		info.addstr("Trade canoe:")
-		info.setpos(21, x+24)
+		info.setpos(24, x+24)
 		info.attron(color_pair(COLOR_YELLOW)|A_NORMAL)
 		info.addstr("T")
 		info.attroff(color_pair(COLOR_YELLOW)|A_NORMAL)
-		info.setpos(21, x+27)
+		info.setpos(24, x+27)
 		info.addstr("War canoe:")
-		info.setpos(21, x+38)
+		info.setpos(24, x+38)
 		info.attron(color_pair(COLOR_MAGENTA)|A_NORMAL)
 		info.addstr("W")
 		info.attroff(color_pair(COLOR_MAGENTA)|A_NORMAL)
-		info.setpos(22, x)
+		info.setpos(25, x)
 		info.addstr("Tsunami:")
-		info.setpos(22, x+9)
+		info.setpos(25, x+9)
 		info.attron(color_pair(COLOR_CYAN)|A_NORMAL)
 		info.addstr("~")
 		info.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
-		info.setpos(22, x+12)
+		info.setpos(25, x+12)
 		info.addstr("Earthquake:")
-		info.setpos(22, x+24)
+		info.setpos(25, x+24)
 		info.attron(color_pair(COLOR_RED)|A_NORMAL)
 		info.addstr("E")
 		info.attroff(color_pair(COLOR_RED)|A_NORMAL)
-		info.setpos(22, x+27)
+		info.setpos(25, x+27)
 		info.addstr("Typhoon:")
-		info.setpos(22, x+37)
+		info.setpos(25, x+37)
 		info.attron(color_pair(COLOR_CYAN)|A_NORMAL)
 		info.addstr("(@)")
 		info.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
@@ -1194,7 +1443,7 @@ end
 # Begin script of Pacifica (c) simulation and game
 	Curses.init_screen
 	Curses.start_color
-	Curses.init_pair(COLOR_BLUE,COLOR_BLUE,COLOR_BLUE) 
+	Curses.init_pair(COLOR_BLUE,COLOR_BLUE,COLOR_BLACK) 
 	Curses.init_pair(COLOR_RED,COLOR_RED,COLOR_BLACK)
 	Curses.init_pair(COLOR_CYAN,COLOR_CYAN,COLOR_BLACK) 
 	Curses.init_pair(COLOR_GREEN,COLOR_GREEN,COLOR_BLACK)
@@ -1211,6 +1460,22 @@ end
 
 	pacifica.make_start_window
 
+	#Now we are going to add to each island's allies & enemies list
+	#Everyone in an alliance is an ally/trade partner to everyone else in the alliance, except for neutral
+	#Palms and obsidians are enemies at start
+		pacifica.getIslands.each do |island1|
+			pacifica.getIslands.each do |island2|	
+			if((island1.getName != island2.getName) && (island1.getTeam != "neutral") && (island1.getTeam == island2.getTeam))
+				island1.addAlly(island2.getName)
+			end
+			if((island1.getName != island2.getName)	&& (island1.getTeam == "palm") && (island2.getTeam == "obsidian"))
+				island1.addEnemy(island2.getName)
+			end
+			if((island1.getName != island2.getName)	&& (island1.getTeam == "obsidian") && (island2.getTeam == "palm"))
+				island1.addEnemy(island2.getName)
+			end
+			end
+		end
 
 while TRUE
 	objTemp = Array.new
@@ -1303,23 +1568,6 @@ while TRUE
 		pacifica.setMonth("dec")	
 	end
 		
-		
-	#Now we are going to add to each island's allies & enemies list
-	#Everyone in an alliance is an ally/trade partner to everyone else in the alliance, except for neutral
-	#Palms and obsidians are enemies at start
-		pacifica.getIslands.each do |island1|
-			pacifica.getIslands.each do |island2|	
-			if((island1.getName != island2.getName) && (island1.getTeam != "neutral") && (island1.getTeam == island2.getTeam))
-				island1.addAlly(island2.getName)
-			end
-			if((island1.getName != island2.getName)	&& (island1.getTeam == "palm") && (island2.getTeam == "obsidian"))
-				island1.addEnemy(island2.getName)
-			end
-			if((island1.getName != island2.getName)	&& (island1.getTeam == "obsidian") && (island2.getTeam == "palm"))
-				island1.addEnemy(island2.getName)
-			end
-			end
-		end
 		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
 		pacifica.make_kingdom_info_window
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)

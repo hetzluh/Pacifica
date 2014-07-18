@@ -122,6 +122,7 @@ class Island
 		@playerIsland = playerIsland 
 		@boatsSent = 0
 		@playerState = "default"
+		@islandsList = Array.new
 	end
 
 	def getPlayerState
@@ -176,10 +177,44 @@ class Island
 	end
 
 	def think(islands, playerOption, playerState)
+		#save copy of islands list
+		@islandsList = islands
 		#purge non-unique array entries
 		@allies.uniq!
 		@enemies.uniq!
-
+		#purging enemy allies
+		islands.each do |island|
+			@allies.each do |ally|
+			islands.each do |allyIsland|
+				if(allyIsland.getName == ally)
+				allyIsland.getAllies.each do |allyAlly|
+					@enemies.each do |enemy|
+						if allyAlly == enemy
+							@allies.delete(ally)
+						end
+					end
+				end
+				end
+			end
+			end
+		end
+		#purging allies' enemies
+		islands.each do |island|
+			@allies.each do |ally|
+			islands.each do |allyIsland|
+				if(allyIsland.getName == ally)
+				allyIsland.getEnemies.each do |allyEnemy|
+					@allies.each do |ally|
+						if allyEnemy == ally
+							@allies.delete(ally)
+						end
+					end
+				end
+				end
+			end
+			end
+		end
+					
 		# Case for AI
 		if(@playerIsland == false)
 			#sets goal (might need to move into the if clause)
@@ -190,8 +225,8 @@ class Island
 				r = rand(@allies.size)
 				if(@allies.size > 0 && @goal=="TRADING")
 					makeTradeBoat(@allies.at(r))	
-					r2 = rand(4)
-						if (r2 == 0)	
+					r2 = rand(10)
+						if (r2 == 1)	
 							newTradePartner(islands)
 						end
 				elsif(@enemies.size > 0 && @goal=="RAIDING")	
@@ -242,7 +277,7 @@ etc.
 
 	def findRandomEnemy(islands)
 		r = rand(islands.size)
-		if(islands.at(r).getName != @name && @allies.include?(islands.at(r).getName) == false && @enemies.include?(islands.at(r).getName))
+		if(islands.at(r).getName != @name && @allies.include?(islands.at(r).getName) == false && @enemies.include?(islands.at(r).getName) == false)
 		addEnemy(islands.at(r).getName)	
 		end
 	end
@@ -251,7 +286,8 @@ etc.
 		randomIslandId = rand(13) + 1
 		newPartner = islands.at(randomIslandId)
 		if(@enemies.include?(newPartner.getName) == false)
-			@allies.push(newPartner.getName)
+		
+			addAlly(newPartner.getName)
 		end
 	end
 
@@ -391,12 +427,15 @@ etc.
 		elsif(destinationIslandName == "aotearoa")
 			destinationX = 8
 			destinationY = 20
-		else
+		else                      
 			destinationX = 59
 			destinationY = 1
 		end
 		warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, @shipGuildSkill)
 		@activeWarBoats.push(warBoat)
+		if(@enemies.include?(destinationIslandName) == false)
+			addEnemy(destinationIslandName)
+		end
 		@boatsSent += 1
 	end
 
@@ -466,6 +505,11 @@ etc.
 	def attacked(numberAttacking, kingdomAttacking)
 		@population -= numberAttacking
 		@enemies.push(kingdomAttacking)
+		@allies.each do |ally|
+			if ally == kingdomAttacking
+				@allies.delete(ally)
+			end
+		end
 		@goal = "RETALIATING"
 
 	end
@@ -475,7 +519,25 @@ etc.
 	end
 	
 	def addAlly(island)
+		enemyAlly = false
+		@islandsList.each do |island|
+			@allies.each do |ally|
+			@islandsList.each do |allyIsland|
+				if(allyIsland.getName == ally)
+				allyIsland.getEnemies.each do |allyEnemy|
+					@allies.each do |ally|
+						if allyEnemy == ally
+							enemyAlly = true
+						end
+					end
+				end
+				end
+			end
+			end
+		end
+		if(@allies.size < 4 && enemyAlly == false)
 		@allies.push(island)
+		end
 	end
 
 	def traded(numberCrew, kingdomTrading)
