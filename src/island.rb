@@ -31,7 +31,7 @@ shipGuildSkill -> int, 1-5, determines boat effectiveness
 class Island
 
 	def initialize(kingdomId, name, size, startWealth, currentWealth, power, population,
-					popcap, shipGuildSkill, locationX, locationY, playerIsland)
+					popcap, shipGuildSkill, locationX, locationY, playerIsland, devMode)
 		#initializing all kingdom attributes
 		@kingdomId = kingdomId
 		@name = name
@@ -62,8 +62,17 @@ class Island
 		@allies = Array.new
 		#start goal is gather resources
 		@goal = "START"
+		@devMode = devMode
+		@events = Array.new
+		@year = 500
+		@month = "jan"
+		@moon = 1
+		@time = -1		
 		
 		if(@group == 1)
+		if @devMode == 1
+		@team = "palm"
+		else
 			r = rand(10 + 1) - 1
 			if(r < 5)
 			@team = "neutral"
@@ -74,7 +83,11 @@ class Island
 			elsif(r == 10)
 			@team = "obsidian"
 			end
+		end		
 		elsif(@group == 2)
+		if @devMode == 1
+		@team = "obsidian"
+		else
 			r = rand(10 + 1) - 1
 			if(r < 4)
 			@team = "obsidian"
@@ -85,7 +98,12 @@ class Island
 			elsif(r > 6)
 			@team = "neutral"
 			end
+		end		
 		elsif(@group == 3)
+		if @devMode == 1
+		@team = "neutral"
+		else
+			
 			r = rand(10 + 1) - 1
 			if(r < 5)
 			@team = "neutral"
@@ -96,7 +114,12 @@ class Island
 			elsif(r > 7)
 			@team = "pearl"
 			end
+		end
 		elsif(@group == 4)
+		if @devMode == 1
+		@team = "pearl"
+		else
+			
 			r = rand(10 + 1) - 1
 			if(r < 5)
 			@team = "neutral"
@@ -107,7 +130,11 @@ class Island
 			elsif(r == 9 || r == 10)
 			@team = "palm"
 			end
+		end
 		elsif(@group == 5)
+		if @devMode == 1
+		@team = "neutral"
+		else
 			r = rand(10 + 1) - 1
 			if(r < 6)
 			@team = "neutral"
@@ -118,6 +145,7 @@ class Island
 			elsif(r == 9 || r == 10)
 			@team = "pearl"
 			end
+		end
 		end
 		@playerIsland = playerIsland 
 		@boatsSent = 0
@@ -176,7 +204,7 @@ class Island
 		end
 	end
 
-	def think(islands, playerOption, playerState)
+	def think(islands, playerOption, playerState, year, month, moon, time)
 		#save copy of islands list
 		@islandsList = islands
 		#purge non-unique array entries
@@ -214,7 +242,12 @@ class Island
 			end
 			end
 		end
-					
+
+		#setting current time for eventlog
+		@year = year
+		@month = month
+		@moon = moon
+		@time = time			
 		# Case for AI
 		if(@playerIsland == false)
 			#sets goal (might need to move into the if clause)
@@ -224,7 +257,7 @@ class Island
 		  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
 				r = rand(@allies.size)
 				if(@allies.size > 0 && @goal=="TRADING")
-					makeTradeBoat(@allies.at(r))	
+					makeTradeBoat(@allies.at(r), @year, @month, @moon, @time)	
 					r2 = rand(10)
 						if (r2 == 1)	
 							newTradePartner(islands)
@@ -233,7 +266,7 @@ class Island
 					while(@currentWealth >80)
 						if(@enemies.size > 0)
 						r = rand(@enemies.size)
-						makeWarBoat(@enemies.at(r))
+						makeWarBoat(@enemies.at(r), @year, @month, @moon, @time)
 						break
 						elsif(@enemies.size == 0)
 						findRandomEnemy(islands)
@@ -241,7 +274,7 @@ class Island
 						
 					end
 				elsif(@goal=="RETALIATING")
-					makeWarBoat(@enemies.at(-1))
+					makeWarBoat(@enemies.at(-1), @year, @month, @moon, @time)
 				end
 			elsif(r < 2)
 				babiesBorn
@@ -251,13 +284,29 @@ class Island
 		elsif(@playerIsland == true)
 			if(@playerState == "default")
 			elsif(@playerState == "sendingTrade")
-				if(playerOption.is_a?(Fixnum))
-				makeTradeBoat(islands.at(playerOption.to_i).getName)
+				if(playerOption == "-")
+				makeTradeBoat("tonga", @year, @month, @moon, @time)
+				elsif(playerOption == "=")
+				makeTradeBoat("tuamotus", @year, @month, @moon, @time)
+				elsif(playerOption == "[")
+				makeTradeBoat("rapa nui", @year, @month, @moon, @time)
+				elsif(playerOption == "]")
+				makeTradeBoat("aotearoa", @year, @month, @moon, @time)
+				elsif(playerOption =~ /[0-9]/)
+				makeTradeBoat(islands.at(playerOption.to_i).getName, @year, @month, @moon, @time)
 				setPlayerState("default")
 				end
-			elsif(@playerState == "sendingWar")	
-				if(playerOption.is_a?(Fixnum))
-				makeWarBoat(islands.at(playerOption.to_i).getName)	
+			elsif(@playerState == "sendingWar")					
+				if(playerOption == "-")
+				makeWarBoat("tonga", @year, @month, @moon, @time)
+				elsif(playerOption == "=")
+				makeWarBoat("tuamotus", @year, @month, @moon, @time)
+				elsif(playerOption == "[")
+				makeWarBoat("rapa nui", @year, @month, @moon, @time)
+				elsif(playerOption == "]")
+				makeWarBoat("aotearoa", @year, @month, @moon, @time)
+				elsif(playerOption =~ /[0-9]/)
+				makeWarBoat(islands.at(playerOption.to_i).getName, @year, @month, @moon, @time)	
 				setPlayerState("default")
 				end
 			end
@@ -303,6 +352,10 @@ etc.
 			@population = @popcap
 		end
 	end	
+
+	def getEvents
+		@events
+	end
 
 	def getEnemies
 		@enemies
@@ -382,7 +435,12 @@ etc.
 		@activeWarBoats
 	end
 
-	def makeWarBoat(destinationIslandName)
+	def makeWarBoat(destinationIslandName, year, month, moon, time)
+		warEvent = Event.new(@name, destinationIslandName, ' -attacked- ', 'war', @year, @month, @moon, @time)
+		warEvent.write
+		@events.push(warEvent)
+		@events.uniq!
+		#@events.sort_by!{|event| event.getTime}
 		@currentWealth -= 10
 		@population -= 10
 		if(destinationIslandName == "kiribati")
@@ -431,15 +489,20 @@ etc.
 			destinationX = 59
 			destinationY = 1
 		end
-		warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, @shipGuildSkill)
+		warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, 						@shipGuildSkill)
 		@activeWarBoats.push(warBoat)
 		if(@enemies.include?(destinationIslandName) == false)
 			addEnemy(destinationIslandName)
-		end
+		end 
 		@boatsSent += 1
 	end
 
-	def makeTradeBoat(destinationIslandName)
+	def makeTradeBoat(destinationIslandName, year, month, moon, time)
+		tradeEvent = Event.new(@name, destinationIslandName, ' -traded with- ', 'trade', @year, @month, @moon, @time)
+		tradeEvent.write		
+		@events.push(tradeEvent)
+		@events.uniq!
+		#@events.sort_by!{|event| event.getTime}
 		@currentWealth -= 5
 		@population -= 5
 		if(destinationIslandName == "kiribati")
@@ -488,7 +551,7 @@ etc.
 			destinationX = 59
 			destinationY = 1
 		end
-		tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, @shipGuildSkill)
+		tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, 						@shipGuildSkill)
 
 		@activeTradeBoats.push(tradeBoat)
 		@boatsSent += 1

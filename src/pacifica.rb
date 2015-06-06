@@ -6,6 +6,7 @@ require './boat.rb'
 require './earthquake.rb'
 require './tsunami.rb'
 require './typhoon.rb'
+require './event.rb'
 
 require "curses"
 include Curses
@@ -18,6 +19,7 @@ top left = (1, 6)
 
 class Pacifica
 	def initialize()
+		@devMode = 1    #Set this to 1 for static teams for development/testing
 		@currentTime = -1
 		@islands = Array.new
 		@objects = Array.new
@@ -33,16 +35,17 @@ class Pacifica
 		@obsidianAlliance = Array.new
 		@pearlAlliance = Array.new
 		@neutralAlliance = Array.new
-		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false)
+		@playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false, @devMode)
 		@diplomacyState = "main"
 		@mapMode = false
 		@infoState = "kingdoms" #states: kingdoms, events, allies, enemies, help
 		@playerOption = nil
 		@first_make_game = true
 		@alliesText = "OFF"
-		@enemiesText = "ON"
+		@enemiesText = "OFF"
 		@alliesBlue = false
 		@enemiesRed = false
+		@eventsMaster = Array.new
 	end
 
 	def clearHazards
@@ -90,6 +93,14 @@ class Pacifica
 		@objects = objArr
 	end
 
+	def getEvents
+		@eventsMaster
+	end
+
+	def setEvents(toSet)
+		@eventsMaster = toSet
+	end
+
 	def getObjects
 		@objects
 	end
@@ -115,26 +126,26 @@ class Pacifica
 	def addIslands
 =begin
 		Reminder: (kingdomId, name, size, startWealth, currentWealth, power, population
-					popcap, shipGuildSkill, locationX, locationY, playerIsland)
+					popcap, shipGuildSkill, locationX, locationY, playerIsland, devMode)
 =end
-		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 7, 8, false)
-		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 4, 5, false)
-		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 25, 85, 2, 32, 3, false)
-		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 21, 14, false)
-		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 12, false)
-		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 4, 14, false)
-		tahiti 	 = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 , 40, 14, false)
-		takutea	 = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 33, 15, false)
-		tuvalu	 = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 10, 10, false)
-		fiji	 = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  11, 16, false)
-		tonga    = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 18, 17, false)
-		tuamotus = Island.new(12, "tuamotus", 1, 40, 40, 1.3, 15, 70, 3, 50, 15, false)
-		rapanui  = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 58, 17, false)
-		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 6, 21, false)
+		kiribati = Island.new(1, "kiribati", 1, 50, 50, 1.2, 15, 70, 1, 7, 8, false, @devMode)
+		kwajaleins = Island.new(2, "kwajaleins", 1, 50, 50, 1.2, 15, 70, 1, 4, 5, false, @devMode)
+		hawaii   = Island.new(3, "hawaii", 2, 60, 60, 1.6, 25, 85, 2, 32, 3, false, @devMode)
+		samoa    = Island.new(4, "samoa", 0, 40, 40, 1.4, 15, 70, 1, 21, 14, false, @devMode)
+		tokelau  = Island.new(5, "tokelau", 0, 30, 30, 1.3, 10, 60, 2, 15, 12, false, @devMode)
+		vanuatu  = Island.new(6, "vanuatu", 1, 35, 35, 1.4, 15, 70, 1, 4, 14, false, @devMode)
+		tahiti 	 = Island.new(7, "tahiti", 0, 40, 40, 1.3, 25, 60, 3 , 40, 14, false, @devMode)
+		takutea	 = Island.new(8, "takutea", 0, 40, 40, 1.3, 25, 60, 3, 33, 15, false, @devMode)
+		tuvalu	 = Island.new(9, "tuvalu", 0, 35, 35, 1.3, 10, 60, 2, 10, 10, false, @devMode)
+		fiji	 = Island.new(10, "fiji", 1, 40, 40, 1.3, 15, 70, 1,  11, 16, false, @devMode)
+		tonga    = Island.new(11, "tonga", 0, 35, 35, 1.3, 10, 60, 2, 18, 17, false, @devMode)
+		tuamotus = Island.new(12, "tuamotus", 1, 40, 40, 1.3, 15, 70, 3, 50, 15, false, @devMode)
+		rapanui  = Island.new(13, "rapa nui", 1, 55, 55, 1.5, 15, 75, 4, 58, 17, false, @devMode)
+		aotearoa = Island.new(14, "aotearoa", 2, 55, 55, 1.6, 20, 85, 3, 6, 21, false, @devMode)
 
 		@islands.push(kiribati, kwajaleins, hawaii, samoa, tokelau,
-						vanuatu, tahiti, takutea, tuvalu, fiji, tonga,
-							tuamotus, rapanui, aotearoa)
+				vanuatu, tahiti, takutea, tuvalu, fiji, tonga,
+				tuamotus, rapanui, aotearoa)
 	end
 
 	def make_start_window
@@ -789,9 +800,9 @@ class Pacifica
 				island.yearlyPopExplosion
 			end
 			if(island.getPlayerIsland == false)
-				island.think(@islands, nil ,nil)
+				island.think(@islands, nil ,nil, @year, @month, @moon, @time)
 			elsif(island.getPlayerIsland == true)
-				island.think(@islands, @playerOption, island.getPlayerState)
+				island.think(@islands, @playerOption, island.getPlayerState, @year, @month, @moon, @time)
 			end
 		end
 		@islands.each do |island|
@@ -1046,6 +1057,11 @@ class Pacifica
 				elsif(ch == 'i')
 					if(@infoState == "kingdoms")
 						@infoState = "events"
+						#clearing all island event lists
+						@eventsMaster.clear
+						@islands.each do |island|
+							island.getEvents.clear
+						end
 					elsif(@infoState == "events")
 						@infoState = "allies"
 					elsif(@infoState == "allies")
@@ -1062,6 +1078,11 @@ class Pacifica
 						@infoState = "kingdoms"
 					elsif(@infoState == "allies")
 						@infoState = "events"
+						#clearing all island event lists
+						@eventsMaster.clear
+						@islands.each do |island|
+							island.getEvents.clear
+						end
 					elsif(@infoState == "enemies")
 						@infoState = "allies"
 					elsif(@infoState == "help")
@@ -1088,9 +1109,11 @@ class Pacifica
 		elsif(@diplomacyState == "sendingTrade")
 			winfo.setpos(1, 1)
 			winfo.addstr("Select where you would like to send a trade boat:")
+			winfo.setpos(3, 1)
+			winfo.addstr("[View Help Window For Details]")
 			winfo.refresh
 			ch = getch
-			@playerOption = ch.to_i	
+			@playerOption = ch	
 			winfo.refresh
 				if(ch == 'q')
 					abort("quit pacifica")
@@ -1100,9 +1123,11 @@ class Pacifica
 		elsif(@diplomacyState == "sendingWar")
 			winfo.setpos(1, 1)
 			winfo.addstr("Select where you would like to send a war boat:")
+			winfo.setpos(3, 1)
+			winfo.addstr("[View Help Window For Details]")
 			winfo.refresh
 			ch = getch
-			@playerOption = ch.to_i			
+			@playerOption = ch			
 			winfo.refresh
 				if(ch == 'q')
 					abort("quit pacifica")
@@ -1196,20 +1221,11 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 	if (@infoState == "events")
 	 	info.addstr("----Kingdoms-|Events|-Allies--Enemies--Help-")
 		y = 2
-		x = 1
-		@islands.each do |island|
-		info.setpos(y, x)
-			if(island.getName.size < 7)
-			info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\tcurrent goal: #{island.getGoal}")
+		@eventsMaster.each do |event|
+			info.setpos(y, 48)
+			info.addstr("#{event.getString[0..44]} !")
 			y+=1
-			else
-			info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\tcurrent goal: #{island.getGoal}")
-			y+=1
-			end
 		end
-		y += 2
-		info.setpos(y, x)
-		info.addstr("Player #{@playerIsland.getName.slice(0,1).capitalize+@playerIsland.getName.slice(1..-1)}\t\tcurrent state: #{@playerIsland.getPlayerState}")
 		info.refresh
 	end
 	if (@infoState == "allies")
@@ -1413,17 +1429,13 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 		info.setpos(11, x)
 		info.addstr("2 - hawaii     |  9 - fiji")
 		info.setpos(12, x)
-		info.addstr("3 - samoa      |  10 - tonga")
+		info.addstr("3 - samoa      |  '-' - tonga")
 		info.setpos(13, x)
-		info.addstr("4 - tokelau    |  11 - tuamotus")
+		info.addstr("4 - tokelau    |  '+' - tuamotus")
 		info.setpos(14, x)
-		info.addstr("5 - vanuata    |  12 - rapa nui")
+		info.addstr("5 - vanuata    |  '[' - rapa nui")
 		info.setpos(15, x)
-		info.addstr("6 - tahiti     |  13 - aotearoa")
-		info.setpos(17, x)
-		info.addstr("**NOTE: options 10-13 currently unavailable.")
-		info.setpos(18, x)
-		info.addstr("This will be fixed in a future release.")
+		info.addstr("6 - tahiti     |  ']' - aotearoa")
 		info.setpos(22, x)
 		info.addstr("**********************************************")
 		info.setpos(23, x)
@@ -1570,6 +1582,16 @@ while TRUE
 		
 	pacifica.setObjects(objTemp)
 	#add all islands to islands
+	#add island events to master events
+	pacifica.getIslands.each do |island|
+		island.getEvents.each do |event|
+			pacifica.getEvents.push(event)
+		end
+	end
+	pacifica.getEvents.uniq!
+	temp = pacifica.getEvents.last(10)
+	pacifica.setEvents(temp)
+	pacifica.getEvents.sort_by!{|event| event.getTime}
 	#add all earthquakes to objects, then all waves, boats, then typhoons
 	case pacifica.getCurrentTime
 		when 0..9
@@ -1597,12 +1619,13 @@ while TRUE
 		when 110..119
 		pacifica.setMonth("dec")	
 	end
+
 		
 		diploThr = Thread.new{pacifica.make_diplomacy_window(pacifica.getIslands)}
 		pacifica.make_kingdom_info_window
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_info_window(pacifica.getIslands)
-		sleep(0.2)
+		sleep(0.5)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
