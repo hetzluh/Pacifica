@@ -1211,9 +1211,8 @@ class Pacifica
 					y += 1
 					info.setpos(y, x)
 					if(island.getDefeated == true)
-					info.addstr("DEFEATED")
-					end	
-					if(island.getName.size < 7)
+					info.addstr("DEFEATED")	
+					elsif(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
 info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
@@ -1228,9 +1227,8 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 					y += 1
 					info.setpos(y, x)
 					if(island.getDefeated == true)
-					info.addstr("DEFEATED")
-					end	
-					if(island.getName.size < 7)
+					info.addstr("DEFEATED")	
+					elsif(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
 info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")

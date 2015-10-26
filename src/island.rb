@@ -61,7 +61,7 @@ class Island
 		@enemies = Array.new
 		@allies = Array.new
 		#start goal is gather resources
-		@goal = "START"
+		@goal = "TRADING"
 		@devMode = devMode
 		@events = Array.new
 		@year = 500
@@ -190,7 +190,9 @@ class Island
 	def yearlyPopExplosion
 		r = rand(2)
 		if (r == 1)
-		@population += ((4 * @power) + @size).ceil
+		@population += ((5 * @power) + @size).ceil
+		else
+		@population += ((2 * @power) + @size).ceil
 		end
 	end
 
@@ -260,32 +262,26 @@ class Island
 		if(@playerIsland == false)
 			#sets goal (might need to move into the if clause)
 			updateGoal
-	
 			r = rand(20)
-		  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
+		  	if( r > 15 && @population > @popcap/4 && @currentWealth > 10)	
 				r = rand(@allies.size)
 				if(@allies.size > 0 && @goal=="TRADING")
 					if(@allies.at(r).getDefeated == false)
 					makeTradeBoat(@allies.at(r).getName, @year, @month, @moon, @time)	
 					end
 					r2 = rand(10)
-						if (r2 == 1)	
-							newTradePartner(islands)
-						end
+					if (r2 == 1 && @allies.size < 4)	
+						newTradePartner(islands)
+					end
 				elsif(@enemies.size > 0 && @goal=="RAIDING")	
-					while(@currentWealth > 80)
+					while(@currentWealth >= 50)
 						if(@enemies.size > 0)
 							r = rand(@enemies.size)
 							if(@enemies.at(r).getDefeated == false)
 							makeWarBoat(@enemies.at(r).getName, @year, @month, @moon, @time)
 							end
-						#break    			commented out for testing CLH
-						elsif(@enemies.size == 0)
-						findRandomEnemy(islands)
-						end					
+						end										
 					end
-				elsif(@goal=="RETALIATING")
-					makeWarBoat(@enemies.at(-1).getName, @year, @month, @moon, @time)
 				elsif(@allies.size == 0 && r < 10)
 					newTradePartner(islands)
 				elsif(@enemies.size == 0 && r < 5)
@@ -450,7 +446,7 @@ etc.
 	end
 
 	def makeWarBoat(destinationIslandName, year, month, moon, time)
-		if(destinationIslandName != @name)
+		if(destinationIslandName != @name && @currentWealth > 10 && @population > 9 && @defeated == false)
 		warEvent = Event.new(@name, destinationIslandName, ' -attacked- ', 'war', @year, @month, @moon, @time)
 		warEvent.write
 		@events.push(warEvent)
@@ -519,7 +515,7 @@ etc.
 	end
 
 	def makeTradeBoat(destinationIslandName, year, month, moon, time)
-		if(destinationIslandName != @name)
+		if(destinationIslandName != @name && @currentWealth > 5 && @population > 4 && @defeated == false)
 		tradeEvent = Event.new(@name, destinationIslandName, ' -traded with- ', 'trade', @year, @month, @moon, @time)
 		tradeEvent.write		
 		@events.push(tradeEvent)
@@ -589,13 +585,13 @@ etc.
 	end	
 
 	def attacked(numberAttacking, kingdomAttacking)
-		@population -= numberAttacking * 3
+		@population -= numberAttacking * 2
 		if (@population <= 0)
 			@population = 0
 			@defeated = true
 		end
 		@islandsList.each do |island|
-			if (island.getName == kingdomAttacking)
+			if (island.getName == kingdomAttacking && @enemies.include?(kingdomAttacking) == false)
 			@enemies.push(island)
 			end
 		end
@@ -604,7 +600,6 @@ etc.
 				@allies.delete(ally)
 			end
 		end
-		@goal = "RETALIATING"
 	end
 	
 	def addEnemy(island)
@@ -628,7 +623,7 @@ etc.
 			end
 			end
 		end
-		if(@allies.size < 4 && enemyAlly == false)
+		if(enemyAlly == false)
 		@allies.push(island)
 		end
 	end
