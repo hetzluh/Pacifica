@@ -492,10 +492,10 @@ class Pacifica
 				if(@playerIsland.getName == "kiribati")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -513,10 +513,10 @@ class Pacifica
 				if(@playerIsland.getName == "kwajaleins")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -534,10 +534,10 @@ class Pacifica
 				if(@playerIsland.getName == "hawaii")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*O")
@@ -559,10 +559,10 @@ class Pacifica
 				if(@playerIsland.getName == "samoa")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -580,10 +580,10 @@ class Pacifica
 				if(@playerIsland.getName == "tokelau")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -601,10 +601,10 @@ class Pacifica
 				if(@playerIsland.getName == "tuvalu")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -624,10 +624,10 @@ class Pacifica
 				if(@playerIsland.getName == "vanuatu")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -647,10 +647,10 @@ class Pacifica
 				if(@playerIsland.getName == "fiji")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -670,10 +670,10 @@ class Pacifica
 				if(@playerIsland.getName == "tonga")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -691,10 +691,10 @@ class Pacifica
 				if(@playerIsland.getName == "takutea")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -710,10 +710,10 @@ class Pacifica
 				if(@playerIsland.getName == "tahiti")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -729,10 +729,10 @@ class Pacifica
 				if(@playerIsland.getName == "tuamotus")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("*")
@@ -755,10 +755,10 @@ class Pacifica
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end	
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("* o")
@@ -774,10 +774,10 @@ class Pacifica
 				if(@playerIsland.getName == "aotearoa")
 				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
 				end
-				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
+				if(@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
-				if(@playerIsland.getAllies.include?(island.getName) && @alliesBlue == true)
+				if(@playerIsland.getAllies.include?(island) && @alliesBlue == true)
 				win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
 				end
 				win.addstr("oo*")
@@ -1246,8 +1246,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 					info.setpos(y, x)
 					if(island.getDefeated == true)
 					info.addstr("DEFEATED")
-					end	
-					if(island.getName.size < 7)
+					elsif(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
 info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
@@ -1262,9 +1261,8 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 					y += 1
 					info.setpos(y, x)
 					if(island.getDefeated == true)
-					info.addstr("DEFEATED")
-					end	
-					if(island.getName.size < 7)
+					info.addstr("DEFEATED")	
+					elsif(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
 info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")

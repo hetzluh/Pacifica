@@ -285,7 +285,7 @@ class Island
 						end					
 					end
 				elsif(@goal=="RETALIATING")
-					makeWarBoat(@enemies.at(-1), @year, @month, @moon, @time)
+					makeWarBoat(@enemies.at(-1).getName, @year, @month, @moon, @time)
 				elsif(@allies.size == 0 && r < 10)
 					newTradePartner(islands)
 				elsif(@enemies.size == 0 && r < 5)
@@ -450,6 +450,7 @@ etc.
 	end
 
 	def makeWarBoat(destinationIslandName, year, month, moon, time)
+		if(destinationIslandName != @name)
 		warEvent = Event.new(@name, destinationIslandName, ' -attacked- ', 'war', @year, @month, @moon, @time)
 		warEvent.write
 		@events.push(warEvent)
@@ -503,19 +504,22 @@ etc.
 			destinationX = 59
 			destinationY = 1
 		end
-		warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, 						@shipGuildSkill)
-		@activeWarBoats.push(warBoat)
-		if(@enemies.include?(destinationIslandName) == false)
-			@islandsList.each do |island|
-				if (island.getName == destinationIslandName)
-				addEnemy(island)
+		
+			warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, 						@shipGuildSkill)
+			@activeWarBoats.push(warBoat)
+			if(@enemies.include?(destinationIslandName) == false)
+				@islandsList.each do |island|
+					if (island.getName == destinationIslandName)
+					addEnemy(island)
+					end
 				end
-			end
-		end 
-		@boatsSent += 1
+			end 
+			@boatsSent += 1
+		end
 	end
 
 	def makeTradeBoat(destinationIslandName, year, month, moon, time)
+		if(destinationIslandName != @name)
 		tradeEvent = Event.new(@name, destinationIslandName, ' -traded with- ', 'trade', @year, @month, @moon, @time)
 		tradeEvent.write		
 		@events.push(tradeEvent)
@@ -569,14 +573,15 @@ etc.
 			destinationX = 59
 			destinationY = 1
 		end
-		tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, 						@shipGuildSkill)
-
-		@activeTradeBoats.push(tradeBoat)
-		@boatsSent += 1
-
-		if(@boatsSent % 10 == 0 && @shipGuildSkill < 5)
-			@shipGuildSkill += 1
-		end
+			tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, 						@shipGuildSkill)
+	
+			@activeTradeBoats.push(tradeBoat)
+			@boatsSent += 1
+			
+			if(@boatsSent % 10 == 0 && @shipGuildSkill < 5)
+				@shipGuildSkill += 1
+			end
+		end	
 	end
 
 	def earthquake
@@ -584,14 +589,18 @@ etc.
 	end	
 
 	def attacked(numberAttacking, kingdomAttacking)
-		@population -= numberAttacking
+		@population -= numberAttacking * 3
 		if (@population <= 0)
 			@population = 0
 			@defeated = true
 		end
-		@enemies.push(kingdomAttacking)
+		@islandsList.each do |island|
+			if (island.getName == kingdomAttacking)
+			@enemies.push(island)
+			end
+		end
 		@allies.each do |ally|
-			if ally == kingdomAttacking
+			if ally.getName == kingdomAttacking
 				@allies.delete(ally)
 			end
 		end
@@ -610,7 +619,7 @@ etc.
 				if(allyIsland.getName == ally)
 				allyIsland.getEnemies.each do |allyEnemy|
 					@allies.each do |ally|
-						if allyEnemy == ally
+						if allyEnemy.getName == ally.getName
 							enemyAlly = true
 						end
 					end
