@@ -67,7 +67,8 @@ class Island
 		@year = 500
 		@month = "jan"
 		@moon = 1
-		@time = -1		
+		@time = -1	
+		@defeated = false	
 		
 		if(@group == 1)
 		if @devMode == 1
@@ -157,6 +158,10 @@ class Island
 		@playerState
 	end
 
+	def getDefeated
+		@defeated
+	end
+
 	def setPlayerState(toSet)
 		@playerState = toSet
 	end
@@ -183,7 +188,10 @@ class Island
 	end
 
 	def yearlyPopExplosion
-		@population += 4
+		r = rand(2)
+		if (r == 1)
+		@population += ((4 * @power) + @size).ceil
+		end
 	end
 
 	def getPlayerIsland
@@ -196,9 +204,9 @@ class Island
 
 	def updateGoal
 		if(@population>@popcap/4&&@currentWealth>10)
-			if( @currentWealth < 80)
+			if(@currentWealth < 50)
 				@goal = "TRADING"
-			elsif(@enemies.size > 0 && @currentWealth > 79)
+			elsif(@enemies.size > 0 && @currentWealth >= 50)
 				@goal = "RAIDING"
 			end
 		end
@@ -257,24 +265,31 @@ class Island
 		  	if( r == 19 && @population > @popcap/4 && @currentWealth > 10)	
 				r = rand(@allies.size)
 				if(@allies.size > 0 && @goal=="TRADING")
-					makeTradeBoat(@allies.at(r), @year, @month, @moon, @time)	
+					if(@allies.at(r).getDefeated == false)
+					makeTradeBoat(@allies.at(r).getName, @year, @month, @moon, @time)	
+					end
 					r2 = rand(10)
 						if (r2 == 1)	
 							newTradePartner(islands)
 						end
 				elsif(@enemies.size > 0 && @goal=="RAIDING")	
-					while(@currentWealth >80)
+					while(@currentWealth > 80)
 						if(@enemies.size > 0)
-						r = rand(@enemies.size)
-						makeWarBoat(@enemies.at(r), @year, @month, @moon, @time)
-						break
+							r = rand(@enemies.size)
+							if(@enemies.at(r).getDefeated == false)
+							makeWarBoat(@enemies.at(r).getName, @year, @month, @moon, @time)
+							end
+						#break    			commented out for testing CLH
 						elsif(@enemies.size == 0)
 						findRandomEnemy(islands)
-						end
-						
+						end					
 					end
 				elsif(@goal=="RETALIATING")
 					makeWarBoat(@enemies.at(-1), @year, @month, @moon, @time)
+				elsif(@allies.size == 0 && r < 10)
+					newTradePartner(islands)
+				elsif(@enemies.size == 0 && r < 5)
+					findRandomEnemy(islands)
 				end
 			elsif(r < 2)
 				babiesBorn
@@ -327,7 +342,7 @@ etc.
 	def findRandomEnemy(islands)
 		r = rand(islands.size)
 		if(islands.at(r).getName != @name && @allies.include?(islands.at(r).getName) == false && @enemies.include?(islands.at(r).getName) == false)
-		addEnemy(islands.at(r).getName)	
+		addEnemy(islands.at(r))	
 		end
 	end
 
@@ -335,8 +350,7 @@ etc.
 		randomIslandId = rand(13) + 1
 		newPartner = islands.at(randomIslandId)
 		if(@enemies.include?(newPartner.getName) == false)
-		
-			addAlly(newPartner.getName)
+			addAlly(newPartner)
 		end
 	end
 
@@ -492,7 +506,11 @@ etc.
 		warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, 						@shipGuildSkill)
 		@activeWarBoats.push(warBoat)
 		if(@enemies.include?(destinationIslandName) == false)
-			addEnemy(destinationIslandName)
+			@islandsList.each do |island|
+				if (island.getName == destinationIslandName)
+				addEnemy(island)
+				end
+			end
 		end 
 		@boatsSent += 1
 	end
@@ -567,6 +585,10 @@ etc.
 
 	def attacked(numberAttacking, kingdomAttacking)
 		@population -= numberAttacking
+		if (@population <= 0)
+			@population = 0
+			@defeated = true
+		end
 		@enemies.push(kingdomAttacking)
 		@allies.each do |ally|
 			if ally == kingdomAttacking
@@ -574,7 +596,6 @@ etc.
 			end
 		end
 		@goal = "RETALIATING"
-
 	end
 	
 	def addEnemy(island)
@@ -607,7 +628,11 @@ etc.
 		@population += numberCrew
 		@currentWealth += 3
 		if(@allies.length < 4 && @enemies.include?(kingdomTrading) == false)
-			addAlly(kingdomTrading)
+			@islandsList.each do |island|
+				if (island.getName == kingdomTrading)
+				addAlly(island)
+				end
+			end
 		end
 	end
 

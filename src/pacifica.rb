@@ -348,7 +348,7 @@ class Pacifica
 						end
 						@islands.each do |island|
 							if(island.getName == object.getKingdomName)
-								island.setCurrentWealth(5)
+								island.setCurrentWealth(10)
 							end
 						end
 					end
@@ -489,6 +489,9 @@ class Pacifica
 			#Kingdom-specific graphics start now
 			if (island.getName == "kiribati")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "kiribati")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -507,6 +510,9 @@ class Pacifica
 	
 			if (island.getName == "kwajaleins")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "kwajaleins")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -525,6 +531,9 @@ class Pacifica
 	
 			if (island.getName == "hawaii")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "hawaii")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -547,6 +556,9 @@ class Pacifica
 			
 			if (island.getName == "samoa")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "samoa")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -565,6 +577,9 @@ class Pacifica
 	
 			if (island.getName == "tokelau")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "tokelau")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -583,6 +598,9 @@ class Pacifica
 	
 			if (island.getName == "tuvalu")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "tuvalu")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -603,6 +621,9 @@ class Pacifica
 	
 			if (island.getName == "vanuatu")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "vanuatu")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -623,6 +644,9 @@ class Pacifica
 	
 			if (island.getName == "fiji")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "fiji")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -643,6 +667,9 @@ class Pacifica
 	
 			if (island.getName == "tonga")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "tonga")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -661,6 +688,9 @@ class Pacifica
 	
 			if (island.getName == "takutea")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "takutea")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -677,6 +707,9 @@ class Pacifica
 	
 			if (island.getName == "tahiti")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "tahiti")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -693,6 +726,9 @@ class Pacifica
 			
 			if (island.getName == "tuamotus")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "tuamotus")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -715,6 +751,10 @@ class Pacifica
 	
 			if (island.getName == "rapa nui")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "rapa nui")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end	
+				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -731,6 +771,9 @@ class Pacifica
 			
 			if (island.getName == "aotearoa")
 				win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+				if(@playerIsland.getName == "aotearoa")
+				win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+				end
 				if(@playerIsland.getEnemies.include?(island.getName) && @enemiesRed == true)
 				win.attron(color_pair(COLOR_RED)|A_NORMAL)
 				end
@@ -799,9 +842,9 @@ class Pacifica
 			if(@moon == 1 && @month == "jan")
 				island.yearlyPopExplosion
 			end
-			if(island.getPlayerIsland == false)
+			if(island.getPlayerIsland == false && island.getDefeated == false)
 				island.think(@islands, nil ,nil, @year, @month, @moon, @time)
-			elsif(island.getPlayerIsland == true)
+			elsif(island.getPlayerIsland == true && island.getDefeated == false)
 				island.think(@islands, @playerOption, island.getPlayerState, @year, @month, @moon, @time)
 			end
 		end
@@ -1167,6 +1210,9 @@ class Pacifica
 				if(island.getTeam == "neutral")
 					y += 1
 					info.setpos(y, x)
+					if(island.getDefeated == true)
+					info.addstr("DEFEATED")
+					end	
 					if(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
@@ -1181,6 +1227,9 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 				if(island.getTeam == "palm")
 					y += 1
 					info.setpos(y, x)
+					if(island.getDefeated == true)
+					info.addstr("DEFEATED")
+					end	
 					if(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
@@ -1195,6 +1244,9 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 				if(island.getTeam == "pearl")
 					y += 1
 					info.setpos(y, x)
+					if(island.getDefeated == true)
+					info.addstr("DEFEATED")
+					end	
 					if(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
@@ -1209,6 +1261,9 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 				if(island.getTeam == "obsidian")
 					y += 1
 					info.setpos(y, x)
+					if(island.getDefeated == true)
+					info.addstr("DEFEATED")
+					end	
 					if(island.getName.size < 7)
 					info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
 					else
@@ -1242,7 +1297,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "kwajaleins"
 						y += 2
@@ -1253,7 +1308,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "hawaii" 
 						y += 2
@@ -1264,7 +1319,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "samoa"   
 						y += 2
@@ -1275,7 +1330,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "tokelau" 
 						y += 2
@@ -1286,7 +1341,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "vanuatu"  
 						y = 2
@@ -1298,7 +1353,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "tahiti" 
 						y += 2
@@ -1309,7 +1364,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "takutea"	
 						y += 2
@@ -1320,7 +1375,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "tuvalu"	
 						y += 2
@@ -1331,7 +1386,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "fiji"
 						y = 2
@@ -1343,7 +1398,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "tonga"   
 						y += 2
@@ -1354,7 +1409,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "tuamotus"
 						y  += 2
@@ -1365,7 +1420,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "rapa nui" 
 						y += 2
@@ -1376,7 +1431,7 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 					when "aotearoa"
 						y += 2
@@ -1387,25 +1442,178 @@ info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}
 							y += 1
 							allyNum += 1
 							info.setpos(y, x)
-							info.addstr("#{allyNum}. #{ally.slice(0,1).capitalize+ally.slice(1..-1)}")
+							info.addstr("#{allyNum}. #{ally.getName.slice(0,1).capitalize+ally.getName.slice(1..-1)}")
 						end
 						
 				end
 			end
-		
 		info.refresh
 	end
 	if (@infoState == "enemies")
 		info.addstr("----Kingdoms--Events--Allies-|Enemies|-Help-")
 		@islands.each do |island|
-				y += 1
 				info.setpos(y, x)
-				if(island.getName.size < 7)
-				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getEnemies}")
-				else
-				info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}\t$#{island.getEnemies}")
+				case island.getName
+					when "kiribati"
+						y = 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "kwajaleins"
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "hawaii" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "samoa"   
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "tokelau" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "vanuatu"  
+						y = 2
+						x = 16
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "tahiti" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "takutea"	
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "tuvalu"	
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "fiji"
+						y = 2
+						x = 32
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "tonga"   
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "tuamotus"
+						y  += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "rapa nui" 
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+					when "aotearoa"
+						y += 2
+						info.setpos(y, x)
+						info.addstr("#{island.getName.slice(0,1).capitalize+island.getName.slice(1..-1)}")
+						allyNum = 0
+						island.getEnemies.each do |enemy|
+							y += 1
+							allyNum += 1
+							info.setpos(y, x)
+							info.addstr("#{allyNum}. #{enemy.getName.slice(0,1).capitalize+enemy.getName.slice(1..-1)}")
+						end
+						
 				end
 			end
+		
 		info.refresh
 	end
 	if (@infoState == "help")
@@ -1508,13 +1716,13 @@ end
 		pacifica.getIslands.each do |island1|
 			pacifica.getIslands.each do |island2|	
 			if((island1.getName != island2.getName) && (island1.getTeam != "neutral") && (island1.getTeam == island2.getTeam))
-				island1.addAlly(island2.getName)
+				island1.addAlly(island2)
 			end
 			if((island1.getName != island2.getName)	&& (island1.getTeam == "palm") && (island2.getTeam == "obsidian"))
-				island1.addEnemy(island2.getName)
+				island1.addEnemy(island2)
 			end
 			if((island1.getName != island2.getName)	&& (island1.getTeam == "obsidian") && (island2.getTeam == "palm"))
-				island1.addEnemy(island2.getName)
+				island1.addEnemy(island2)
 			end
 			end
 		end
@@ -1625,7 +1833,7 @@ while TRUE
 		pacifica.make_kingdom_info_window
 		pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
 		pacifica.make_info_window(pacifica.getIslands)
-		sleep(0.5)
+		sleep(0.1)
 		diploThr.kill
 	if(pacifica.getCurrentTime < 120)
 		pacifica.setCurrentTime(pacifica.getCurrentTime+1)
