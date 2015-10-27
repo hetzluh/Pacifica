@@ -28,46 +28,46 @@ Hollaaa
 
 
 class Tsunami
-	
-	def initialize(size, locationX, locationY, direction, spawnTime)
-		@size = size
-		@locationX = locationX
-		@locationY = locationY
-		@direction = direction
-		@spawnTime = spawnTime
-	end
 
-	def getSpawnTime
-		@spawnTime
-	end	
+  def initialize(size, locationX, locationY, direction, spawnTime)
+    @size = size
+    @locationX = locationX
+    @locationY = locationY
+    @direction = direction
+    @spawnTime = spawnTime
+  end
 
-	def getSize
-		@size
-	end
-	
-	def getLocationX
-		@locationX
-	end
-	
-	def getLocationY
-		@locationY
-	end
+  def getSpawnTime
+    @spawnTime
+  end
 
-	def move
-		if (@direction == "up")
-			@locationY -=1
-		elsif(@direction == "down")
-			@locationY +=1
-		end
-		@size -= 1
-		r = rand(10)
-		if(r < 4)
-			@size += 1
-		end
-		if(@locationY == 0 || @locationY == 20)
-			@size = 0
-		end
-	end
+  def getSize
+    @size
+  end
+
+  def getLocationX
+    @locationX
+  end
+
+  def getLocationY
+    @locationY
+  end
+
+  def move
+    if (@direction == "up")
+      @locationY -=1
+    elsif (@direction == "down")
+      @locationY +=1
+    end
+    @size -= 1
+    r = rand(10)
+    if (r < 4)
+      @size += 1
+    end
+    if (@locationY == 0 || @locationY == 20)
+      @size = 0
+    end
+  end
 
 end
 

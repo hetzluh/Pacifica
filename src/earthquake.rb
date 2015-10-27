@@ -23,38 +23,38 @@ Hollaaa
 
 
 class Earthquake
-	
-	def initialize(size, locationX, locationY, spawnTime)
-		@size = size
-		@locationX = locationX
-		@locationY = locationY
-		@tsunamisList = Array.new
-		@spawnTime = spawnTime
-	end
 
-	def getSpawnTime
-		@spawnTime
-	end	
-	
-	def getTsunamisList
-		@tsunamisList
-	end
+  def initialize(size, locationX, locationY, spawnTime)
+    @size = size
+    @locationX = locationX
+    @locationY = locationY
+    @tsunamisList = Array.new
+    @spawnTime = spawnTime
+  end
 
-	def getSize
-		@size
-	end
-	
-	def getLocationX
-		@locationX
-	end
-	
-	def getLocationY
-		@locationY
-	end
+  def getSpawnTime
+    @spawnTime
+  end
 
-	def spawnTsunamis
-		wave1 = Tsunami.new(@size, @locationX, @locationY-1, "up", @spawnTime)
-		wave2 = Tsunami.new(@size, @locationX, @locationY+1, "down", @spawnTime)
-		@tsunamisList.push(wave1, wave2)
-	end
+  def getTsunamisList
+    @tsunamisList
+  end
+
+  def getSize
+    @size
+  end
+
+  def getLocationX
+    @locationX
+  end
+
+  def getLocationY
+    @locationY
+  end
+
+  def spawnTsunamis
+    wave1 = Tsunami.new(@size, @locationX, @locationY-1, "up", @spawnTime)
+    wave2 = Tsunami.new(@size, @locationX, @locationY+1, "down", @spawnTime)
+    @tsunamisList.push(wave1, wave2)
+  end
 end

@@ -1,7 +1,6 @@
 #!/usr/local/bin/ruby
 
 
-
 =begin
 This class defines the typhoon object.
 
@@ -36,120 +35,120 @@ Hollaaa
 
 
 class Typhoon
-	
-	def initialize(size, locationX, locationY, destinationX, destinationY, spawnTime)
-		@size = 1
-		@locationX = locationX
-		@locationY = locationY
-		@destinationX = destinationX
-		@destinationY = destinationY
-		@tsunamisList = Array.new
-		@spawnTime = spawnTime
-		if(size == 1 || size == 2)
-			@bigOne = false
-		elsif(size == 3)
-			@bigOne = true
-		end
-	end
 
-	def getSpawnTime
-		@spawnTime
-	end	
+  def initialize(size, locationX, locationY, destinationX, destinationY, spawnTime)
+    @size = 1
+    @locationX = locationX
+    @locationY = locationY
+    @destinationX = destinationX
+    @destinationY = destinationY
+    @tsunamisList = Array.new
+    @spawnTime = spawnTime
+    if (size == 1 || size == 2)
+      @bigOne = false
+    elsif (size == 3)
+      @bigOne = true
+    end
+  end
 
-	def getTsunamisList
-		@tsunamisList
-	end
+  def getSpawnTime
+    @spawnTime
+  end
 
-	def getSize
-		@size
-	end
-	
-	def getLocationX
-		@locationX
-	end
-	
-	def getLocationY
-		@locationY
-	end
-	
-	def growOrShrink
+  def getTsunamisList
+    @tsunamisList
+  end
 
-		#grow
-		if(@bigOne == false && @size == 1)
-			r = rand(10)
-			if(r > 3)
-				growthBool = true
-			else
-				growthBool = false
-			end
-			if(growthBool == true)
-				@size += 1
-			end
-		elsif(@bigOne == true && @size < 3)
-			r = rand(10)
-			if(r > 2)
-				growthBool = true
-			else
-				growthBool = false
-			end
-			if(@size == 1 && growthBool == true)
-				@size += 1
-			end
-			if(@size == 2 && growthBool == true)
-				@size += 1
-			end
-		#shrink
-		elsif(@bigOne == false && @size == 2)
-		r = rand(10)
-		if(r > 7)
-		growthBool = true
-		else
-		growthBool = false
-		end
-			if(growthBool == true)
-				@size -= 1
-			end
-		elsif(@bigOne == true && @size == 3)
-		r = rand(10)
-		if(r > 8)
-		growthBool = true
-		else
-		growthBool = false
-		end
-			if(@size == 3 && growthBool == true)
-				@size -= 1
-			end
-			if(@size == 2 && growthBool == true)
-				@size -= 1
-			end
-		end
-	end
+  def getSize
+    @size
+  end
 
-	def move
-		dx = @locationX - @destinationX
-		dy = @locationY - @destinationY
-		newRand = rand(10)
-		otherRand = rand(100)
-		if(otherRand % 3 == 0)
-			if(dx > 0 || dy > 0)
-				if(newRand % 2 == 0)
-					@locationX -= 1 
-					dx -= 1
-				elsif(newRand % 2 ==1)
-					@locationY -= 1
-					dy -= 1
-				end		
-			end	
-		end	
-		growOrShrink
-		if(dx <= 3 || dy <= 3)
-			if(newRand % 2 == 0)
-			@size -= 1 
-			end
-		end
-		if(dx == 0 || dy == 0)
-		@size = 0 
-		end
-	end
-	
+  def getLocationX
+    @locationX
+  end
+
+  def getLocationY
+    @locationY
+  end
+
+  def growOrShrink
+
+    #grow
+    if (@bigOne == false && @size == 1)
+      r = rand(10)
+      if (r > 3)
+        growthBool = true
+      else
+        growthBool = false
+      end
+      if (growthBool == true)
+        @size += 1
+      end
+    elsif (@bigOne == true && @size < 3)
+      r = rand(10)
+      if (r > 2)
+        growthBool = true
+      else
+        growthBool = false
+      end
+      if (@size == 1 && growthBool == true)
+        @size += 1
+      end
+      if (@size == 2 && growthBool == true)
+        @size += 1
+      end
+      #shrink
+    elsif (@bigOne == false && @size == 2)
+      r = rand(10)
+      if (r > 7)
+        growthBool = true
+      else
+        growthBool = false
+      end
+      if (growthBool == true)
+        @size -= 1
+      end
+    elsif (@bigOne == true && @size == 3)
+      r = rand(10)
+      if (r > 8)
+        growthBool = true
+      else
+        growthBool = false
+      end
+      if (@size == 3 && growthBool == true)
+        @size -= 1
+      end
+      if (@size == 2 && growthBool == true)
+        @size -= 1
+      end
+    end
+  end
+
+  def move
+    dx = @locationX - @destinationX
+    dy = @locationY - @destinationY
+    newRand = rand(10)
+    otherRand = rand(100)
+    if (otherRand % 3 == 0)
+      if (dx > 0 || dy > 0)
+        if (newRand % 2 == 0)
+          @locationX -= 1
+          dx -= 1
+        elsif (newRand % 2 ==1)
+          @locationY -= 1
+          dy -= 1
+        end
+      end
+    end
+    growOrShrink
+    if (dx <= 3 || dy <= 3)
+      if (newRand % 2 == 0)
+        @size -= 1
+      end
+    end
+    if (dx == 0 || dy == 0)
+      @size = 0
+    end
+  end
+
 end

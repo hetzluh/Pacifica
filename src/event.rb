@@ -6,27 +6,27 @@ require './island.rb'
 
 class Event
 
-	def initialize(islandFrom, islandTo, message, type, year, month, moon, time)
-		@islandFrom = islandFrom
-		@islandTo = islandTo
-		@message = message
-		@type = type
-		@year = year
-		@month = month
-		@moon = moon
-		@eventTime = time
-		@eventString = "start"	
-	end
+  def initialize(islandFrom, islandTo, message, type, year, month, moon, time)
+    @islandFrom = islandFrom
+    @islandTo = islandTo
+    @message = message
+    @type = type
+    @year = year
+    @month = month
+    @moon = moon
+    @eventTime = time
+    @eventString = "start"
+  end
 
-	def write
-	    	@eventString = "\n#{@moon}/#{@month}/#{@year}: #{@islandFrom.upcase}#{@message}#{@islandTo.upcase}"	
-	end
+  def write
+    @eventString = "\n#{@moon}/#{@month}/#{@year}: #{@islandFrom.upcase}#{@message}#{@islandTo.upcase}"
+  end
 
-	def getString
-	    	@eventString
-	end
+  def getString
+    @eventString
+  end
 
-	def getTime
-		@eventTime
-	end
+  def getTime
+    @eventTime
+  end
 end
