@@ -2,8 +2,7 @@
 
 
 require './boat.rb'
-require "curses"
-include Curses
+
 
 =begin
 This class defines the Kingdom object. All of an island's attributes will be determined here.

@@ -1,9 +1,6 @@
 #!/usr/local/bin/ruby
 
 
-require "curses"
-include Curses
-
 =begin
 This class defines the Boat object. 
 

@@ -3,8 +3,6 @@
 
 require './boat.rb'
 require './island.rb'
-require "curses"
-include Curses
 
 class Event
 

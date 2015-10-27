@@ -3,9 +3,6 @@
 
 require './tsunami.rb'
 
-require "curses"
-include Curses
-
 =begin
 This class defines the earthquake object. 
 

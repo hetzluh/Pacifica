@@ -1,11 +1,9 @@
 #!/usr/local/bin/ruby
 
 
-require "curses"
-include Curses
 
 =begin
-This class defines the tsunami object. 
+This class defines the typhoon object.
 
 A wave sweeps either up or down until it fades out.
 
