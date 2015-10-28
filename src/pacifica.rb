@@ -34,7 +34,7 @@ class Pacifica
     @palmAlliance = Array.new
     @obsidianAlliance = Array.new
     @pearlAlliance = Array.new
-    @neutralAlliance = Array.new
+    @aquaAlliance = Array.new
     @playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false, @devMode)
     @diplomacyState = "main"
     @mapMode = false
@@ -48,6 +48,8 @@ class Pacifica
     @eventsMaster = Array.new
     @islandSelectedAlliesAndEnemies
     @islandSelectedAlliesAndEnemiesIndex = 0
+    @selectionMade = false
+    @playerPrayersThisYear = 0
   end
 
   def clearHazards
@@ -85,6 +87,14 @@ class Pacifica
 
   def setMonth(monthSetTo)
     @month = monthSetTo
+  end
+
+  def getPlayerPrayersThisYear
+    @playerPrayersThisYear
+  end
+
+  def setPlayerPrayersThisYear(setTo)
+    @playerPrayersThisYear = setTo
   end
 
   def getIslands
@@ -130,20 +140,20 @@ class Pacifica
 		Reminder: (kingdomId, name, size, startWealth, currentWealth, power, population
 					popcap, shipGuildSkill, locationX, locationY, playerIsland, devMode)
 =end
-    kiribati = Island.new(1, "kiribati", 1, 50/4, 50/4, 1.2, 15, 70, 1, 7, 8, false, @devMode)
-    kwajaleins = Island.new(2, "kwajaleins", 1, 50/4, 50/4, 1.2, 15, 70, 1, 4, 5, false, @devMode)
-    hawaii = Island.new(3, "hawaii", 2, 60/4, 60/4, 1.6, 25, 85, 2, 32, 3, false, @devMode)
-    samoa = Island.new(4, "samoa", 0, 40/4, 40/4, 1.4, 15, 70, 1, 21, 14, false, @devMode)
-    tokelau = Island.new(5, "tokelau", 0, 30/4, 30/4, 1.3, 10, 60, 2, 15, 12, false, @devMode)
-    vanuatu = Island.new(6, "vanuatu", 1, 36/4, 36/4, 1.4, 15, 70, 1, 4, 14, false, @devMode)
-    tahiti = Island.new(7, "tahiti", 0, 40/4, 40/4, 1.3, 25, 60, 3, 40, 14, false, @devMode)
-    takutea = Island.new(8, "takutea", 0, 40/4, 40/4, 1.3, 25, 60, 3, 33, 15, false, @devMode)
-    tuvalu = Island.new(9, "tuvalu", 0, 36/4, 36/4, 1.3, 10, 60, 2, 10, 10, false, @devMode)
-    fiji = Island.new(10, "fiji", 1, 40/4, 40/4, 1.3, 15, 70, 1, 11, 16, false, @devMode)
-    tonga = Island.new(11, "tonga", 0, 36/4, 36/4, 1.3, 10, 60, 2, 18, 17, false, @devMode)
-    tuamotus = Island.new(12, "tuamotus", 1, 40/4, 40/4, 1.3, 15, 70, 3, 50, 15, false, @devMode)
-    rapanui = Island.new(13, "rapa nui", 1, 56/4, 56/4, 1.5, 15, 75, 4, 58, 17, false, @devMode)
-    aotearoa = Island.new(14, "aotearoa", 2, 56/4, 56/4, 1.6, 20, 85, 3, 6, 21, false, @devMode)
+    kiribati = Island.new(1, "kiribati", 1, 50/4, 50/4, 1.5, 15, 70, 1, 7, 8, false, @devMode)
+    kwajaleins = Island.new(2, "kwajaleins", 1, 50/4, 50/4, 1.5, 15, 70, 1, 4, 5, false, @devMode)
+    hawaii = Island.new(3, "hawaii", 2, 60/4, 60/4, 1.9, 25, 85, 2, 32, 3, false, @devMode)
+    samoa = Island.new(4, "samoa", 0, 40/4, 40/4, 1.7, 15, 70, 1, 21, 14, false, @devMode)
+    tokelau = Island.new(5, "tokelau", 0, 30/4, 30/4, 1.6, 10, 60, 2, 15, 12, false, @devMode)
+    vanuatu = Island.new(6, "vanuatu", 1, 36/4, 36/4, 1.7, 15, 70, 1, 4, 14, false, @devMode)
+    tahiti = Island.new(7, "tahiti", 0, 40/4, 40/4, 1.6, 25, 60, 3, 40, 14, false, @devMode)
+    takutea = Island.new(8, "takutea", 0, 40/4, 40/4, 1.6, 25, 60, 3, 33, 15, false, @devMode)
+    tuvalu = Island.new(9, "tuvalu", 0, 36/4, 36/4, 1.6, 10, 60, 2, 10, 10, false, @devMode)
+    fiji = Island.new(10, "fiji", 1, 40/4, 40/4, 1.6, 15, 70, 1, 11, 16, false, @devMode)
+    tonga = Island.new(11, "tonga", 0, 36/4, 36/4, 1.6, 10, 60, 2, 18, 17, false, @devMode)
+    tuamotus = Island.new(12, "tuamotus", 1, 40/4, 40/4, 1.6, 15, 70, 3, 50, 15, false, @devMode)
+    rapanui = Island.new(13, "rapa nui", 1, 56/4, 56/4, 1.8, 15, 75, 4, 58, 17, false, @devMode)
+    aotearoa = Island.new(14, "aotearoa", 2, 56/4, 56/4, 1.9, 20, 85, 3, 6, 21, false, @devMode)
 
     @islands.push(kiribati, kwajaleins, hawaii, samoa, tokelau,
                   vanuatu, tahiti, takutea, tuvalu, fiji, tonga,
@@ -234,11 +244,11 @@ class Pacifica
     end
     clear
     setpos(4, 6)
-    addstr("Select your alliance:\n\n\t\t1. Neutral (no alliance)\n\n\t\t2. Palm\n\n\t\t3. Pearl\n\n\t\t4. Obsidian")
+    addstr("Select your alliance:\n\n\t\t1. Aqua (+10 pop bonus, +10 wealth bonus, +.1 power bonus) \n\n\t\t2. Palm (+15 pop bonus)\n\n\t\t3. Pearl (+20 wealth bonus)\n\n\t\t4. Obsidian (+0.2 power bonus, +1 ship skill bonus)")
     refresh
     chtwo = getch
     if (chtwo == '1')
-      @playerIsland.setTeam("neutral")
+      @playerIsland.setTeam("aqua")
     elsif (chtwo == '2')
       @playerIsland.setTeam("palm")
     elsif (chtwo == '3')
@@ -246,7 +256,7 @@ class Pacifica
     elsif (chtwo == '4')
       @playerIsland.setTeam("obsidian")
     else
-      @playerIsland.setTeam("neutral")
+      @playerIsland.setTeam("aqua")
     end
     clear
     setpos(4, 6)
@@ -290,6 +300,7 @@ class Pacifica
       elsif (object.class.name == "Boat")
         #if boat has arrived at destination, effect happens
         if (object.getDx == 0 && object.getDy == 0)
+          object.setCurrentCrew(0)
           if (object.getType == "war")
             if (object.getDestinationName == "kiribati")
               @islands.at(0).attacked(object.getCurrentCrew, object.getKingdomName)
@@ -741,7 +752,7 @@ class Pacifica
     @palmAlliance.clear
     @obsidianAlliance.clear
     @pearlAlliance.clear
-    @neutralAlliance.clear
+    @aquaAlliance.clear
     #Adding to teams and balancing if necessary. Max alliance size is 4
     @islands.each do |island|
       if (island.getTeam == "pearl" && @pearlAlliance.size < 6)
@@ -751,8 +762,8 @@ class Pacifica
       elsif (island.getTeam == "palm" && @palmAlliance.size < 6)
         @palmAlliance.push(island.getName)
       else
-        @neutralAlliance.push(island.getName)
-        island.setTeam("neutral")
+        @aquaAlliance.push(island.getName)
+        island.setTeam("aqua")
       end
     end
   end
@@ -775,8 +786,8 @@ class Pacifica
 
   def make_large_typhoon
     sz = 3
-    sX = rand(46-10) + 10
-    sY = rand(14-1) + 1
+    sX = rand(66-10) + 10
+    sY = rand(24-1) + 1
     dX = rand(11-2) + 2
     dY = rand(4-1) + 1
     typhoon1 = Typhoon.new(sz, sX, sY, dX, dY, @currentTime)
@@ -785,8 +796,8 @@ class Pacifica
 
   def make_small_typhoon
     sz = rand(3)
-    sX = rand(40-11) + 11
-    sY = rand(13-1) + 1
+    sX = rand(60-11) + 11
+    sY = rand(23-1) + 1
     dX = rand(10-3) + 3
     dY = rand(3-1) + 1
     typhoon1 = Typhoon.new(sz, sX, sY, dX, dY, @currentTime)
@@ -942,33 +953,41 @@ class Pacifica
     winfo.box(?|, ?=)
     winfo.setpos(0, 1)
     winfo.keypad = true
-    winfo.addstr("#{getch}")
     if (@diplomacyState == "main")
+      @selectionMade = false
       winfo.setpos(1, 1)
-      winfo.addstr("t. Trade Canoe\t\t\tw. War Canoe")
+      winfo.addstr("t. trade canoe \t\t\tw. war canoe")
       winfo.setpos(2, 1)
-      winfo.addstr("m. Island names on\t\tp. Pray")
+      winfo.addstr("m. island names on\t\t\tp. pray [#{@playerPrayersThisYear}/5 per year]")
       winfo.setpos(3, 1)
-      winfo.addstr("u/i. Toggle info window left/right ")
+      winfo.addstr("u/i. toggle info window left/right \t[,] for random trade ")
       winfo.setpos(4, 1)
-      winfo.addstr("a. Show allies in blue (#{@alliesText}) ")
+      winfo.addstr("a. show allies in blue (#{@alliesText})\t\t[.] for random war")
       winfo.setpos(5, 1)
-      winfo.addstr("e. Show enemies in red (#{@enemiesText}) ")
+      winfo.addstr("e. show enemies in red (#{@enemiesText}) \t\t active canoes: #{@playerIsland.getActiveTradeBoats.size + @playerIsland.getActiveWarBoats.size}/2")
       winfo.refresh
       ch = getch
       if (ch == 'q')
         abort("quit pacifica")
       else
         if (ch == 't')
-          @diplomacyState = "sendingTrade"
-          @playerIsland.setPlayerState("sendingTrade")
+          if ((@playerIsland.getActiveTradeBoats.size + @playerIsland.getActiveWarBoats.size) < 2)
+            @diplomacyState = "sendingTrade"
+            @playerIsland.setPlayerState("sendingTrade")
+          end
           ch = nil
         elsif (ch == 'w')
-          @diplomacyState = "sendingWar"
-          @playerIsland.setPlayerState("sendingWar")
+          if ((@playerIsland.getActiveTradeBoats.size + @playerIsland.getActiveWarBoats.size) < 2)
+            @diplomacyState = "sendingWar"
+            @playerIsland.setPlayerState("sendingWar")
+          end
           ch = nil
         elsif (ch == 'p')
-          @diplomacyState = "praying"
+          if (@playerPrayersThisYear <= 4)
+            @diplomacyState = "praying"
+            @playerPrayersThisYear = @playerPrayersThisYear + 1
+            @playerIsland.setPlayerState("praying")
+          end
         elsif (ch == 'm')
           if (@mapMode == false)
             @mapMode = true
@@ -1021,6 +1040,10 @@ class Pacifica
             @enemiesRed = false
             @enemiesText = "OFF"
           end
+        elsif(ch == ',')
+            @playerIsland.sendTradeToRandomAlly
+        elsif(ch == '.')
+          @playerIsland.sendWarToRandomEnemy
         elsif (ch == KEY_UP && @islandSelectedAlliesAndEnemiesIndex > 0)
           @islandSelectedAlliesAndEnemiesIndex -= 1
           @islandSelectedAlliesAndEnemies = @islands.at(@islandSelectedAlliesAndEnemiesIndex)
@@ -1055,9 +1078,9 @@ class Pacifica
       end
     elsif (@diplomacyState == "sendingTrade")
       winfo.setpos(1, 1)
-      winfo.addstr("Select where you would like to send a trade boat:")
+      winfo.addstr("select where you would like to send a trade boat:")
       winfo.setpos(3, 1)
-      winfo.addstr("[View Help Window For Details]")
+      winfo.addstr("( view allies & enemies window for details )")
       winfo.refresh
       ch = getch
       @playerOption = ch
@@ -1069,9 +1092,9 @@ class Pacifica
       playerIsland.setPlayerState("default")
     elsif (@diplomacyState == "sendingWar")
       winfo.setpos(1, 1)
-      winfo.addstr("Select where you would like to send a war boat:")
+      winfo.addstr("select where you would like to send a war boat:")
       winfo.setpos(3, 1)
-      winfo.addstr("[View Help Window For Details]")
+      winfo.addstr("( view allies & enemies window for details )")
       winfo.refresh
       ch = getch
       @playerOption = ch
@@ -1082,80 +1105,95 @@ class Pacifica
       @diplomacyState = "main"
       playerIsland.setPlayerState("default")
     elsif (@diplomacyState == "praying")
-      winfo.setpos(1, 1)
-      winfo.addstr("We are calling to the gods. You must choose:")
-      winfo.setpos(2, 1)
-      winfo.addstr("1. Human Sacrifice")
-      winfo.setpos(3, 1)
-      winfo.addstr("2. Offering of Wealth")
-      winfo.setpos(4, 1)
-      winfo.addstr("3. Relinquishing of Power")
-      winfo.refresh
+      if (@selectionMade == false)
+        winfo.setpos(1, 1)
+        winfo.addstr("We are calling to the gods. You must choose:")
+        winfo.setpos(2, 1)
+        winfo.addstr("1. Human Sacrifice")
+        winfo.setpos(3, 1)
+        winfo.addstr("2. Offering of Wealth")
+        winfo.setpos(4, 1)
+        winfo.addstr("3. Relinquishing of Power")
+        winfo.refresh
+      end
       ch = getch
-      @playerOption = ch
       if (ch == 'q')
         abort("quit pacifica")
       else
+        @selectionMade = true
         if (ch == '1')
-          winfo.clear
           r = rand(20)
           if (r < 5)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods grant you wealth!")
+            winfo.addstr("The gods grant you wealth! (press any key)")
             @playerIsland.setCurrentWealth(15)
             @playerIsland.setPopulation(-3)
           elsif (r < 15 && @playerIsland.getPopulation > 1)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods replace 3 lives with 10!")
+            winfo.addstr("The gods replace 3 lives with 10! (press any key)")
             @playerIsland.setPopulation(7)
           elsif (r == 18)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods bring death from the skies!")
+            winfo.addstr("The gods rain death from the skies! (press any key)")
             @playerIsland.setPopulation(-3)
-            for i in 1..3
+            for i in 1..2
+              make_small_typhoon
               make_large_typhoon
             end
           else
             winfo.setpos(2, 1)
-            winfo.addstr("The gods do not hear your plea!")
+            winfo.addstr("The gods do not hear your plea! (press any key)")
             @playerIsland.setPopulation(-3)
           end
-        elsif (ch =='2')
+          winfo.refresh
+          ch2 = getch
+          @diplomacyState = "main"
+        elsif (ch == '2')
           r = rand(20)
-          if (r < 10)
+          if (r < 10 && @playerIsland.getCurrentWealth > 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods grant you fertility!")
+            winfo.addstr("The gods grant you fertility! (press any key)")
             @playerIsland.setCurrentWealth(-10)
-          elsif (r < 15 && @playerIsland.currentWealth > 10)
+            @playerIsland.setPopulation(10)
+          elsif (r < 15 && @playerIsland.getCurrentWealth > 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods replace 10 shells with 30!")
+            winfo.addstr("The gods replace 10 shells with 30! (press any key)")
             @playerIsland.setCurrentWealth(20)
-          elsif (r == 18)
+          elsif (r == 18 && @playerIsland.getCurrentWealth > 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods bring death from below!")
+            winfo.addstr("The gods bring death from below! (press any key)")
             @playerIsland.setCurrentWealth(-10)
-            for i in 1..10
+            for i in 1..80
               random_earthquake_generator
             end
           else
             winfo.setpos(2, 1)
-            winfo.addstr("The gods do not hear your plea!")
-            @playerIsland.setCurrentWealth(-10)
+            if (@playerIsland.getCurrentWealth > 10)
+              winfo.addstr("The gods do not hear your plea! (press any key)")
+              @playerIsland.setCurrentWealth(-10)
+            else
+              winfo.addstr("Your kingdom is too poor to offer wealth! (press any key)")
+            end
           end
+          winfo.refresh
+          ch2 = getch
+          @diplomacyState = "main"
         elsif (ch == '3')
           r = rand(20)
           if (r < 5)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods wreak havoc below the sea!!")
+            winfo.addstr("The gods bring you loyal people! (press any key)")
+            @playerIsland.setPopulation(30)
             @playerIsland.setPower(-0.1)
           elsif (r < 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods rain terror from the skies!")
+            winfo.addstr("The gods rain terror from the skies! (press any key)")
             @playerIsland.setPower(-0.1)
             for i in 1..3
+              make_small_typhoon
               make_large_typhoon
             end
-          elsif (r == 18)
+          elsif (r == 18 || r == 17)
             winfo.setpos(2, 1)
             winfo.addstr("The gods bring death to all from below!")
             @playerIsland.setPower(-0.1)
@@ -1172,11 +1210,14 @@ class Pacifica
             winfo.addstr("The gods do not hear your plea!")
             @playerIsland.setPower(-0.1)
           end
+          winfo.refresh
+          ch2 = getch
+          @diplomacyState = "main"
+        elsif (ch != nil)
+          winfo.refresh
+          @diplomacyState = "main"
+          @selectionMade = true
         end
-        winfo.refresh
-        @diplomacyState = "main"
-        getch
-
       end
     end
   end
@@ -1195,9 +1236,9 @@ class Pacifica
       info.addstr("Kingdom\tWealth\tPow\tShip\tPop/Cap")
       y += 1
       info.setpos(y, x)
-      info.addstr("--------------------------------------neutral")
+      info.addstr("--------------------------------------aqua")
       @islands.each do |island|
-        if (island.getTeam == "neutral")
+        if (island.getTeam == "aqua")
           y += 1
           info.setpos(y, x)
           if (island.getDefeated == true)
@@ -1520,6 +1561,7 @@ class Pacifica
       info.refresh
     end
   end
+
 end
 
 
@@ -1551,7 +1593,7 @@ begin
   #Palms and obsidians are enemies at start
   pacifica.getIslands.each do |island1|
     pacifica.getIslands.each do |island2|
-      if ((island1.getName != island2.getName) && (island1.getTeam != "neutral") && (island1.getTeam == island2.getTeam))
+      if ((island1.getName != island2.getName) &&  (island1.getTeam == island2.getTeam))
         island1.addAlly(island2)
       end
       if ((island1.getName != island2.getName) && (island1.getTeam == "palm") && (island2.getTeam == "obsidian"))
@@ -1560,6 +1602,28 @@ begin
       if ((island1.getName != island2.getName) && (island1.getTeam == "obsidian") && (island2.getTeam == "palm"))
         island1.addEnemy(island2)
       end
+      if ((island1.getName != island2.getName) && (island1.getTeam == "aqua") && (island2.getTeam == "pearl"))
+        island1.addEnemy(island2)
+      end
+      if ((island1.getName != island2.getName) && (island1.getTeam == "pearl") && (island2.getTeam == "aqua"))
+        island1.addEnemy(island2)
+      end
+    end
+  end
+
+  #Applying alliance bonuses
+  pacifica.getIslands.each do |island|
+    if(island.getTeam == "aqua")
+      island.setPopulation(10)
+      island.setCurrentWealth(10)
+      island.setPower(0.1)
+    elsif(island.getTeam == "palm")
+      island.setPopulation(15)
+    elsif(island.getTeam == "pearl")
+      island.setCurrentWealth(20)
+    elsif(island.getTeam == "obsidian")
+      island.setPower(0.4)
+      island.setShipSkill(1)
     end
   end
 
@@ -1621,7 +1685,6 @@ begin
           end
         end
       end
-
     end
 
     pacifica.setObjects(objTemp)
@@ -1669,15 +1732,16 @@ begin
     pacifica.make_kingdom_info_window
     pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
     pacifica.make_info_window(pacifica.getIslands)
-    sleep(0.05)
+    sleep(0.25)
     diploThr.kill
     if (pacifica.getCurrentTime < 120)
       pacifica.setCurrentTime(pacifica.getCurrentTime+1)
     elsif (pacifica.getCurrentTime == 120)
+      pacifica.setPlayerPrayersThisYear(0)
       pacifica.setCurrentTime(0)
       pacifica.setYear((pacifica.getYear+1))
     end
-    somefile.puts "Time: #{pacifica.getCurrentTime} Object count: #{ObjectSpace.count_objects()}\n"
+    somefile.puts "Time: #{pacifica.getCurrentTime} Object count: #{ObjectSpace.count_objects}\n"
   end
 ensure
   Curses.close_screen

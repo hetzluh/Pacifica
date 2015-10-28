@@ -63,6 +63,10 @@ class Boat
     @currentCrew
   end
 
+  def setCurrentCrew(setTo)
+    @currentCrew = setTo
+  end
+
   def getDx
     @dx
   end
@@ -154,7 +158,7 @@ class Boat
       @waitOneMoonToDie = true
     end
     @age = @age + 1
-    if (@age > 60)
+    if (@age > 90)
       @currentCrew = 0
     end
   end

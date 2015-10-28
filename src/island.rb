@@ -75,7 +75,7 @@ class Island
       else
         r = rand(10 + 1) - 1
         if (r < 5)
-          @team = "neutral"
+          @team = "aqua"
         elsif (r > 4 && r < 8)
           @team = "palm"
         elsif (r == 8 || r == 9)
@@ -96,7 +96,7 @@ class Island
         elsif (r == 5 || r == 6)
           @team = "pearl"
         elsif (r > 6)
-          @team = "neutral"
+          @team = "aqua"
         end
       end
     elsif (@group == 3)
@@ -106,7 +106,7 @@ class Island
 
         r = rand(10 + 1) - 1
         if (r < 5)
-          @team = "neutral"
+          @team = "aqua"
         elsif (r == 5)
           @team = "palm"
         elsif (r == 6 || r == 7)
@@ -122,7 +122,7 @@ class Island
 
         r = rand(10 + 1) - 1
         if (r < 5)
-          @team = "neutral"
+          @team = "aqua"
         elsif (r == 5 || r == 6)
           @team = "pearl"
         elsif (r == 7 || r == 8)
@@ -133,11 +133,11 @@ class Island
       end
     elsif (@group == 5)
       if @devMode == 1
-        @team = "neutral"
+        @team = "aqua"
       else
         r = rand(10 + 1) - 1
         if (r < 6)
-          @team = "neutral"
+          @team = "aqua"
         elsif (r == 6)
           @team = "obsidian"
         elsif (r == 7 || r == 8)
@@ -182,7 +182,7 @@ class Island
   end
 
   def biyearlyPay
-    payout = @power+@size
+    payout = (@power*2)+@size
     @currentWealth += payout.ceil
   end
 
@@ -222,12 +222,17 @@ class Island
     #purge non-unique array entries
     @allies.uniq!
     @enemies.uniq!
-    #purging enemy allies
-    @enemies.each do |enemy|
-      enemyAllies = enemy.getAllies
-      newAllies = @allies - enemyAllies
-      @allies = newAllies
+    #purging enemy allies every 10th day
+    if (moon % 9 == 0)
+      @enemies.each do |enemy|
+        enemyAllies = enemy.getAllies
+        newAllies = @allies - enemyAllies
+        @allies = newAllies
+      end
     end
+
+    #purge dead boats
+    purgeBoats
 
     #setting current time for eventlog
     @year = year
@@ -242,7 +247,7 @@ class Island
       if (r > 15 && @population > @popcap/4 && @currentWealth > 10)
         r = rand(@allies.size)
         if (@allies.size > 0 && @goal=="TRADING")
-          if (@allies.at(r).getDefeated == false)
+          if (@allies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
             makeTradeBoat(@allies.at(r).getName, @year, @month, @moon, @time)
           end
           r2 = rand(10)
@@ -253,7 +258,7 @@ class Island
           while (@currentWealth >= 30)
             if (@enemies.size > 0)
               r = rand(@enemies.size)
-              if (@enemies.at(r).getDefeated == false)
+              if (@enemies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
                 makeWarBoat(@enemies.at(r).getName, @year, @month, @moon, @time)
               end
             end
@@ -266,7 +271,6 @@ class Island
       elsif (r < 2)
         babiesBorn
       end
-
       # Case for actual player
     elsif (@playerIsland == true)
       if (@playerState == "default")
@@ -401,24 +405,34 @@ etc.
   end
 
   def getActiveTradeBoats
-    #first purge dead boats
-    @activeTradeBoats.each do |boat|
-      if (boat.getCurrentCrew == 0)
-        boat = nil
-      end
-    end
-    @activeTradeBoats.compact
     @activeTradeBoats
   end
 
-  def getActiveWarBoats
-    #first purge dead boats
+  def purgeBoats
+    deadWarBoats = Array.new
+    deadTradeBoats = Array.new
+    #first purge war boats
     @activeWarBoats.each do |boat|
       if (boat.getCurrentCrew == 0)
-        boat = nil
+        deadWarBoats.push(boat)
       end
     end
     @activeWarBoats.compact
+
+    #purge trade boats
+    @activeTradeBoats.each do |boat|
+      if (boat.getCurrentCrew == 0)
+        deadTradeBoats.push(boat)
+      end
+    end
+
+    newTradeBoats = @activeTradeBoats - deadTradeBoats
+    newWarBoats = @activeWarBoats - deadWarBoats
+    @activeTradeBoats = newTradeBoats
+    @activeWarBoats = newWarBoats
+  end
+
+  def getActiveWarBoats
     @activeWarBoats
   end
 
@@ -618,12 +632,45 @@ etc.
   end
 
   def setPopulation(plusAmt)
-    @population = @population + plusAmt
+    if (@population + plusAmt <= @popcap)
+      @population = @population + plusAmt
+    end
   end
 
   def setPower(plusAmt)
-    @power = @power + plusAmt
+    @power = ((@power + plusAmt)*10).ceil/10.0
   end
 
+  def setShipSkill(plusAmt)
+    @shipGuildSkill = @shipGuildSkill + plusAmt
+  end
+
+  def sendTradeToRandomAlly
+    if (@allies.size > 0)
+      r = rand(@allies.size)
+      # second chance..programmer is lazy as fuck
+      if (@allies.at(r).getDefeated == true)
+        r = rand(@allies.size)
+      end
+      if (@allies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
+        makeTradeBoat(@allies.at(r).getName, @year, @month, @moon, @time)
+      end
+    end
+
+  end
+
+  def sendWarToRandomEnemy
+    if (@enemies.size > 0)
+      r = rand(@enemies.size)
+      # second chance..programmer is lazy as fuck
+      if (@enemies.at(r).getDefeated == true)
+        r = rand(@enemies.size)
+      end
+      if (@enemies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
+        makeWarBoat(@enemies.at(r).getName, @year, @month, @moon, @time)
+      end
+    end
+
+  end
 end
 #END island.rb
