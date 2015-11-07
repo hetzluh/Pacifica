@@ -35,10 +35,14 @@ class Pacifica
     @obsidianAlliance = Array.new
     @pearlAlliance = Array.new
     @aquaAlliance = Array.new
+    @palmAllianceDefeated = false
+    @obsidianAllianceDefeated = false
+    @pearlAllianceDefeated = false
+    @aquaAllianceDefeated = false
     @playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false, @devMode)
     @diplomacyState = "main"
     @mapMode = false
-    @infoState = "kingdoms" #states: kingdoms, events, allies, enemies, help
+    @infoState = "kingdoms" #states: kingdoms, events, allies & enemies, help
     @playerOption = nil
     @first_make_game = true
     @alliesText = "OFF"
@@ -50,6 +54,75 @@ class Pacifica
     @islandSelectedAlliesAndEnemiesIndex = 0
     @selectionMade = false
     @playerPrayersThisYear = 0
+    @getNumberOfDefeatedAlliances = 0
+  end
+
+  def getAlliances
+    alliances = Array.new
+    alliances.push(@palmAlliance)
+    alliances.push(@aquaAlliance)
+    alliances.push(@obsidianAlliance)
+    alliances.push(@pearlAlliance)
+     return alliances
+  end
+
+  def getDefeatedAlliances
+    alliances = getAlliances
+    defeatedAlliances = Array.new
+    if(@palmAllianceDefeated == true)
+      alliances.push(@palmAlliance)
+    end
+    if(@obsidianAllianceDefeated == true)
+      alliances.push(@obsidianAlliance)
+    end
+    if(@pearlAllianceDefeated == true)
+      alliances.push(@pearlAlliance)
+    end
+    if(@aquaAllianceDefeated == true)
+      alliances.push(@aquaAlliance)
+    end
+  end
+
+  def getNumberOfDefeatedAlliances
+    defeatedAlliances = 0
+    defeatedAllies = 0
+    @palmAlliance.each do |island|
+      if (island.getDefeated == true)
+        defeatedAllies += 1
+      end
+      if defeatedAllies == @obsidianAlliance.size
+        defeatedAlliances += 1
+        @palmAllianceDefeated = true
+      end
+    end
+    @obsidianAlliance.each do |island|
+      if (island.getDefeated == true)
+        defeatedAllies += 1
+      end
+      if defeatedAllies == @obsidianAlliance.size
+        defeatedAlliances += 1
+        @palmAllianceDefeated = true
+      end
+    end
+    @pearlAlliance.each do |island|
+      if (island.getDefeated == true)
+        defeatedAllies += 1
+      end
+      if defeatedAllies == @obsidianAlliance.size
+        defeatedAlliances += 1
+        @palmAllianceDefeated = true
+      end
+    end
+    @aquaAlliance.each do |island|
+      if (island.getDefeated == true)
+        defeatedAllies += 1
+      end
+      if defeatedAllies == @obsidianAlliance.size
+        defeatedAlliances += 1
+        @palmAllianceDefeated = true
+      end
+    end
+    return defeatedAlliances
   end
 
   def clearHazards
@@ -244,7 +317,7 @@ class Pacifica
     end
     clear
     setpos(4, 6)
-    addstr("Select your alliance:\n\n\t\t1. Aqua (+10 pop bonus, +10 wealth bonus, +.1 power bonus) \n\n\t\t2. Palm (+15 pop bonus)\n\n\t\t3. Pearl (+20 wealth bonus)\n\n\t\t4. Obsidian (+0.2 power bonus, +1 ship skill bonus)")
+    addstr("Select your alliance:\n\n\t\t1. Aqua (+10 pop bonus, +10 wealth bonus, +.1 power bonus) \n\n\t\t2. Palm (+15 pop bonus)\n\n\t\t3. Pearl (+20 wealth bonus)\n\n\t\t4. Obsidian (+0.4 power bonus, +1 ship skill bonus)")
     refresh
     chtwo = getch
     if (chtwo == '1')
@@ -756,13 +829,16 @@ class Pacifica
     #Adding to teams and balancing if necessary. Max alliance size is 4
     @islands.each do |island|
       if (island.getTeam == "pearl" && @pearlAlliance.size < 6)
-        @pearlAlliance.push(island.getName)
+        @pearlAlliance.push(island)
+        island.setTeam("pearl")
       elsif (island.getTeam == "obsidian" && @obsidianAlliance.size < 6)
-        @obsidianAlliance.push(island.getName)
+        @obsidianAlliance.push(island)
+        island.setTeam("obsidian")
       elsif (island.getTeam == "palm" && @palmAlliance.size < 6)
-        @palmAlliance.push(island.getName)
+        @palmAlliance.push(island)
+        island.setTeam("palm")
       else
-        @aquaAlliance.push(island.getName)
+        @aquaAlliance.push(island)
         island.setTeam("aqua")
       end
     end
@@ -905,7 +981,7 @@ class Pacifica
   end
 
 
-  # This method will not be used in actual gameplay/final implementation
+# This method will not be used in actual gameplay/final implementation
   def random_typhoon_generator
 
     #Normal Typhoon
@@ -1040,9 +1116,9 @@ class Pacifica
             @enemiesRed = false
             @enemiesText = "OFF"
           end
-        elsif(ch == ',')
-            @playerIsland.sendTradeToRandomAlly
-        elsif(ch == '.')
+        elsif (ch == ',')
+          @playerIsland.sendTradeToRandomAlly
+        elsif (ch == '.')
           @playerIsland.sendWarToRandomEnemy
         elsif (ch == KEY_UP && @islandSelectedAlliesAndEnemiesIndex > 0)
           @islandSelectedAlliesAndEnemiesIndex -= 1
@@ -1593,7 +1669,7 @@ begin
   #Palms and obsidians are enemies at start
   pacifica.getIslands.each do |island1|
     pacifica.getIslands.each do |island2|
-      if ((island1.getName != island2.getName) &&  (island1.getTeam == island2.getTeam))
+      if ((island1.getName != island2.getName) && (island1.getTeam == island2.getTeam))
         island1.addAlly(island2)
       end
       if ((island1.getName != island2.getName) && (island1.getTeam == "palm") && (island2.getTeam == "obsidian"))
@@ -1613,15 +1689,15 @@ begin
 
   #Applying alliance bonuses
   pacifica.getIslands.each do |island|
-    if(island.getTeam == "aqua")
+    if (island.getTeam == "aqua")
       island.setPopulation(10)
       island.setCurrentWealth(10)
       island.setPower(0.1)
-    elsif(island.getTeam == "palm")
+    elsif (island.getTeam == "palm")
       island.setPopulation(15)
-    elsif(island.getTeam == "pearl")
+    elsif (island.getTeam == "pearl")
       island.setCurrentWealth(20)
-    elsif(island.getTeam == "obsidian")
+    elsif (island.getTeam == "obsidian")
       island.setPower(0.4)
       island.setShipSkill(1)
     end
@@ -1737,6 +1813,20 @@ begin
     if (pacifica.getCurrentTime < 120)
       pacifica.setCurrentTime(pacifica.getCurrentTime+1)
     elsif (pacifica.getCurrentTime == 120)
+      if(pacifica.getNumberOfDefeatedAlliances == 2)
+        alliancesActive = pacifica.getAlliances - pacifica.getDefeatedAlliances
+        alliancesActive.each do |myAlliance|
+          alliancesActive.each do |enemyAlliance|
+            if(myAlliance != enemyAlliance)
+            myAlliance.each do |island|
+              enemyAlliance.each do |enemyIsland|
+                island.addEnemy(enemyIsland)
+              end
+            end
+            end
+          end
+        end
+      end
       pacifica.setPlayerPrayersThisYear(0)
       pacifica.setCurrentTime(0)
       pacifica.setYear((pacifica.getYear+1))

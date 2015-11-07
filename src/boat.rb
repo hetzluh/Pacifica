@@ -158,7 +158,7 @@ class Boat
       @waitOneMoonToDie = true
     end
     @age = @age + 1
-    if (@age > 90)
+    if (@age > 85)
       @currentCrew = 0
     end
   end

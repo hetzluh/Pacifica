@@ -222,12 +222,20 @@ class Island
     #purge non-unique array entries
     @allies.uniq!
     @enemies.uniq!
-    #purging enemy allies every 10th day
+    #purging enemy allies every 10th day and deleting defeated enemies and allies
     if (moon % 9 == 0)
       @enemies.each do |enemy|
+        if (enemy.getDefeated == true)
+          @enemies.delete(enemy)
+        end
         enemyAllies = enemy.getAllies
         newAllies = @allies - enemyAllies
         @allies = newAllies
+      end
+      @allies.each do |ally|
+        if (ally.getDefeated == true)
+          @allies.delete(ally)
+        end
       end
     end
 
@@ -369,7 +377,7 @@ etc.
   end
 
   def setCurrentWealth(plusAmt)
-    @currentWealth += plusAmt
+    @currentWealth = @currentWealth + plusAmt
   end
 
   def getCurrentWealth
@@ -492,7 +500,11 @@ etc.
         destinationY = 1
       end
 
-      warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, @shipGuildSkill)
+      if (getShipGuildSkill < 4)
+        warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "war", 0, @shipGuildSkill)
+      else
+        warBoat = Boat.new(@kingdomId, @name, destinationIslandName, 15, @locationX, @locationY+1, destinationX, destinationY, "war", 0, @shipGuildSkill)
+      end
       @activeWarBoats.push(warBoat)
       if (@enemies.include?(destinationIslandName) == false)
         @islandsList.each do |island|
@@ -560,7 +572,12 @@ etc.
         destinationX = 59
         destinationY = 1
       end
-      tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, @shipGuildSkill)
+
+      if (getShipGuildSkill < 3)
+        tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 5, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, @shipGuildSkill)
+      else
+        tradeBoat = Boat.new(@kingdomId, @name, destinationIslandName, 10, @locationX, @locationY+1, destinationX, destinationY, "trade", 0, @shipGuildSkill)
+      end
 
       @activeTradeBoats.push(tradeBoat)
       @boatsSent += 1
@@ -576,7 +593,7 @@ etc.
   end
 
   def attacked(numberAttacking, kingdomAttacking)
-    @population -= numberAttacking * 2
+    @population -= numberAttacking * 10
     if (@population <= 0)
       @population = 0
       @defeated = true
@@ -598,31 +615,13 @@ etc.
   end
 
   def addAlly(island)
-    enemyAlly = false
-    @islandsList.each do |island|
-      @allies.each do |ally|
-        @islandsList.each do |allyIsland|
-          if (allyIsland.getName == ally)
-            allyIsland.getEnemies.each do |allyEnemy|
-              @allies.each do |ally|
-                if allyEnemy.getName == ally.getName
-                  enemyAlly = true
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-    if (enemyAlly == false)
       @allies.push(island)
-    end
   end
 
   def traded(numberCrew, kingdomTrading)
     @population += numberCrew
     @currentWealth += 3
-    if (@allies.length < 4 && @enemies.include?(kingdomTrading) == false)
+    if (@enemies.include?(kingdomTrading) == false)
       @islandsList.each do |island|
         if (island.getName == kingdomTrading)
           addAlly(island)
