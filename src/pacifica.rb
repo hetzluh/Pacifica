@@ -1158,6 +1158,7 @@ class Pacifica
       winfo.setpos(3, 1)
       winfo.addstr("( view allies & enemies window for details )")
       winfo.refresh
+      ch2 = getch
       ch = getch
       @playerOption = ch
       winfo.refresh
@@ -1172,6 +1173,7 @@ class Pacifica
       winfo.setpos(3, 1)
       winfo.addstr("( view allies & enemies window for details )")
       winfo.refresh
+      ch2 = getch
       ch = getch
       @playerOption = ch
       winfo.refresh
