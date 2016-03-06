@@ -158,15 +158,7 @@ class Boat
       @waitOneMoonToDie = true
     end
     @age = @age + 1
-    if (@shipGuildSkill == 1 && @age > 35)
-      @currentCrew = 0
-    elsif (@shipGuildSkill == 2 && @age > 40)
-      @currentCrew = 0
-    elsif (@shipGuildSkill == 3 && @age > 50)
-      @currentCrew = 0
-    elsif (@shipGuildSkill == 4 && @age > 60)
-      @currentCrew = 0
-    elsif (@shipGuildSkill == 5 && @age > 70)
+    if (@age > 120)
       @currentCrew = 0
     end
   end

@@ -1565,7 +1565,7 @@ class Pacifica
       info.addstr("Enemies")
       info.setpos(25, 1)
       info.attron(color_pair(COLOR_GREEN)|A_NORMAL)
-      info.addstr(" ( 0-9, -, +, [, ] to send respective boats ) ")
+      info.addstr("     ( 0-9, -, +, [, ] to send boats )      ")
       info.refresh
     end
     if (@infoState == "help")
