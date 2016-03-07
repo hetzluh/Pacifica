@@ -62,11 +62,9 @@ class Island
     #start goal is gather resources
     @goal = "TRADING"
     @devMode = devMode
-    @events = Array.new
     @year = 500
     @month = "jan"
     @moon = 1
-    @time = -1
     @defeated = false
 
     if (@group == 1)
@@ -204,7 +202,7 @@ class Island
   end
 
   def updateGoal
-    if (@population>@popcap/4&&@currentWealth>10)
+    if (@population > @popcap/4 && @currentWealth > 10)
       if (@currentWealth < 20)
         @goal = "TRADING"
       elsif (@enemies.size > 0 && @currentWealth >= 30)
@@ -216,14 +214,15 @@ class Island
     end
   end
 
-  def think(islands, playerOption, playerState, year, month, moon, time)
+  def think(islands, playerOption, playerState)
     #save copy of islands list
     @islandsList = islands
     #purge non-unique array entries
     @allies.uniq!
     @enemies.uniq!
-    #purging enemy allies every 10th day and deleting defeated enemies and allies
-    if (moon % 9 == 0)
+    # purging enemy allies every 20% of the time and deleting defeated enemies and allies
+    i = rand(5)
+    if (i == 3)
       @enemies.each do |enemy|
         if (enemy.getDefeated == true)
           @enemies.delete(enemy)
@@ -242,33 +241,25 @@ class Island
     #purge dead boats
     purgeBoats
 
-    #setting current time for eventlog
-    @year = year
-    @month = month
-    @moon = moon
-    @time = time
     # Case for AI
     if (@playerIsland == false)
       #sets goal (might need to move into the if clause)
-      updateGoal
+       updateGoal
       r = rand(20)
       if (r > 15 && @population > @popcap/4 && @currentWealth > 10)
         r = rand(@allies.size)
         if (@allies.size > 0 && @goal=="TRADING")
-          if (@allies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
-            makeTradeBoat(@allies.at(r).getName, @year, @month, @moon, @time)
+          if (@allies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 2)
+            makeTradeBoat(@allies.at(r).getName)
           end
           r2 = rand(10)
           if (r2 == 1 && @allies.size < 4)
             newTradePartner(islands)
           end
         elsif (@enemies.size > 0 && @goal=="RAIDING")
-          while (@currentWealth >= 30)
+          if (@currentWealth >= 30)
             if (@enemies.size > 0)
-              r = rand(@enemies.size)
-              if (@enemies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
-                makeWarBoat(@enemies.at(r).getName, @year, @month, @moon, @time)
-              end
+              sendWarToRandomEnemy
             end
           end
         elsif (@allies.size == 0 && r < 10)
@@ -284,28 +275,28 @@ class Island
       if (@playerState == "default")
       elsif (@playerState == "sendingTrade")
         if (playerOption == "-")
-          makeTradeBoat("tonga", @year, @month, @moon, @time)
+          makeTradeBoat("tonga")
         elsif (playerOption == "=")
-          makeTradeBoat("tuamotus", @year, @month, @moon, @time)
+          makeTradeBoat("tuamotus")
         elsif (playerOption == "[")
-          makeTradeBoat("rapa nui", @year, @month, @moon, @time)
+          makeTradeBoat("rapa nui")
         elsif (playerOption == "]")
-          makeTradeBoat("aotearoa", @year, @month, @moon, @time)
+          makeTradeBoat("aotearoa")
         elsif (playerOption =~ /[0-9]/)
-          makeTradeBoat(islands.at(playerOption.to_i).getName, @year, @month, @moon, @time)
+          makeTradeBoat(islands.at(playerOption.to_i).getName)
           setPlayerState("default")
         end
       elsif (@playerState == "sendingWar")
         if (playerOption == "-")
-          makeWarBoat("tonga", @year, @month, @moon, @time)
+          makeWarBoat("tonga")
         elsif (playerOption == "=")
-          makeWarBoat("tuamotus", @year, @month, @moon, @time)
+          makeWarBoat("tuamotus")
         elsif (playerOption == "[")
-          makeWarBoat("rapa nui", @year, @month, @moon, @time)
+          makeWarBoat("rapa nui")
         elsif (playerOption == "]")
-          makeWarBoat("aotearoa", @year, @month, @moon, @time)
+          makeWarBoat("aotearoa")
         elsif (playerOption =~ /[0-9]/)
-          makeWarBoat(islands.at(playerOption.to_i).getName, @year, @month, @moon, @time)
+          makeWarBoat(islands.at(playerOption.to_i).getName)
           setPlayerState("default")
         end
       end
@@ -350,10 +341,6 @@ etc.
     if (@population > @popcap)
       @population = @popcap
     end
-  end
-
-  def getEvents
-    @events
   end
 
   def getEnemies
@@ -444,13 +431,8 @@ etc.
     @activeWarBoats
   end
 
-  def makeWarBoat(destinationIslandName, year, month, moon, time)
-    if (destinationIslandName != @name && @currentWealth > 10 && @population > 9 && @defeated == false)
-      warEvent = Event.new(@name, destinationIslandName, ' -attacked- ', 'war', @year, @month, @moon, @time)
-      warEvent.write
-      @events.push(warEvent)
-      @events.uniq!
-      #@events.sort_by!{|event| event.getTime}
+  def makeWarBoat(destinationIslandName)
+    if (destinationIslandName != @name && @currentWealth > 14 && @population > 9 && @defeated == false)
       @currentWealth -= 15
       @population -= 10
       if (destinationIslandName == "kiribati")
@@ -517,14 +499,9 @@ etc.
     end
   end
 
-  def makeTradeBoat(destinationIslandName, year, month, moon, time)
-    if (destinationIslandName != @name && @currentWealth > 5 && @population > 4 && @defeated == false)
-      tradeEvent = Event.new(@name, destinationIslandName, ' -traded with- ', 'trade', @year, @month, @moon, @time)
-      tradeEvent.write
-      @events.push(tradeEvent)
-      @events.uniq!
-      #@events.sort_by!{|event| event.getTime}
-      @currentWealth -= 10
+  def makeTradeBoat(destinationIslandName)
+    if (destinationIslandName != @name && @currentWealth > 3 && @population > 4 && @defeated == false)
+      @currentWealth -= 3
       @population -= 5
       if (destinationIslandName == "kiribati")
         destinationX = 7
@@ -593,7 +570,7 @@ etc.
   end
 
   def attacked(numberAttacking, kingdomAttacking)
-    @population -= numberAttacking * 10
+    @population -= 10
     if (@population <= 0)
       @population = 0
       @defeated = true
@@ -620,7 +597,7 @@ etc.
 
   def traded(numberCrew, kingdomTrading)
     @population += numberCrew
-    @currentWealth += 3
+    @currentWealth += 5
     if (@enemies.include?(kingdomTrading) == false)
       @islandsList.each do |island|
         if (island.getName == kingdomTrading)
@@ -651,8 +628,8 @@ etc.
       if (@allies.at(r).getDefeated == true)
         r = rand(@allies.size)
       end
-      if (@allies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
-        makeTradeBoat(@allies.at(r).getName, @year, @month, @moon, @time)
+      if (@allies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 2)
+        makeTradeBoat(@allies.at(r).getName)
       end
     end
 
@@ -665,8 +642,8 @@ etc.
       if (@enemies.at(r).getDefeated == true)
         r = rand(@enemies.size)
       end
-      if (@enemies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 3)
-        makeWarBoat(@enemies.at(r).getName, @year, @month, @moon, @time)
+      if (@enemies.at(r).getDefeated == false && (getActiveTradeBoats.size + getActiveWarBoats.size) < 2)
+        makeWarBoat(@enemies.at(r).getName)
       end
     end
 

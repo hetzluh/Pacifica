@@ -6,7 +6,6 @@ require './boat.rb'
 require './earthquake.rb'
 require './tsunami.rb'
 require './typhoon.rb'
-require './event.rb'
 
 require "curses"
 include Curses
@@ -19,7 +18,7 @@ top left = (1, 6)
 
 class Pacifica
   def initialize()
-    @devMode = 0 #Set this to 1 for static teams for development/testing
+    @devMode = 1 #Set this to 1 for static teams for development/testing
     @currentTime = -1
     @islands = Array.new
     @objects = Array.new
@@ -42,19 +41,26 @@ class Pacifica
     @playerIsland = Island.new(3, "hawaii", 2, 60, 60, 1.6, 85, 85, 2, 32, 3, false, @devMode)
     @diplomacyState = "main"
     @mapMode = false
-    @infoState = "kingdoms" #states: kingdoms, events, allies & enemies, help
+    @infoState = "kingdoms" #states: kingdoms, allies & enemies, help
     @playerOption = nil
     @first_make_game = true
     @alliesText = "OFF"
     @enemiesText = "OFF"
     @alliesBlue = false
     @enemiesRed = false
-    @eventsMaster = Array.new
     @islandSelectedAlliesAndEnemies
     @islandSelectedAlliesAndEnemiesIndex = 0
     @selectionMade = false
     @playerPrayersThisYear = 0
     @getNumberOfDefeatedAlliances = 0
+    @defeatedAlliances = Array.new
+    @winningAlliance = ""
+    @gameOver = false
+
+  end
+
+  def getGameOver
+    @gameOver
   end
 
   def getAlliances
@@ -63,66 +69,59 @@ class Pacifica
     alliances.push(@aquaAlliance)
     alliances.push(@obsidianAlliance)
     alliances.push(@pearlAlliance)
-     return alliances
+    return alliances
   end
 
-  def getDefeatedAlliances
-    alliances = getAlliances
-    defeatedAlliances = Array.new
-    if(@palmAllianceDefeated == true)
-      alliances.push(@palmAlliance)
-    end
-    if(@obsidianAllianceDefeated == true)
-      alliances.push(@obsidianAlliance)
-    end
-    if(@pearlAllianceDefeated == true)
-      alliances.push(@pearlAlliance)
-    end
-    if(@aquaAllianceDefeated == true)
-      alliances.push(@aquaAlliance)
-    end
-  end
+  def checkForWinner
+    # compact nils
+    @palmAlliance.compact!
+    @obsidianAlliance.compact!
+    @pearlAlliance.compact!
+    @aquaAlliance.compact!
+    @palmAllianceDefeated = true
+    @pearlAllianceDefeated = true
+    @aquaAllianceDefeated = true
+    @obsidianAllianceDefeated = true
 
-  def getNumberOfDefeatedAlliances
-    defeatedAlliances = 0
-    defeatedAllies = 0
+    # Check which alliances are still alive
+    @aquaAlliance.each do |island|
+      if island.getDefeated == false
+        @aquaAllianceDefeated = false
+      end
+    end
     @palmAlliance.each do |island|
-      if (island.getDefeated == true)
-        defeatedAllies += 1
-      end
-      if defeatedAllies == @obsidianAlliance.size
-        defeatedAlliances += 1
-        @palmAllianceDefeated = true
-      end
-    end
-    @obsidianAlliance.each do |island|
-      if (island.getDefeated == true)
-        defeatedAllies += 1
-      end
-      if defeatedAllies == @obsidianAlliance.size
-        defeatedAlliances += 1
-        @palmAllianceDefeated = true
+      if island.getDefeated == false
+        @palmAllianceDefeated = false
       end
     end
     @pearlAlliance.each do |island|
-      if (island.getDefeated == true)
-        defeatedAllies += 1
-      end
-      if defeatedAllies == @obsidianAlliance.size
-        defeatedAlliances += 1
-        @palmAllianceDefeated = true
+      if island.getDefeated == false
+        @pearlAllianceDefeated = false
       end
     end
-    @aquaAlliance.each do |island|
-      if (island.getDefeated == true)
-        defeatedAllies += 1
-      end
-      if defeatedAllies == @obsidianAlliance.size
-        defeatedAlliances += 1
-        @palmAllianceDefeated = true
+    @obsidianAlliance.each do |island|
+      if island.getDefeated == false
+        @obsidianAllianceDefeated = false
       end
     end
-    return defeatedAlliances
+
+    if (@palmAllianceDefeated == true && @pearlAllianceDefeated == true && @obsidianAllianceDefeated == true)
+      @winningAlliance = "Aqua"
+      @infoState = "kingdoms"
+      @gameOver = true
+    elsif (@aquaAllianceDefeated == true && @pearlAllianceDefeated == true && @obsidianAllianceDefeated == true)
+      @winningAlliance = "Palm"
+      @infoState = "kingdoms"
+      @gameOver = true
+    elsif (@aquaAllianceDefeated == true && @palmAllianceDefeated == true && @obsidianAllianceDefeated == true)
+      @winningAlliance = "Pearl"
+      @infoState = "kingdoms"
+      @gameOver = true
+    elsif (@palmAllianceDefeated == true && @pearlAllianceDefeated == true && @aquaAllianceDefeated == true)
+      @winningAlliance = "Obsidian"
+      @infoState = "kingdoms"
+      @gameOver = true
+    end
   end
 
   def clearHazards
@@ -176,14 +175,6 @@ class Pacifica
 
   def setObjects(objArr)
     @objects = objArr
-  end
-
-  def getEvents
-    @eventsMaster
-  end
-
-  def setEvents(toSet)
-    @eventsMaster = toSet
   end
 
   def getObjects
@@ -343,423 +334,485 @@ class Pacifica
   def make_game_window(islands, objects, month, year, time)
     win = Window.new(24, 64, ((42-25)/2)-2, (168-100)/2)
     win.box(?|, ?-)
-    @moon = (time+1)%10
-    if @moon == 0
-      @moon = 10
-    end
-    moon = @moon
+    if @gameOver == false
+      @moon = (time+1)%10
+      if @moon == 0
+        @moon = 10
+      end
+      moon = @moon
 
-    if @moon == 10
-      win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
-    else
-      win.addstr("Moon:  #{moon}, Month: #{month}, Year: #{year}")
-    end
+      if @moon == 10
+        win.addstr("Moon: #{moon}, Month: #{month}, Year: #{year}")
+      else
+        win.addstr("Moon:  #{moon}, Month: #{month}, Year: #{year}")
+      end
 
 
-    random_earthquake_generator
+      # random_earthquake_generator
 
-    calendar_typhoon_generator
+      # calendar_typhoon_generator
 
-    @objects.each do |object|
-      y = object.getLocationY
-      x = object.getLocationX
-      boatHitX = false
-      boatHitY = false
-      win.setpos(y, x)
-      if (object.class.name == "Earthquake")
-        win.attron(color_pair(COLOR_RED)|A_NORMAL)
-        win.addstr("E")
-        win.attroff(color_pair(COLOR_RED)|A_NORMAL)
-      elsif (object.class.name == "Boat")
-        #if boat has arrived at destination, effect happens
-        if (object.getDx == 0 && object.getDy == 0)
-          object.setCurrentCrew(0)
-          if (object.getType == "war")
-            if (object.getDestinationName == "kiribati")
-              @islands.at(0).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "kwajaleins")
-              @islands.at(1).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "hawaii")
-              @islands.at(2).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "samoa")
-              @islands.at(3).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tokelau")
-              @islands.at(4).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "vanuatu")
-              @islands.at(5).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tahiti")
-              @islands.at(6).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "takutea")
-              @islands.at(7).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tuvalu")
-              @islands.at(8).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "fiji")
-              @islands.at(9).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tonga")
-              @islands.at(10).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tuamotus")
-              @islands.at(11).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "rapa nui")
-              @islands.at(12).attacked(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "aotearoa")
-              @islands.at(13).attacked(object.getCurrentCrew, object.getKingdomName)
-            end
-          elsif (object.getType == "trade")
-            if (object.getDestinationName == "kiribati")
-              @islands.at(0).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "kwajaleins")
-              @islands.at(1).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "hawaii")
-              @islands.at(2).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "samoa")
-              @islands.at(3).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tokelau")
-              @islands.at(4).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "vanuatu")
-              @islands.at(5).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tahiti")
-              @islands.at(6).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "takutea")
-              @islands.at(7).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tuvalu")
-              @islands.at(8).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "fiji")
-              @islands.at(9).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tonga")
-              @islands.at(10).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "tuamotus")
-              @islands.at(11).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "rapa nui")
-              @islands.at(12).traded(object.getCurrentCrew, object.getKingdomName)
-            elsif (object.getDestinationName == "aotearoa")
-              @islands.at(13).traded(object.getCurrentCrew, object.getKingdomName)
-            end
-            @islands.each do |island|
-              if (island.getName == object.getKingdomName)
-                island.setCurrentWealth(10)
+      @objects.each do |object|
+        y = object.getLocationY
+        x = object.getLocationX
+        boatHitX = false
+        boatHitY = false
+        win.setpos(y, x)
+        if (object.class.name == "Earthquake")
+          win.attron(color_pair(COLOR_RED)|A_NORMAL)
+          win.addstr("E")
+          win.attroff(color_pair(COLOR_RED)|A_NORMAL)
+        elsif (object.class.name == "Boat")
+          #if boat has arrived at destination, effect happens
+          if (object.getDx == 0 && object.getDy == 0)
+            object.setCurrentCrew(0)
+            if (object.getType == "war")
+              if (object.getDestinationName == "kiribati")
+                @islands.at(0).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "kwajaleins")
+                @islands.at(1).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "hawaii")
+                @islands.at(2).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "samoa")
+                @islands.at(3).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tokelau")
+                @islands.at(4).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "vanuatu")
+                @islands.at(5).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tahiti")
+                @islands.at(6).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "takutea")
+                @islands.at(7).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tuvalu")
+                @islands.at(8).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "fiji")
+                @islands.at(9).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tonga")
+                @islands.at(10).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tuamotus")
+                @islands.at(11).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "rapa nui")
+                @islands.at(12).attacked(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "aotearoa")
+                @islands.at(13).attacked(object.getCurrentCrew, object.getKingdomName)
+              end
+            elsif (object.getType == "trade")
+              if (object.getDestinationName == "kiribati")
+                @islands.at(0).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "kwajaleins")
+                @islands.at(1).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "hawaii")
+                @islands.at(2).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "samoa")
+                @islands.at(3).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tokelau")
+                @islands.at(4).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "vanuatu")
+                @islands.at(5).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tahiti")
+                @islands.at(6).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "takutea")
+                @islands.at(7).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tuvalu")
+                @islands.at(8).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "fiji")
+                @islands.at(9).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tonga")
+                @islands.at(10).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "tuamotus")
+                @islands.at(11).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "rapa nui")
+                @islands.at(12).traded(object.getCurrentCrew, object.getKingdomName)
+              elsif (object.getDestinationName == "aotearoa")
+                @islands.at(13).traded(object.getCurrentCrew, object.getKingdomName)
+              end
+              @islands.each do |island|
+                if (island.getName == object.getKingdomName)
+                  island.setCurrentWealth(100)
+                end
               end
             end
+            object = nil
           end
-          object = nil
-        end
-        #display boat and decide whether it has been damaged
+          #display boat and decide whether it has been damaged
 
 
-        if (object != nil)
-          if (object.getType == "trade")
-            win.attron(color_pair(COLOR_YELLOW)|A_NORMAL)
-            win.addstr("T")
-            win.attroff(color_pair(COLOR_YELLOW)|A_NORMAL)
-          elsif (object.getType == "war")
-            win.attron(color_pair(COLOR_MAGENTA)|A_NORMAL)
-            win.addstr("W")
-            win.attroff(color_pair(COLOR_MAGENTA)|A_NORMAL)
-          end
-        end
-
-        if (object != nil)
-          @hazardLocationsX.each do |hazard|
-            if (object.getLocationX == hazard)
-              boatHitX = true
+          if (object != nil)
+            if (object.getType == "trade")
+              win.attron(color_pair(COLOR_YELLOW)|A_NORMAL)
+              win.addstr("T")
+              win.attroff(color_pair(COLOR_YELLOW)|A_NORMAL)
+            elsif (object.getType == "war")
+              win.attron(color_pair(COLOR_MAGENTA)|A_NORMAL)
+              win.addstr("W")
+              win.attroff(color_pair(COLOR_MAGENTA)|A_NORMAL)
             end
           end
-          if (boatHitX == true)
-            @hazardLocationsY.each do |hazard|
-              if (object.getLocationY == hazard)
-                boatHitY = true
+
+          if (object != nil)
+            @hazardLocationsX.each do |hazard|
+              if (object.getLocationX == hazard)
+                boatHitX = true
               end
             end
+            if (boatHitX == true)
+              @hazardLocationsY.each do |hazard|
+                if (object.getLocationY == hazard)
+                  boatHitY = true
+                end
+              end
+            end
+            if (boatHitY == true)
+              object.damage
+            end
           end
-          if (boatHitY == true)
-            object.damage
-          end
-        end
 
-      elsif (object.class.name == "Typhoon")
-        win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
-        win.addstr("@")
-        if (object.getSize == 1 || object.getSize == 2 || object.getSize == 3)
-          win.setpos(y, x-1)
-          win.addstr("(")
-          win.setpos(y, x+1)
-          win.addstr(")")
-        end
-        if (object.getSize == 2 || object.getSize == 3)
-          win.setpos(y, x-2)
-          win.addstr("(")
-          win.setpos(y, x+2)
-          win.addstr(")")
-          win.setpos(y-1, x)
-          win.addstr("^")
-          win.setpos(y+1, x)
-          win.addstr("v")
-        end
-        if (object.getSize == 3)
-          win.setpos(y, x-3)
-          win.addstr("(")
-          win.setpos(y, x+3)
-          win.addstr(")")
-          win.setpos(y-1, x-1)
-          win.addstr("-")
-          win.setpos(y-1, x)
-          win.addstr("-")
-          win.setpos(y-1, x+1)
-          win.addstr("-")
-          win.setpos(y+1, x-1)
-          win.addstr("-")
-          win.setpos(y+1, x)
-          win.addstr("-")
-          win.setpos(y+1, x+1)
-          win.addstr("-")
-          win.setpos(y-2, x)
-          win.addstr("^")
-          win.setpos(y+2, x)
-          win.addstr("v")
+        elsif (object.class.name == "Typhoon")
+          win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
+          win.addstr("@")
+          if (object.getSize == 1 || object.getSize == 2 || object.getSize == 3)
+            win.setpos(y, x-1)
+            win.addstr("(")
+            win.setpos(y, x+1)
+            win.addstr(")")
+          end
+          if (object.getSize == 2 || object.getSize == 3)
+            win.setpos(y, x-2)
+            win.addstr("(")
+            win.setpos(y, x+2)
+            win.addstr(")")
+            win.setpos(y-1, x)
+            win.addstr("^")
+            win.setpos(y+1, x)
+            win.addstr("v")
+          end
+          if (object.getSize == 3)
+            win.setpos(y, x-3)
+            win.addstr("(")
+            win.setpos(y, x+3)
+            win.addstr(")")
+            win.setpos(y-1, x-1)
+            win.addstr("-")
+            win.setpos(y-1, x)
+            win.addstr("-")
+            win.setpos(y-1, x+1)
+            win.addstr("-")
+            win.setpos(y+1, x-1)
+            win.addstr("-")
+            win.setpos(y+1, x)
+            win.addstr("-")
+            win.setpos(y+1, x+1)
+            win.addstr("-")
+            win.setpos(y-2, x)
+            win.addstr("^")
+            win.setpos(y+2, x)
+            win.addstr("v")
+          end
+          win.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
+        elsif (object.class.name == "Tsunami")
+          win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
+          win.addstr("~")
+          if (object.getSize == 1 || object.getSize == 2 || object.getSize == 3 ||
+              object.getSize == 4 || object.getSize == 5)
+            win.setpos(y, x-1)
+            win.addstr("~")
+            win.setpos(y, x+1)
+            win.addstr("~")
+          end
+          if (object.getSize == 2 || object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
+            win.setpos(y, x-2)
+            win.addstr("~")
+            win.setpos(y, x+2)
+            win.addstr("~")
+          end
+          if (object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
+            win.setpos(y, x-3)
+            win.addstr("~")
+            win.setpos(y, x+3)
+            win.addstr("~")
+          end
+          if (object.getSize == 4 || object.getSize == 5)
+            win.setpos(y, x-4)
+            win.addstr("~")
+            win.setpos(y, x+4)
+            win.addstr("~")
+          end
+          if (object.getSize == 5)
+            win.setpos(y, x-5)
+            win.addstr("~")
+            win.setpos(y, x+5)
+            win.addstr("~")
+          end
         end
         win.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
-      elsif (object.class.name == "Tsunami")
-        win.attron(color_pair(COLOR_CYAN)|A_NORMAL)
-        win.addstr("~")
-        if (object.getSize == 1 || object.getSize == 2 || object.getSize == 3 ||
-            object.getSize == 4 || object.getSize == 5)
-          win.setpos(y, x-1)
-          win.addstr("~")
-          win.setpos(y, x+1)
-          win.addstr("~")
-        end
-        if (object.getSize == 2 || object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
-          win.setpos(y, x-2)
-          win.addstr("~")
-          win.setpos(y, x+2)
-          win.addstr("~")
-        end
-        if (object.getSize == 3 || object.getSize == 4 || object.getSize == 5)
-          win.setpos(y, x-3)
-          win.addstr("~")
-          win.setpos(y, x+3)
-          win.addstr("~")
-        end
-        if (object.getSize == 4 || object.getSize == 5)
-          win.setpos(y, x-4)
-          win.addstr("~")
-          win.setpos(y, x+4)
-          win.addstr("~")
-        end
-        if (object.getSize == 5)
-          win.setpos(y, x-5)
-          win.addstr("~")
-          win.setpos(y, x+5)
-          win.addstr("~")
-        end
       end
-      win.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
-    end
 
-    @islands.each do |island|
-      y = island.getLocationY
-      x = island.getLocationX
-      landEqX = false
-      landEqY = false
-      @epicenterLocationsX.each do |eq|
-        if (island.getLocationX == eq)
-          landEqX = true
-        end
-      end
-      if (landEqX == true)
-        @epicenterLocationsY.each do |eq|
-          if (island.getLocationY == eq)
-            landEqY = true
-          end
-        end
-      end
-      if (landEqY == true)
-#					island.earthquake
+      @islands.each do |island|
+        y = island.getLocationY
+        x = island.getLocationX
         landEqX = false
         landEqY = false
-      end
-      win.setpos(y, x)
-
-      win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
-      if (@playerIsland.getName == island.getName)
-        win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
-      elsif (@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
-        win.attron(color_pair(COLOR_RED)|A_NORMAL)
-      elsif (@playerIsland.getAllies.include?(island) && @alliesBlue == true)
-        win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
-      end
-
-      #Kingdom-specific graphics start now
-      if (island.getName == "kiribati")
-        win.addstr("*")
-        win.setpos(y-1, x)
-        win.addstr(".")
-        win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y, x+2)
-          win.addstr("kiribati")
+        @epicenterLocationsX.each do |eq|
+          if (island.getLocationX == eq)
+            landEqX = true
+          end
         end
+        if (landEqX == true)
+          @epicenterLocationsY.each do |eq|
+            if (island.getLocationY == eq)
+              landEqY = true
+            end
+          end
+        end
+        if (landEqY == true)
+          island.earthquake
+        end
+        win.setpos(y, x)
+
+        win.attron(color_pair(COLOR_GREEN)|A_NORMAL)
+        if (@playerIsland.getName == island.getName)
+          win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+        elsif (@playerIsland.getEnemies.include?(island) && @enemiesRed == true)
+          win.attron(color_pair(COLOR_RED)|A_NORMAL)
+        elsif (@playerIsland.getAllies.include?(island) && @alliesBlue == true)
+          win.attron(color_pair(COLOR_BLUE)|A_NORMAL)
+        end
+
+        #Kingdom-specific graphics start now
+        if (island.getName == "kiribati")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y-1, x)
+            win.addstr(".")
+          end
+          win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y, x+2)
+            win.addstr("(0) kiribati")
+          end
+        end
+
+        if (island.getName == "kwajaleins")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y, x-1)
+            win.addstr("'")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y-1, x+1)
+            win.addstr("(1) kwajaleins")
+          end
+        end
+
+        if (island.getName == "hawaii")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*O")
+            win.setpos(y-1, x-1)
+            win.addstr(",")
+            win.setpos(y-1, x -3)
+            win.addstr(".")
+            win.setpos(y-1, x-5)
+            win.addstr("'")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-2)
+            win.addstr("(2) hawaii")
+          end
+        end
+
+        if (island.getName == "samoa")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y, x-1)
+            win.addstr("o")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-2)
+            win.addstr("(3) samoa")
+          end
+        end
+
+        if (island.getName == "tokelau")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y-1, x-1)
+            win.addstr(".")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-2)
+            win.addstr("(4) tokelau")
+          end
+        end
+
+        if (island.getName == "tuvalu")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y, x+1)
+            win.addstr(".")
+            win.setpos(y, x-1)
+            win.addstr("'")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-3)
+            win.addstr("(8) tuvalu")
+          end
+        end
+
+        if (island.getName == "vanuatu")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y, x+1)
+            win.addstr(".")
+            win.setpos(y, x+2)
+            win.addstr("o")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-2)
+            win.addstr("(5) vanuatu")
+          end
+        end
+
+        if (island.getName == "fiji")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y-1, x+1)
+            win.addstr(",")
+            win.setpos(y, x-1)
+            win.addstr("'")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-2)
+            win.addstr("(9) fiji")
+          end
+        end
+
+        if (island.getName == "tonga")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y-1, x)
+            win.addstr(".")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-2)
+            win.addstr("(-) tonga")
+          end
+        end
+
+        if (island.getName == "takutea")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-3)
+            win.addstr("(7) takutea")
+          end
+        end
+
+        if (island.getName == "tahiti")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-2)
+            win.addstr("(6) tahiti")
+          end
+        end
+
+        if (island.getName == "tuamotus")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("*")
+            win.setpos(y, x+2)
+            win.addstr(",")
+            win.setpos(y-1, x-1)
+            win.addstr(".")
+            win.setpos(y+1, x+1)
+            win.addstr("'")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y-2, x-4)
+            win.addstr("(+) tuamotus")
+          end
+        end
+
+        if (island.getName == "rapa nui")
+          if (island.getDefeated == true)
+            win.addstr("X")
+          else
+            win.addstr("* o")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x-4)
+            win.addstr("([) rapa nui")
+          end
+        end
+
+        if (island.getName == "aotearoa")
+          if (island.getDefeated == true)
+            win.addstr("  X")
+          else
+            win.addstr("oo*")
+            win.setpos(y-1, x-1)
+            win.addstr(".")
+            win.setpos(y+1, x-1)
+            win.addstr("ooo")
+          end
+          win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
+          if (@mapMode == true)
+            win.setpos(y+1, x+4)
+            win.addstr("(]) aotearoa")
+          end
+        end
+        #End kingdom graphics
       end
 
-      if (island.getName == "kwajaleins")
-        win.addstr("*")
-        win.setpos(y, x-1)
-        win.addstr("'")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y-1, x+1)
-          win.addstr("kwajaleins")
-        end
-      end
+      win.refresh
 
-      if (island.getName == "hawaii")
-        win.addstr("*O")
-        win.setpos(y-1, x-1)
-        win.addstr(",")
-        win.setpos(y-1, x -3)
-        win.addstr(".")
-        win.setpos(y-1, x-5)
-        win.addstr("'")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-2)
-          win.addstr("hawaii")
-        end
-      end
-
-      if (island.getName == "samoa")
-        win.addstr("*")
-        win.setpos(y, x-1)
-        win.addstr("o")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-2)
-          win.addstr("samoa")
-        end
-      end
-
-      if (island.getName == "tokelau")
-        win.addstr("*")
-        win.setpos(y-1, x-1)
-        win.addstr(".")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-2)
-          win.addstr("tokelau")
-        end
-      end
-
-      if (island.getName == "tuvalu")
-        win.addstr("*")
-        win.setpos(y, x+1)
-        win.addstr(".")
-        win.setpos(y, x-1)
-        win.addstr("'")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-3)
-          win.addstr("tuvalu")
-        end
-      end
-
-      if (island.getName == "vanuatu")
-        win.addstr("*")
-        win.setpos(y, x+1)
-        win.addstr(".")
-        win.setpos(y, x+2)
-        win.addstr("o")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-2)
-          win.addstr("vanuatu")
-        end
-      end
-
-      if (island.getName == "fiji")
-        win.addstr("*")
-        win.setpos(y-1, x+1)
-        win.addstr(",")
-        win.setpos(y, x-1)
-        win.addstr("'")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-2)
-          win.addstr("fiji")
-        end
-      end
-
-      if (island.getName == "tonga")
-        win.addstr("*")
-        win.setpos(y-1, x)
-        win.addstr(".")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-2)
-          win.addstr("tonga")
-        end
-      end
-
-      if (island.getName == "takutea")
-        win.addstr("*")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-3)
-          win.addstr("takutea")
-        end
-      end
-
-      if (island.getName == "tahiti")
-        win.addstr("*")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-2)
-          win.addstr("tahiti")
-        end
-      end
-
-      if (island.getName == "tuamotus")
-        win.addstr("*")
-        win.setpos(y, x+2)
-        win.addstr(",")
-        win.setpos(y-1, x-1)
-        win.addstr(".")
-        win.setpos(y+1, x+1)
-        win.addstr("'")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y-2, x-4)
-          win.addstr("tuamotus")
-        end
-      end
-
-      if (island.getName == "rapa nui")
-        win.addstr("* o")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x-4)
-          win.addstr("rapa nui")
-        end
-      end
-
-      if (island.getName == "aotearoa")
-        win.addstr("oo*")
-        win.setpos(y-1, x-1)
-        win.addstr(".")
-        win.setpos(y+1, x-1)
-        win.addstr("ooo")
-        win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
-        if (@mapMode == true)
-          win.setpos(y+1, x+4)
-          win.addstr("aotearoa")
-        end
-      end
-      #End kingdom graphics
+      handle_objects(@objects)
+      handle_kingdoms(@islands)
+      win.close
+    else
+      win.setpos(2, 2)
+      win.addstr("The winning alliance is #{@winningAlliance}")
+      win.setpos(4, 2)
+      win.addstr("Press 'q' to quit")
+      win.refresh
     end
-
-    win.refresh
-
-    handle_objects(@objects)
-    handle_kingdoms(@islands)
-    win.close
   end
 
   def handle_objects(objects)
@@ -804,9 +857,9 @@ class Pacifica
         island.yearlyPopExplosion
       end
       if (island.getPlayerIsland == false && island.getDefeated == false)
-        island.think(@islands, nil, nil, @year, @month, @moon, @time)
+        island.think(@islands, nil, nil)
       elsif (island.getPlayerIsland == true && island.getDefeated == false)
-        island.think(@islands, @playerOption, island.getPlayerState, @year, @month, @moon, @time)
+        island.think(@islands, @playerOption, island.getPlayerState)
       end
     end
     @islands.each do |island|
@@ -826,7 +879,7 @@ class Pacifica
     @obsidianAlliance.clear
     @pearlAlliance.clear
     @aquaAlliance.clear
-    #Adding to teams and balancing if necessary. Max alliance size is 4
+    #Adding to teams and balancing if necessary. Max alliance size is 6
     @islands.each do |island|
       if (island.getTeam == "pearl" && @pearlAlliance.size < 6)
         @pearlAlliance.push(island)
@@ -1019,7 +1072,9 @@ class Pacifica
     kinfo.addstr("$: #{@playerIsland.getCurrentWealth.to_i}\tP: #{@playerIsland.getPopulation}/#{@playerIsland.getPopCap}\tPow: #{@playerIsland.getPower}\tShip: #{@playerIsland.getShipGuildSkill}")
     kinfo.setpos(3, 1)
     kinfo.addstr("Boats sent: #{@playerIsland.getBoatsSent}")
-    kinfo.refresh
+    if @gameOver == false
+      kinfo.refresh
+    end
   end
 
   def make_diplomacy_window(islands)
@@ -1072,13 +1127,6 @@ class Pacifica
           end
         elsif (ch == 'i')
           if (@infoState == "kingdoms")
-            @infoState = "events"
-            #clearing all island event lists
-            @eventsMaster.clear
-            @islands.each do |island|
-              island.getEvents.clear
-            end
-          elsif (@infoState == "events")
             @infoState = "allies"
           elsif (@infoState == "allies")
             @infoState = "help"
@@ -1088,15 +1136,8 @@ class Pacifica
         elsif (ch == 'u')
           if (@infoState == "kingdoms")
             @infoState = "help"
-          elsif (@infoState == "events")
-            @infoState = "kingdoms"
           elsif (@infoState == "allies")
-            @infoState = "events"
-            #clearing all island event lists
-            @eventsMaster.clear
-            @islands.each do |island|
-              island.getEvents.clear
-            end
+            @infoState = "kingdoms"
           elsif (@infoState == "help")
             @infoState = "allies"
           end
@@ -1308,7 +1349,7 @@ class Pacifica
     y = 0
     info.setpos(y, x)
     if (@infoState == "kingdoms")
-      info.addstr("---|Kingdoms|-Events--Allies & Enemies---Help-")
+      info.addstr("----|Kingdoms|-----Allies & Enemies------Help-")
       y += 2
       info.setpos(y, x)
       info.addstr("Kingdom\tWealth\tPow\tShip\tPop/Cap")
@@ -1376,20 +1417,12 @@ class Pacifica
           end
         end
       end
-      info.refresh
-    end
-    if (@infoState == "events")
-      info.addstr("----Kingdoms-|Events|-Allies & Enemies---Help-")
-      y = 2
-      @eventsMaster.each do |event|
-        info.setpos(y, 48)
-        info.addstr("#{event.getString[0..44]} !")
-        y+=1
+      if @gameOver == false
+        info.refresh
       end
-      info.refresh
     end
     if (@infoState == "allies")
-      info.addstr("----Kingdoms--Events-|Allies & Enemies|--Help-")
+      info.addstr("-----Kingdoms-----|Allies & Enemies|-----Help-")
       info.setpos(1, 1)
       info.attron(color_pair(COLOR_GREEN)|A_NORMAL)
       info.addstr("     (use arrow keys to change selection)     ")
@@ -1566,10 +1599,13 @@ class Pacifica
       info.setpos(25, 1)
       info.attron(color_pair(COLOR_GREEN)|A_NORMAL)
       info.addstr("     ( 0-9, -, +, [, ] to send boats )      ")
-      info.refresh
+
+      if @gameOver == false
+        info.refresh
+      end
     end
     if (@infoState == "help")
-      info.addstr("----Kingdoms--Events--Allies & Enemies--|Help|")
+      info.addstr("-----Kingdoms------Allies & Enemies-----|Help|")
       info.setpos(2, x)
       info.addstr("      ********* PACIFICA v 0.5 *********")
       info.setpos(3, x)
@@ -1636,7 +1672,10 @@ class Pacifica
       info.attron(color_pair(COLOR_CYAN)|A_NORMAL)
       info.addstr("(@)")
       info.attroff(color_pair(COLOR_CYAN)|A_NORMAL)
-      info.refresh
+
+      if @gameOver == false
+        info.refresh
+      end
     end
   end
 
@@ -1653,10 +1692,9 @@ Curses.init_pair(COLOR_GREEN, COLOR_GREEN, COLOR_BLACK)
 Curses.init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK)
 Curses.init_pair(COLOR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK)
 Curses.init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK)
+Curses.init_pair(COLOR_BLACK, COLOR_BLACK, COLOR_BLACK)
 Curses.noecho
 Curses.stdscr.keypad(true)
-fname = "log_pacifica.txt"
-somefile = File.open(fname, "w")
 begin
   Curses.crmode
   Curses.raw
@@ -1668,22 +1706,22 @@ begin
 
   #Now we are going to add to each island's allies & enemies list
   #Everyone in an alliance is an ally/trade partner to everyone else in the alliance, except for neutral
-  #Palms and obsidians are enemies at start
+  #All alliances are enemies at start
   pacifica.getIslands.each do |island1|
     pacifica.getIslands.each do |island2|
       if ((island1.getName != island2.getName) && (island1.getTeam == island2.getTeam))
         island1.addAlly(island2)
       end
-      if ((island1.getName != island2.getName) && (island1.getTeam == "palm") && (island2.getTeam == "obsidian"))
+      if ((island1.getName != island2.getName) && (island1.getTeam == "palm") && (island2.getTeam != "palm"))
         island1.addEnemy(island2)
       end
-      if ((island1.getName != island2.getName) && (island1.getTeam == "obsidian") && (island2.getTeam == "palm"))
+      if ((island1.getName != island2.getName) && (island1.getTeam == "obsidian") && (island2.getTeam != "obsidian"))
         island1.addEnemy(island2)
       end
-      if ((island1.getName != island2.getName) && (island1.getTeam == "aqua") && (island2.getTeam == "pearl"))
+      if ((island1.getName != island2.getName) && (island1.getTeam == "aqua") && (island2.getTeam != "aqua"))
         island1.addEnemy(island2)
       end
-      if ((island1.getName != island2.getName) && (island1.getTeam == "pearl") && (island2.getTeam == "aqua"))
+      if ((island1.getName != island2.getName) && (island1.getTeam == "pearl") && (island2.getTeam != "pearl"))
         island1.addEnemy(island2)
       end
     end
@@ -1749,34 +1787,21 @@ begin
               pacifica.addHazardY(object.getLocationY-3, object.getLocationY-2, object.getLocationY-1, object.getLocationY, object.getLocationY+1, object.getLocationY+2, object.getLocationY+3, nil, nil)
             end
           end
+        else
+          object = nil
         end
       end
       if (object.class.name == "Boat")
-        if (object.getType == "war")
-          if (object.getCurrentCrew > 0)
-            objTemp.push(object)
-          end
-        end
-        if (object.getType == "trade")
-          if (object.getCurrentCrew > 0)
-            objTemp.push(object)
-          end
+        if (object.getCurrentCrew > 0)
+          objTemp.push(object)
+        else
+          object = nil
         end
       end
     end
 
     pacifica.setObjects(objTemp)
     #add all islands to islands
-    #add island events to master events
-    pacifica.getIslands.each do |island|
-      island.getEvents.each do |event|
-        pacifica.getEvents.push(event)
-      end
-    end
-    pacifica.getEvents.uniq!
-    temp = pacifica.getEvents.last(10)
-    pacifica.setEvents(temp)
-    pacifica.getEvents.sort_by! { |event| event.getTime }
     #add all earthquakes to objects, then all waves, boats, then typhoons
     case pacifica.getCurrentTime
       when 0..9
@@ -1807,37 +1832,23 @@ begin
 
 
     diploThr = Thread.new { pacifica.make_diplomacy_window(pacifica.getIslands) }
-    pacifica.make_kingdom_info_window
     pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
+    pacifica.make_kingdom_info_window
     pacifica.make_info_window(pacifica.getIslands)
-    sleep(0.25)
+    sleep(0.3)
     diploThr.kill
     if (pacifica.getCurrentTime < 120)
       pacifica.setCurrentTime(pacifica.getCurrentTime+1)
-    elsif (pacifica.getCurrentTime == 120)
-      if(pacifica.getNumberOfDefeatedAlliances == 2)
-        alliancesActive = pacifica.getAlliances - pacifica.getDefeatedAlliances
-        alliancesActive.each do |myAlliance|
-          alliancesActive.each do |enemyAlliance|
-            if(myAlliance != enemyAlliance)
-            myAlliance.each do |island|
-              enemyAlliance.each do |enemyIsland|
-                island.addEnemy(enemyIsland)
-              end
-            end
-            end
-          end
-        end
-      end
+      pacifica.checkForWinner
+    else
+      Curses.clear
       pacifica.setPlayerPrayersThisYear(0)
       pacifica.setCurrentTime(0)
       pacifica.setYear((pacifica.getYear+1))
     end
-    somefile.puts "Time: #{pacifica.getCurrentTime} Object count: #{ObjectSpace.count_objects}\n"
   end
 ensure
   Curses.close_screen
-  somefile.close
 end
 
 
