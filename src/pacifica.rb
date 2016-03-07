@@ -227,7 +227,21 @@ class Pacifica
   def make_start_window
     setpos(6, 15)
     addstr("Welcome to Pacifica.\n\n\t\tThis is a work-in-progress grand strategy game/simulation, set in the South Pacific.
-			\n\n\t\tPress 'a' to select an island and an alliance\n\n\t\tPress 'q' to quit")
+      \n\t\tTips:
+      \n\t\tSend trade canoes to allies to earn wealth.
+      \n\t\tSend war canoes to conquer enemies.
+      \n\t\tThe last alliance standing claims victory.
+      \n\t\tSend canoes when there are few typhoons. They will sink your ships.
+      \n\t\tEarthquakes are unavoidable. Their impact and waves can crush your population.
+      \n\t\tPray to the gods - be willing to make a sacrifice.
+      \n\t\tA higher ship skill allows your ships to sail faster and take more damage from natural disasters.
+      \n\t\tYour ship skill will increase when you send more ships.
+      \n\t\tDifferent islands have different attributes:
+      \n\t\t\tRapa Nui has a high starting ship skill
+      \n\t\t\tHawaii and Aotearoa are large islands, with a high power rank and pop cap
+      \n\t\t\tThe small clustered islands tend to have more allies nearby
+      \n\t\tSee info screens for help and game information.
+      \n\n\t\tPress 'a' to select an island and an alliance, or press 'q' to quit")
     refresh
     ch = getch
     if (ch == "a")
