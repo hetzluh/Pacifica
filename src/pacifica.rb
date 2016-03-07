@@ -18,7 +18,7 @@ top left = (1, 6)
 
 class Pacifica
   def initialize()
-    @devMode = 1 #Set this to 1 for static teams for development/testing
+    @devMode = 0 #Set this to 1 for static teams for development/testing
     @currentTime = -1
     @islands = Array.new
     @objects = Array.new
@@ -348,9 +348,9 @@ class Pacifica
       end
 
 
-      # random_earthquake_generator
+      random_earthquake_generator
 
-      # calendar_typhoon_generator
+      calendar_typhoon_generator
 
       @objects.each do |object|
         y = object.getLocationY
@@ -428,7 +428,7 @@ class Pacifica
               end
               @islands.each do |island|
                 if (island.getName == object.getKingdomName)
-                  island.setCurrentWealth(100)
+                  island.setCurrentWealth(10)
                 end
               end
             end
@@ -589,8 +589,8 @@ class Pacifica
           end
           win.attron(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y, x+2)
-            win.addstr("(0) kiribati")
+            win.setpos(y, x+1)
+            win.addstr("0 kiribati")
           end
         end
 
@@ -604,8 +604,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y-1, x+1)
-            win.addstr("(1) kwajaleins")
+            win.setpos(y-1, x-2)
+            win.addstr("1 kwajaleins")
           end
         end
 
@@ -623,8 +623,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-2)
-            win.addstr("(2) hawaii")
+            win.setpos(y+1, x-3)
+            win.addstr("2 hawaii")
           end
         end
 
@@ -638,8 +638,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-2)
-            win.addstr("(3) samoa")
+            win.setpos(y+1, x-5)
+            win.addstr("3 samoa")
           end
         end
 
@@ -653,8 +653,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-2)
-            win.addstr("(4) tokelau")
+            win.setpos(y+1, x-5)
+            win.addstr("4 tokelau")
           end
         end
 
@@ -670,8 +670,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-3)
-            win.addstr("(8) tuvalu")
+            win.setpos(y+1, x-6)
+            win.addstr("8 tuvalu")
           end
         end
 
@@ -687,8 +687,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-2)
-            win.addstr("(5) vanuatu")
+            win.setpos(y+1, x-3)
+            win.addstr("5 vanuatu")
           end
         end
 
@@ -705,7 +705,7 @@ class Pacifica
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
             win.setpos(y+1, x-2)
-            win.addstr("(9) fiji")
+            win.addstr("9 fiji")
           end
         end
 
@@ -719,8 +719,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-2)
-            win.addstr("(-) tonga")
+            win.setpos(y+1, x-4)
+            win.addstr("- tonga")
           end
         end
 
@@ -732,8 +732,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-3)
-            win.addstr("(7) takutea")
+            win.setpos(y+1, x-5)
+            win.addstr("7 takutea")
           end
         end
 
@@ -745,8 +745,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-2)
-            win.addstr("(6) tahiti")
+            win.setpos(y+1, x-4)
+            win.addstr("6 tahiti")
           end
         end
 
@@ -764,8 +764,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y-2, x-4)
-            win.addstr("(+) tuamotus")
+            win.setpos(y-2, x-5)
+            win.addstr("+ tuamotus")
           end
         end
 
@@ -777,8 +777,8 @@ class Pacifica
           end
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
-            win.setpos(y+1, x-4)
-            win.addstr("([) rapa nui")
+            win.setpos(y+1, x-5)
+            win.addstr("[ rapa nui")
           end
         end
 
@@ -795,7 +795,7 @@ class Pacifica
           win.attroff(color_pair(COLOR_WHITE)|A_NORMAL)
           if (@mapMode == true)
             win.setpos(y+1, x+4)
-            win.addstr("(]) aotearoa")
+            win.addstr("] aotearoa")
           end
         end
         #End kingdom graphics
@@ -874,7 +874,9 @@ class Pacifica
         end
       end
     end
+  end
 
+  def buildAlliances
     @palmAlliance.clear
     @obsidianAlliance.clear
     @pearlAlliance.clear
@@ -934,100 +936,103 @@ class Pacifica
   end
 
   def calendar_typhoon_generator
-    if (@month == "jan")
-      r = rand(20)
-      if (r == 1)
-        make_small_typhoon
-      end
-    elsif (@month == "feb")
-      r = rand(50)
-      if (r == 1)
-        make_small_typhoon
-      end
-    elsif (@month == "mar")
-      r = rand(50)
-      if (r < 2)
-        make_small_typhoon
-      end
-    elsif (@month == "apr")
-      r = rand(50)
-      if (r < 4)
+    i = rand(2)
+    if i == 0
+      if (@month == "jan")
+        r = rand(20)
         if (r == 1)
-          make_large_typhoon
-        else
           make_small_typhoon
         end
-      end
-    elsif (@month == "may")
-      r = rand(100)
-      if (r < 12/3)
-        if (r < 1)
-          make_large_typhoon
-        else
+      elsif (@month == "feb")
+        r = rand(50)
+        if (r == 1)
           make_small_typhoon
         end
-      end
-    elsif (@month == "jun")
-      r = rand(100)
-      if (r < 18/3)
+      elsif (@month == "mar")
+        r = rand(50)
         if (r < 2)
-          make_large_typhoon
-        else
           make_small_typhoon
         end
-      end
-    elsif (@month == "jul")
-      r = rand(100)
-      if (r < 39/3)
-        if (r < 5)
-          make_large_typhoon
-        else
-          make_small_typhoon
+      elsif (@month == "apr")
+        r = rand(50)
+        if (r < 4)
+          if (r == 1)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
         end
-      end
-    elsif (@month == "aug")
-      r = rand(100)
-      if (r < 57/3)
-        if (r < 8)
-          make_large_typhoon
-        else
-          make_small_typhoon
+      elsif (@month == "may")
+        r = rand(100)
+        if (r < 12/3)
+          if (r < 1)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
         end
-      end
-    elsif (@month == "sep")
-      r = rand(100)
-      if (r < 51/3)
-        if (r < 7)
-          make_large_typhoon
-        else
-          make_small_typhoon
+      elsif (@month == "jun")
+        r = rand(100)
+        if (r < 18/3)
+          if (r < 2)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
         end
-      end
-    elsif (@month == "oct")
-      r = rand(100)
-      if (r < 42/3)
-        if (r < 5)
-          make_large_typhoon
-        else
-          make_small_typhoon
+      elsif (@month == "jul")
+        r = rand(100)
+        if (r < 39/3)
+          if (r < 5)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
         end
-      end
-    elsif (@month == "nov")
-      r = rand(100)
-      if (r < 27/3)
-        if (r < 2)
-          make_large_typhoon
-        else
-          make_small_typhoon
+      elsif (@month == "aug")
+        r = rand(100)
+        if (r < 57/3)
+          if (r < 8)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
         end
-      end
-    elsif (@month == "dec")
-      r = rand(100)
-      if (r < 12/3)
-        if (r < 1)
-          make_large_typhoon
-        else
-          make_small_typhoon
+      elsif (@month == "sep")
+        r = rand(100)
+        if (r < 51/3)
+          if (r < 7)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
+        end
+      elsif (@month == "oct")
+        r = rand(100)
+        if (r < 42/3)
+          if (r < 5)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
+        end
+      elsif (@month == "nov")
+        r = rand(100)
+        if (r < 27/3)
+          if (r < 2)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
+        end
+      elsif (@month == "dec")
+        r = rand(100)
+        if (r < 12/3)
+          if (r < 1)
+            make_large_typhoon
+          else
+            make_small_typhoon
+          end
         end
       end
     end
@@ -1244,16 +1249,16 @@ class Pacifica
           r = rand(20)
           if (r < 5)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods grant you wealth! (press any key)")
+            winfo.addstr("The gods grant you wealth! +15 wealth [-3 pop] (press any key)")
             @playerIsland.setCurrentWealth(15)
             @playerIsland.setPopulation(-3)
           elsif (r < 15 && @playerIsland.getPopulation > 1)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods replace 3 lives with 10! (press any key)")
+            winfo.addstr("The gods replace 3 lives with 10! [+7 pop] (press any key)")
             @playerIsland.setPopulation(7)
           elsif (r == 18)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods rain death from the skies! (press any key)")
+            winfo.addstr("The gods rain death from the skies! [typhoons] (press any key)")
             @playerIsland.setPopulation(-3)
             for i in 1..2
               make_small_typhoon
@@ -1261,7 +1266,7 @@ class Pacifica
             end
           else
             winfo.setpos(2, 1)
-            winfo.addstr("The gods do not hear your plea! (press any key)")
+            winfo.addstr("The gods do not hear your plea! [-3 pop] (press any key)")
             @playerIsland.setPopulation(-3)
           end
           winfo.refresh
@@ -1271,16 +1276,16 @@ class Pacifica
           r = rand(20)
           if (r < 10 && @playerIsland.getCurrentWealth > 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods grant you fertility! (press any key)")
+            winfo.addstr("The gods grant you fertility! [+10 pop -10 wealth] (press any key)")
             @playerIsland.setCurrentWealth(-10)
             @playerIsland.setPopulation(10)
           elsif (r < 15 && @playerIsland.getCurrentWealth > 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods replace 10 shells with 30! (press any key)")
+            winfo.addstr("The gods replace 10 shells with 30! [+20 wealth] (press any key)")
             @playerIsland.setCurrentWealth(20)
           elsif (r == 18 && @playerIsland.getCurrentWealth > 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods bring death from below! (press any key)")
+            winfo.addstr("The gods bring death from below! [earthquakes] (press any key)")
             @playerIsland.setCurrentWealth(-10)
             for i in 1..80
               random_earthquake_generator
@@ -1288,7 +1293,7 @@ class Pacifica
           else
             winfo.setpos(2, 1)
             if (@playerIsland.getCurrentWealth > 10)
-              winfo.addstr("The gods do not hear your plea! (press any key)")
+              winfo.addstr("The gods do not hear your plea! [-10 wealth] (press any key)")
               @playerIsland.setCurrentWealth(-10)
             else
               winfo.addstr("Your kingdom is too poor to offer wealth! (press any key)")
@@ -1301,12 +1306,12 @@ class Pacifica
           r = rand(20)
           if (r < 5)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods bring you loyal people! (press any key)")
+            winfo.addstr("The gods bring you loyal people! [+30 pop -0.1 pow] (press any key)")
             @playerIsland.setPopulation(30)
             @playerIsland.setPower(-0.1)
           elsif (r < 10)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods rain terror from the skies! (press any key)")
+            winfo.addstr("The gods rain terror from the skies! [typhoons -0.1 pow] (press any key)")
             @playerIsland.setPower(-0.1)
             for i in 1..3
               make_small_typhoon
@@ -1314,19 +1319,19 @@ class Pacifica
             end
           elsif (r == 18 || r == 17)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods bring death to all from below!")
+            winfo.addstr("The gods bring death to all from below! [earthquakes -0.1 pow] (press any key)")
             @playerIsland.setPower(-0.1)
             for i in 1..100
               random_earthquake_generator
             end
           elsif (r == 12 || r == 13)
             winfo.setpos(2, 1)
-            winfo.addstr("The gods bring you great wealth!")
+            winfo.addstr("The gods bring you great wealth! [+60 wealth -0.1 pow] (press any key)")
             @playerIsland.setPower(-0.1)
             @playerIsland.setCurrentWealth(60)
           else
             winfo.setpos(2, 1)
-            winfo.addstr("The gods do not hear your plea!")
+            winfo.addstr("The gods do not hear your plea! [-0.1 pow] (press any key)")
             @playerIsland.setPower(-0.1)
           end
           winfo.refresh
@@ -1349,19 +1354,19 @@ class Pacifica
     y = 0
     info.setpos(y, x)
     if (@infoState == "kingdoms")
-      info.addstr("----|Kingdoms|-----Allies & Enemies------Help-")
+      info.addstr("--|Kingdoms|-----Allies & Enemies------Help---")
       y += 2
       info.setpos(y, x)
       info.addstr("Kingdom\tWealth\tPow\tShip\tPop/Cap")
       y += 1
       info.setpos(y, x)
-      info.addstr("--------------------------------------aqua")
+      info.addstr("-----------------------------------------aqua")
       @islands.each do |island|
         if (island.getTeam == "aqua")
           y += 1
           info.setpos(y, x)
           if (island.getDefeated == true)
-            info.addstr("#{island.getName} - DEFEATED")
+            info.addstr("#{island.getName} - #{island.getDefeatedMessage}")
           elsif (island.getName.size < 7)
             info.addstr("#{island.getName.slice(0, 1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
           else
@@ -1377,7 +1382,7 @@ class Pacifica
           y += 1
           info.setpos(y, x)
           if (island.getDefeated == true)
-            info.addstr("#{island.getName} - DEFEATED")
+            info.addstr("#{island.getName} - #{island.getDefeatedMessage}")
           elsif (island.getName.size < 7)
             info.addstr("#{island.getName.slice(0, 1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
           else
@@ -1393,7 +1398,7 @@ class Pacifica
           y += 1
           info.setpos(y, x)
           if (island.getDefeated == true)
-            info.addstr("#{island.getName} - DEFEATED")
+            info.addstr("#{island.getName} - #{island.getDefeatedMessage}")
           elsif (island.getName.size < 7)
             info.addstr("#{island.getName.slice(0, 1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
           else
@@ -1409,7 +1414,7 @@ class Pacifica
           y += 1
           info.setpos(y, x)
           if (island.getDefeated == true)
-            info.addstr("#{island.getName} - DEFEATED")
+            info.addstr("#{island.getName} - #{island.getDefeatedMessage}")
           elsif (island.getName.size < 7)
             info.addstr("#{island.getName.slice(0, 1).capitalize+island.getName.slice(1..-1)}\t\t$#{island.getCurrentWealth.to_i}\t#{island.getPower}\t#{island.getShipGuildSkill}\t#{island.getPopulation}/#{island.getPopCap}")
           else
@@ -1422,7 +1427,7 @@ class Pacifica
       end
     end
     if (@infoState == "allies")
-      info.addstr("-----Kingdoms-----|Allies & Enemies|-----Help-")
+      info.addstr("---Kingdoms-----|Allies & Enemies|-----Help---")
       info.setpos(1, 1)
       info.attron(color_pair(COLOR_GREEN)|A_NORMAL)
       info.addstr("     (use arrow keys to change selection)     ")
@@ -1605,7 +1610,7 @@ class Pacifica
       end
     end
     if (@infoState == "help")
-      info.addstr("-----Kingdoms------Allies & Enemies-----|Help|")
+      info.addstr("---Kingdoms------Allies & Enemies-----|Help|--")
       info.setpos(2, x)
       info.addstr("      ********* PACIFICA v 0.5 *********")
       info.setpos(3, x)
@@ -1629,7 +1634,7 @@ class Pacifica
       info.setpos(13, x)
       info.addstr("4 - tokelau    |  '+' - tuamotus")
       info.setpos(14, x)
-      info.addstr("5 - vanuata    |  '[' - rapa nui")
+      info.addstr("5 - vanuatu    |  '[' - rapa nui")
       info.setpos(15, x)
       info.addstr("6 - tahiti     |  ']' - aotearoa")
       info.setpos(22, x)
@@ -1704,8 +1709,12 @@ begin
 
   pacifica.make_start_window
 
+  #Now we are going to make the alliances and balance the teams if needed
+  #overflow goes to aqua
+  pacifica.buildAlliances
+
   #Now we are going to add to each island's allies & enemies list
-  #Everyone in an alliance is an ally/trade partner to everyone else in the alliance, except for neutral
+  #Everyone in an alliance is an ally/trade partner to everyone else in the alliance
   #All alliances are enemies at start
   pacifica.getIslands.each do |island1|
     pacifica.getIslands.each do |island2|
@@ -1835,13 +1844,12 @@ begin
     pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
     pacifica.make_kingdom_info_window
     pacifica.make_info_window(pacifica.getIslands)
-    sleep(0.3)
+    sleep(0.2)
     diploThr.kill
     if (pacifica.getCurrentTime < 120)
       pacifica.setCurrentTime(pacifica.getCurrentTime+1)
       pacifica.checkForWinner
     else
-      Curses.clear
       pacifica.setPlayerPrayersThisYear(0)
       pacifica.setCurrentTime(0)
       pacifica.setYear((pacifica.getYear+1))

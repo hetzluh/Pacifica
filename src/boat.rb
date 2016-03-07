@@ -175,6 +175,10 @@ class Boat
     elsif (@shipGuildSkill == 1)
       @currentCrew -= 1
     end
+
+    if @currentCrew < 0
+      @currentCrew = 0
+    end
   end
 
 
