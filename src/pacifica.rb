@@ -1612,7 +1612,7 @@ class Pacifica
     if (@infoState == "help")
       info.addstr("---Kingdoms------Allies & Enemies-----|Help|--")
       info.setpos(2, x)
-      info.addstr("      ********* PACIFICA v 0.5 *********")
+      info.addstr("      ********* PACIFICA v 0.6 *********")
       info.setpos(3, x)
       info.addstr("      *** This is a work in progress ***")
       info.setpos(4, x)
@@ -1844,7 +1844,7 @@ begin
     pacifica.make_game_window(pacifica.getIslands, pacifica.getObjects, pacifica.getMonth, pacifica.getYear, pacifica.getCurrentTime)
     pacifica.make_kingdom_info_window
     pacifica.make_info_window(pacifica.getIslands)
-    sleep(0.2)
+    sleep(0.4)
     diploThr.kill
     if (pacifica.getCurrentTime < 120)
       pacifica.setCurrentTime(pacifica.getCurrentTime+1)
